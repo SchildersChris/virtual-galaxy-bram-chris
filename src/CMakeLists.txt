@@ -2,23 +2,33 @@
 #  Library setup
 # -----------------------------------------------------------------------------
 
-# Note that headers are optional, and do not affect add_library, but they will not
-# show up in IDEs unless they are listed in add_library.
-file(GLOB HEADER_LIST CONFIGURE_DEPENDS "${cmake-template_SOURCE_DIR}/include/*.hpp")
+file(GLOB HEADER_LIST CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/include/*.hpp")
 
-# Make an automatic library - will be static or dynamic based on user setting
-add_library(modern_library lib.cpp ${HEADER_LIST})
+FetchContent_Declare(sdl GIT_REPOSITORY https://github.com/libsdl-org/SDL.git GIT_TAG release-2.0.16)
+FetchContent_Declare(sdl-image GIT_REPOSITORY https://github.com/42IN7SPICg/SDL_image.git GIT_TAG re-release-2.0.5)
 
-# We need this directory, and users of our library will need it too
-target_include_directories(modern_library PUBLIC ../include)
+FetchContent_MakeAvailable(sdl)
+FetchContent_MakeAvailable(sdl-image)
 
-# This depends on (header only) boost
-target_link_libraries(modern_library PRIVATE Boost::boost)
+add_library(virtual-galaxy
+    math/vector3.cpp
+    math/matrix4x4.cpp
+    ${HEADER_LIST})
 
-# All users of this library will need at least C++11
-target_compile_features(modern_library PUBLIC cxx_std_11)
+target_compile_features(virtual-galaxy PUBLIC cxx_std_17)
+target_link_libraries(virtual-galaxy PRIVATE SDL2 SDL2_image)
 
-# IDEs should put the headers in a nice place
+target_include_directories(virtual-galaxy
+        PUBLIC
+        ../include
+        PRIVATE
+        ${sdl_SOURCE_DIR}/include
+        ${sdl-image_SOURCE_DIR}
+        ${imgui_DIR}
+        ${imgui-sdl_DIR})
+
+target_compile_features(virtual-galaxy PUBLIC cxx_std_11)
+
 source_group(
   TREE "${PROJECT_SOURCE_DIR}/include"
   PREFIX "Header Files"

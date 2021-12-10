@@ -1,11 +1,9 @@
-# CMake Template
-A CMake project template
+# Virtual Galaxy
+Avans Hogeschool - Linear Algebra assessment by Bram Bastiaansen and Chris Schilders
 
 ## Requirements
-* CMake 3.12 or better; 3.14+ highly recommended.
+* CMake 3.14+
 * A C++17 compatible compiler
-* The Boost libraries
-* Doxygen
 
 ## Configure 
 ```bash
@@ -16,15 +14,6 @@ Add -GNinja if you have Ninja.
 ## Build
 ```bash
 cmake --build build
-```
-## Docs
-```bash
-cmake --build build --target docs
-```
-
-## Test
-```bash
-cmake --build build --target test
 ```
 
 # Credits
