@@ -13,6 +13,8 @@ FetchContent_MakeAvailable(sdl-image)
 add_library(virtual-galaxy
     math/vector3.cpp
     math/matrix4x4.cpp
+    graphics/frame.cpp
+    graphics/renderer.cpp
     ${HEADER_LIST})
 
 target_compile_features(virtual-galaxy PUBLIC cxx_std_17)
