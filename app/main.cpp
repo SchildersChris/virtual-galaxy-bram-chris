@@ -6,6 +6,7 @@
 int main() {
     auto& renderer = Renderer::GetInstance();
     auto& input = Input::GetInstance();
+
     renderer.Init("Virtual Galaxy", false, 800, 600);
     input.Init();
 
