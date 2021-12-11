@@ -2,7 +2,6 @@
 #define VIRTUAL_GALAXY_FRAME_HPP
 
 #include "base.hpp"
-#include "renderer.hpp"
 
 class Renderer;
 

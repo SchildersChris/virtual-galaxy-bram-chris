@@ -1,21 +1,23 @@
-#include "math/vector3.hpp"
-#include "math/matrix4x4.hpp"
 #include "graphics/renderer.hpp"
+#include "utils/input.hpp"
+
+#include <string>
 
 int main() {
     auto& renderer = Renderer::GetInstance();
-    renderer.Init();
+    auto& input = Input::GetInstance();
+    renderer.Init("Virtual Galaxy", false, 800, 600);
+    input.Init();
 
-    while () {
+    while (!input.IsQuit()) {
+        auto frame = renderer.BeginFrame();
+        // Todo: Write to frame
+        frame.EndFrame();
 
+        input.Update();
     }
 
-    auto frame = renderer.BeginFrame();
-
-//    frame.SetPixel()
-
-
-
+    input.Terminate();
     renderer.Terminate();
     return 0;
 }

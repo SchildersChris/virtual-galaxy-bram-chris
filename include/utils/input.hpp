@@ -249,6 +249,7 @@ enum class MouseButton : uint8 {
 };
 
 class Input : public NoCopyNoMove {
+public:
     /**
      * Single point of access to the input
      *
