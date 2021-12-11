@@ -12,9 +12,11 @@ FetchContent_MakeAvailable(sdl-image)
 
 add_library(virtual-galaxy
     math/vector3.cpp
+    math/vector2.cpp
     math/matrix4x4.cpp
     graphics/frame.cpp
     graphics/renderer.cpp
+    utils/input.cpp
     ${HEADER_LIST})
 
 target_compile_features(virtual-galaxy PUBLIC cxx_std_17)
@@ -23,9 +25,9 @@ target_link_libraries(virtual-galaxy PRIVATE SDL2 SDL2_image)
 target_include_directories(virtual-galaxy
         PUBLIC
         ../include
-        PRIVATE
         ${sdl_SOURCE_DIR}/include
         ${sdl-image_SOURCE_DIR}
+        PRIVATE
         ${imgui_DIR}
         ${imgui-sdl_DIR})
 
