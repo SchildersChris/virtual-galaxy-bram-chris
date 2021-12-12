@@ -7,6 +7,7 @@ class Demo : public System {
 public:
     void init(entt::registry& registry) override;
     void update(float deltaTime, Buffer& frame) override;
+    void terminate() override;
 };
 
 

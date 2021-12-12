@@ -9,6 +9,9 @@
 #include <memory>
 
 int main() {
+    /*
+     * Setup
+     */
     std::vector<std::unique_ptr<System>> systems;
 
     systems.emplace_back(std::make_unique<Demo>());
@@ -28,6 +31,9 @@ int main() {
         s->init(registry);
     }
 
+    /*
+     * Runtime
+     */
     while (!input.isQuit()) {
         input.update();
         auto frame = renderer.beginFrame();
@@ -38,6 +44,13 @@ int main() {
         }
 
         renderer.endFrame();
+    }
+
+    /*
+     * Shutdown
+     */
+    for (auto& s : systems) {
+        s->terminate();
     }
 
     input.terminate();

@@ -21,6 +21,20 @@ public:
     void init(const std::string& title, bool fullscreen, int32 width, int32 height);
 
     /**
+     * Get renderer window width
+     *
+     * @return Window width
+     */
+    [[nodiscard]] int32 getWidth() const;
+
+    /**
+     * Get renderer window height
+     *
+     * @return Window height
+     */
+    [[nodiscard]] int32 getHeight() const;
+
+    /**
      * Set renderer clear color after each frame
      *
      * @param r Red component

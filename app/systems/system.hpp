@@ -21,6 +21,11 @@ public:
      * @param frame Active frame buffer
      */
     virtual void update(float deltaTime, Buffer& frame) = 0;
+
+    /**
+     * Terminate is called to shutdown the system and cleanup all the resources.
+     */
+    virtual void terminate() = 0;
 };
 
 #endif //VIRTUAL_GALAXY_SYSTEM_HPP

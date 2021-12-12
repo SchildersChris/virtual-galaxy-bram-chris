@@ -4,9 +4,9 @@
 #include "math/vector3.hpp"
 
 struct Transform {
-    Vector3 position;
-    Vector3 rotation;
-    Vector3 scale;
+    Vector3 Position;
+    Vector3 Rotation;
+    Vector3 Scale;
 };
 
 #endif //VIRTUAL_GALAXY_TRANSFORM_HPP

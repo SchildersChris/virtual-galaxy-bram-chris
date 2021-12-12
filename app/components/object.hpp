@@ -7,8 +7,8 @@
 #include <vector>
 
 struct Object {
-    std::vector<Vector3> vertices;
-    std::vector<uint32> indices;
+    std::vector<Vector3> Vertices;
+    std::vector<uint32> Indices;
 };
 
 #endif //VIRTUAL_GALAXY_OBJECT_HPP

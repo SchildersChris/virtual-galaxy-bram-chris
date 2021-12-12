@@ -35,6 +35,15 @@ void Renderer::init(const std::string& title, bool fullscreen, int32 width, int3
     }
 }
 
+
+int32 Renderer::getWidth() const {
+    return _width;
+}
+
+int32 Renderer::getHeight() const {
+    return _height;
+}
+
 void Renderer::setClearColor(uint8 r, uint8 g, uint8 b) {
     _clearColor = color::rgbToInteger(r, g, b);
 }
