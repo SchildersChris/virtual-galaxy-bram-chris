@@ -14,7 +14,6 @@ add_library(virtual-galaxy
     math/vector3.cpp
     math/vector2.cpp
     math/matrix4x4.cpp
-    graphics/frame.cpp
     graphics/renderer.cpp
     utils/input.cpp
     ${HEADER_LIST})

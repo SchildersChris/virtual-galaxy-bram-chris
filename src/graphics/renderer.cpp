@@ -21,9 +21,21 @@ void Renderer::Init(const std::string& title, bool fullscreen, int32 width, int3
     if (!(_renderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_ACCELERATED))) {
         throw std::runtime_error(SDL_GetError());
     }
+
+    _width = width;
+    _height = height;
+
+    if (!(_surface = SDL_CreateTexture(
+            _renderer,
+            SDL_PIXELFORMAT_RGBA8888,
+            SDL_TEXTUREACCESS_STREAMING,
+            _width, _height))) {
+        throw std::runtime_error(SDL_GetError());
+    }
 }
 
 void Renderer::Terminate() {
+    SDL_DestroyTexture(_surface);
     SDL_DestroyRenderer(_renderer);
     SDL_DestroyWindow(_window);
 
@@ -34,10 +46,31 @@ void Renderer::Terminate() {
     _window = nullptr;
 }
 
-Frame Renderer::BeginFrame() {
-    if (!_renderer || !_window) {
-        throw std::runtime_error("Renderer is not property initialized!");
+Buffer Renderer::BeginFrame() {
+    SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);
+    SDL_RenderClear(_renderer);
+
+    uint32* pixels;
+    int32 stride;
+
+    if (SDL_LockTexture(_surface, nullptr, (void**)&pixels, &stride)) {
+        throw std::runtime_error(SDL_GetError());
     }
 
-    return Frame(*this);
+    return Buffer { pixels };
+}
+
+void Renderer::EndFrame() {
+    SDL_UnlockTexture(_surface);
+    SDL_RenderCopy(_renderer, _surface, nullptr, nullptr);
+
+    SDL_RenderPresent(_renderer);
+}
+
+int32 Renderer::GetWidth() const {
+    return _width;
+}
+
+int32 Renderer::GetHeight() const {
+    return _height;
 }

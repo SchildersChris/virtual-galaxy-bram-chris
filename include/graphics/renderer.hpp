@@ -2,7 +2,7 @@
 #define VIRTUAL_GALAXY_RENDERER_HPP
 
 #include "base.hpp"
-#include "frame.hpp"
+#include "buffer.hpp"
 
 #include "SDL.h"
 
@@ -21,11 +21,32 @@ public:
     void Init(const std::string& title, bool fullscreen, int32 width, int32 height);
 
     /**
+     * Get width of the window
+     *
+     * @return Window width
+     */
+    [[nodiscard]] int32 GetWidth() const;
+
+    /**
+     * Get height of the window
+     *
+     * @return Window height
+     */
+    [[nodiscard]] int32 GetHeight()const;
+
+    /**
      * Start a new rendering frame;
      *
-     * @return Current frame
+     * @return Active frame buffer
      */
-    Frame BeginFrame();
+    Buffer BeginFrame();
+
+    /**
+     * End a rendering frame
+     *
+     * @param frame Frame to end
+     */
+    void EndFrame();
 
     /**
      * Terminate window and active renderer
@@ -41,12 +62,10 @@ private:
     SDL_Window* _window {nullptr};
     SDL_Renderer* _renderer {nullptr};
 
-    /*
-     * Frame is a friend of the renderer, todo
-     */
-    friend class Frame;
+    SDL_Texture* _surface {nullptr};
+
+    int32 _width {0};
+    int32 _height {0};
 };
-
-
 
 #endif //VIRTUAL_GALAXY_RENDERER_HPP
