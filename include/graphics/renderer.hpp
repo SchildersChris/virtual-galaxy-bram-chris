@@ -13,45 +13,40 @@ public:
      *
      * @return Singleton renderer instance
      */
-    static Renderer& GetInstance();
+    static Renderer& getInstance();
 
     /**
      * Initialize a window and the active renderer
      */
-    void Init(const std::string& title, bool fullscreen, int32 width, int32 height);
+    void init(const std::string& title, bool fullscreen, int32 width, int32 height);
 
     /**
-     * Get width of the window
+     * Set renderer clear color after each frame
      *
-     * @return Window width
+     * @param r Red component
+     * @param g Green component
+     * @param b Blue component
      */
-    [[nodiscard]] int32 GetWidth() const;
-
-    /**
-     * Get height of the window
-     *
-     * @return Window height
-     */
-    [[nodiscard]] int32 GetHeight()const;
+    void setClearColor(uint8 r, uint8 g, uint8 b);
 
     /**
      * Start a new rendering frame;
      *
      * @return Active frame buffer
      */
-    Buffer BeginFrame();
+    Buffer beginFrame();
 
     /**
      * End a rendering frame
      *
      * @param frame Frame to end
      */
-    void EndFrame();
+    void endFrame();
 
     /**
      * Terminate window and active renderer
      */
-    void Terminate();
+    void terminate();
 
 private:
     static Renderer _instance;
@@ -62,10 +57,12 @@ private:
     SDL_Window* _window {nullptr};
     SDL_Renderer* _renderer {nullptr};
 
-    SDL_Texture* _surface {nullptr};
+    SDL_Texture* _texture {nullptr};
 
     int32 _width {0};
     int32 _height {0};
+
+    uint32 _clearColor {0};
 };
 
 #endif //VIRTUAL_GALAXY_RENDERER_HPP

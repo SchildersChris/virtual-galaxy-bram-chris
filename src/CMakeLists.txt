@@ -14,8 +14,10 @@ add_library(virtual-galaxy
     math/vector3.cpp
     math/vector2.cpp
     math/matrix4x4.cpp
+    graphics/buffer.cpp
     graphics/renderer.cpp
     utils/input.cpp
+    utils/color.cpp
     ${HEADER_LIST})
 
 target_compile_features(virtual-galaxy PUBLIC cxx_std_17)

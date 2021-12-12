@@ -255,52 +255,52 @@ public:
      *
      * @return Singleton input instance
      */
-    static Input& GetInstance();
+    static Input& getInstance();
 
     /**
      * Initialize the input utility
      */
-    void Init();
+    void init();
 
     /**
      * Terminate and cleanup the input utility
      */
-    void Terminate();
+    void terminate();
 
     /**
      * Update the input utility to process the event queue
      */
-    void Update();
+    void update();
 
     /**
      * Get the mouse position on the screen in pixels
      */
-    [[nodiscard]] Vector2 MouseScreenPosition() const;
+    [[nodiscard]] Vector2 mouseScreenPosition() const;
 
     /**
      *  Returns true if the key is being held down
      */
-    [[nodiscard]] bool GetKeyDown(KeyCode key) const;
+    [[nodiscard]] bool getKeyDown(KeyCode key) const;
 
     /**
      * Return true when the key is being released
      */
-    [[nodiscard]] bool GetKeyUp(KeyCode key) const;
+    [[nodiscard]] bool getKeyUp(KeyCode key) const;
 
     /**
      * Returns true if the mouse button is being held down
      */
-    [[nodiscard]] bool GetMouseButtonDown(MouseButton button) const;
+    [[nodiscard]] bool getMouseButtonDown(MouseButton button) const;
 
     /**
      * Return true when the mouse button is being released
      */
-    [[nodiscard]] bool GetMouseButtonUp(MouseButton button) const;
+    [[nodiscard]] bool getMouseButtonUp(MouseButton button) const;
 
     /**
      * Returns if the quit command has been fired
      */
-    [[nodiscard]] bool IsQuit() const;
+    [[nodiscard]] bool isQuit() const;
 
 private:
     static Input _instance;

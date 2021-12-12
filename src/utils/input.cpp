@@ -3,11 +3,11 @@
 #include "SDL.h"
 
 Input Input::_instance;
-Input& Input::GetInstance() {
+Input& Input::getInstance() {
     return _instance;
 }
 
-void Input::Init() {
+void Input::init() {
     _keysUp = new uint8[AmountOfKeys];
     _keysDown = new uint8[AmountOfKeys];
 
@@ -22,7 +22,7 @@ void Input::Init() {
     _isQuit = false;
 }
 
-void Input::Terminate() {
+void Input::terminate() {
     delete[] _keysDown;
     delete[] _keysUp;
 
@@ -30,7 +30,7 @@ void Input::Terminate() {
     delete[] _mouseButtonsUp;
 }
 
-void Input::Update() {
+void Input::update() {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
@@ -61,33 +61,33 @@ void Input::Update() {
     }
 }
 
-Vector2 Input::MouseScreenPosition() const {
+Vector2 Input::mouseScreenPosition() const {
     int32 x, y;
     SDL_GetMouseState(&x, &y);
 
     return Vector2 { static_cast<float>(x), static_cast<float>(y) };
 }
 
-bool Input::GetKeyDown(KeyCode key) const {
+bool Input::getKeyDown(KeyCode key) const {
     auto b = static_cast<uint8>(key);
     return _keysDown[b] && !_keysUp[b];
 }
 
-bool Input::GetKeyUp(KeyCode key) const {
+bool Input::getKeyUp(KeyCode key) const {
     auto b = static_cast<uint8>(key);
     return _keysUp[b] && !_keysDown[b];
 }
 
-bool Input::GetMouseButtonDown(MouseButton button) const {
+bool Input::getMouseButtonDown(MouseButton button) const {
     auto b = static_cast<uint8>(button);
     return _mouseButtonsDown[b] && !_mouseButtonsUp[b];
 }
 
-bool Input::GetMouseButtonUp(MouseButton button) const {
+bool Input::getMouseButtonUp(MouseButton button) const {
     auto b = static_cast<uint8>(button);
     return _mouseButtonsUp[b] && !_mouseButtonsDown[b];
 }
 
-bool Input::IsQuit() const {
+bool Input::isQuit() const {
     return _isQuit;
 }
