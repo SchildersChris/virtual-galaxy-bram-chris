@@ -1,24 +1,29 @@
 #include "graphics/renderer.hpp"
 #include "utils/input.hpp"
 
-#include <string>
-
 int main() {
-    auto& renderer = Renderer::GetInstance();
-    auto& input = Input::GetInstance();
+    auto& renderer = Renderer::getInstance();
+    auto& input = Input::getInstance();
 
-    renderer.Init("Virtual Galaxy", false, 800, 600);
-    input.Init();
+    renderer.init("Virtual Galaxy", false, 800, 600);
+    input.init();
 
-    while (!input.IsQuit()) {
-        auto frame = renderer.BeginFrame();
-        // Todo: Write to frame
-        frame.EndFrame();
+    renderer.setClearColor(0, 0, 255);
 
-        input.Update();
+    while (!input.isQuit()) {
+        auto buffer = renderer.beginFrame();
+
+        // Draw red line of 100 pixels
+        int32 x = 100, y = 100;
+        for (int32 i = 0; i < 100; ++i) {
+            buffer.setPixel(x + i, y + i, 255, 0, 0, 255);
+        }
+
+        renderer.endFrame();
+        input.update();
     }
 
-    input.Terminate();
-    renderer.Terminate();
+    input.terminate();
+    renderer.terminate();
     return 0;
 }
