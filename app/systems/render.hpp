@@ -11,11 +11,19 @@ public:
     void terminate() override;
 
 private:
-    void rasterizeTriangle(Buffer& frame, Vector3 triangle[3], const Vector3& light);
+    void rasterizeTriangle(Buffer& frame, const Vector3 t[3], const Vector3& light);
 
     [[nodiscard]] Vector2 toRaster(const Vector2& v) const;
 
     static float getShade(const Vector3& light, const Vector3& normal);
+
+    /*
+     * Algorithm is taken from
+     * https://cgl.ethz.ch/teaching/former/vc_master_06/Downloads/9a_scan-conversion_Z-buffering_6.pdf
+     */
+    static float interpZonY(float fromZ, float fromY, float toZ, float toY, float atY);
+    static float interpZonX(float fromZ, float fromX, float toZ, float toX, float atX);
+
 
     entt::registry* _registry {nullptr};
 

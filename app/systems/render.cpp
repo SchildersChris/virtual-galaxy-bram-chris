@@ -23,8 +23,7 @@ void Render::update(float deltaTime, Buffer& frame) {
 
     std::fill(_zBuffer, _zBuffer + _zBufferSize, _far);
 
-    auto light = Vector3 {0.f, 0.f, 1.f};
-
+    Vector3 light = {0.f, 0.f, 1.f};
     Vector3 triangle[3];
     for (auto&& [entity, transform, object] : _registry->group<Transform, Object>().each()) {
         for (int i = 0; i < object.Indices.size(); i += 3) {
@@ -41,13 +40,14 @@ void Render ::terminate() {
     delete[] _zBuffer;
 }
 
-void Render::rasterizeTriangle(Buffer& frame, Vector3 triangle[3], const Vector3& light) {
-    Vector3 normal = (triangle[1] - triangle[0]).cross(triangle[2] - triangle[0]).normalize();
-    if (normal.length() < 0) { return; }
+void Render::rasterizeTriangle(Buffer& frame, const Vector3 t[3], const Vector3& light) {
+    // Back-face culling
+    auto normal = (t[1] - t[0]).cross(t[2] - t[0]).normalize();
+    if (normal.Z < 0) { return; }
 
-    Vector2 r0 = toRaster(triangle[0].proj());
-    Vector2 r1 = toRaster(triangle[1].proj());
-    Vector2 r2 = toRaster(triangle[2].proj());
+    Vector2 r0 = toRaster(t[0].proj());
+    Vector2 r1 = toRaster(t[1].proj());
+    Vector2 r2 = toRaster(t[2].proj());
 
     // Sort all points from top (0) to bottom (2) using the Y component
     if (r2.Y > r1.Y) { std::swap(r2, r1); }
@@ -77,40 +77,57 @@ void Render::rasterizeTriangle(Buffer& frame, Vector3 triangle[3], const Vector3
     auto v0 = r1 - r2;
     auto v1 = r0 - r2;
 
-    std::function<std::tuple<int32, int32>(float y)> interp;
+    /*
+     * Todo: Cleanup and impl correct bresenham algorithm
+     */
+    std::function<std::tuple<int32, float, int32, float>(float)> interp;
     if (v0.cross(v1) > 0) {
         interp = [&](float y) {
-            return std::make_tuple(static_cast<int32>(r2.interpX(r0, y)), static_cast<int32>(r2.interpX(r1, y)));
+            return std::make_tuple(
+                static_cast<int32>(r2.interpX(r0, y)),
+                interpZonY(t[0].Z, t[0].Y, t[2].Z, t[2].Y, y),
+                static_cast<int32>(r2.interpX(r1, y)),
+                interpZonY(t[1].Z, t[1].Y, t[2].Z, t[2].Y, y)
+            );
         };
     } else {
         interp = [&](float y) {
-            return std::make_tuple(static_cast<int32>(r2.interpX(r1, y)), static_cast<int32>(r2.interpX(r0, y)));
+            return std::make_tuple(
+                static_cast<int32>(r2.interpX(r1, y)),
+                interpZonY(t[0].Z, t[0].Y, t[2].Z, t[2].Y, y),
+                static_cast<int32>(r2.interpX(r0, y)),
+                interpZonY(t[1].Z, t[1].Y, t[2].Z, t[2].Y, y)
+            );
         };
     }
 
-    int32 y = bottom + 1;
-    if (top > middle) {
+    auto y = bottom + 1;
+    if (middle > bottom) {
         for(; y < middle; ++y) {
-            auto [l, r] = interp(static_cast<float>(y));
-            for (; l < r; ++l) {
-                auto i = l + y * _width;
-//                if (_zBuffer[i] > z) { continue; }
-//                _zBuffer[i] = z;
+            auto [l, zL, r, zR] = interp(static_cast<float>(y));
+            for (auto x = l; x < r; ++x) {
+
+                auto i = x + y * _width;
+                auto z = interpZonX(zL, static_cast<float>(l), zR, static_cast<float>(r), static_cast<float>(x));
+                if (_zBuffer[i] < z) { continue; }
+                _zBuffer[i] = z;
 
                 auto s = getShade(light, normal);
                 auto c = static_cast<uint8>(s * 255);
-                frame.setPixel(l, y, c, c, c, 255);
+                frame.setPixel(i, c, c, c, 255);
             }
         }
     }
 
-    if (middle > bottom) {
+    if (top > bottom) {
         for(; y < top; ++y) {
-            auto [l, r] = interp(static_cast<float>(y));
-            for (; l < r; ++l) {
-                auto i = l + y * _width;
-//                if (_zBuffer[i] > z) { continue; }
-//                _zBuffer[i] = z;
+            auto [l, zL, r, zR] = interp(static_cast<float>(y));
+            for (auto x = l; x < r; ++x) {
+
+                auto i = x + y * _width;
+                auto z = interpZonX(zL, static_cast<float>(l), zR, static_cast<float>(r), static_cast<float>(x));
+                if (_zBuffer[i] < z) { continue; }
+                _zBuffer[i] = z;
 
                 auto s = getShade(light, normal);
                 auto c = static_cast<uint8>(s * 255);
@@ -129,4 +146,12 @@ Vector2 Render::toRaster(const Vector2& v) const {
 
 float Render::getShade(const Vector3& light, const Vector3& normal) {
     return std::abs(normal.dot(light));
+}
+
+float Render::interpZonY(float fromZ, float fromY, float toZ, float toY, float atY) {
+    return fromZ - (fromZ - toZ) * ((fromY - atY) / (fromY - toY));
+}
+
+float Render::interpZonX(float fromZ, float fromX, float toZ, float toX, float atX) {
+    return fromZ - (fromZ - toZ) * ((fromX - atX) / (fromX - toX));
 }
