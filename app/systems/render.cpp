@@ -88,7 +88,9 @@ void Render::rasterizeTriangle(Buffer& frame, Vector3 triangle[3]) {
         for(; y < middle; ++y) {
             auto [l, r] = interp(static_cast<float>(y));
             for (; l < r; ++l) {
-                frame.setPixel(l, y, 255, 255, 255, 255);
+                auto s = getShade({0.f, 0.f, 1.f}, triangle);
+                auto c = static_cast<uint8>(s * 255);
+                frame.setPixel(l, y, c, c, c, 255);
             }
         }
     }
@@ -97,7 +99,9 @@ void Render::rasterizeTriangle(Buffer& frame, Vector3 triangle[3]) {
         for(; y < top; ++y) {
             auto [l, r] = interp(static_cast<float>(y));
             for (; l < r; ++l) {
-                frame.setPixel(l, y, 255, 255, 255, 255);
+                auto s = getShade({0.f, 0.f, 1.f}, triangle);
+                auto c = static_cast<uint8>(s * 255);
+                frame.setPixel(l, y, c, c, c, 255);
             }
         }
     }
@@ -108,4 +112,11 @@ Vector2 Render::toRaster(const Vector2& v) const {
         (1 + v.X) * 0.5f * static_cast<float>(_width),
         (1 - v.Y) * 0.5f * static_cast<float>(_height)
     };
+}
+
+float Render::getShade(Vector3 light, Vector3* triangle) {
+    auto c = triangle[0].cross(triangle[1]);
+    auto v = 1 - std::abs(c.cos(-light));
+
+    return v;
 }

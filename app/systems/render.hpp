@@ -14,7 +14,9 @@ private:
     void rasterizeTriangle(Buffer& frame, Vector3 triangle[3]);
 
     [[nodiscard]] Vector2 toRaster(const Vector2& v) const;
-    
+
+    static float getShade(Vector3 light, Vector3 triangle[3]);
+
     entt::registry* _registry {nullptr};
 
     int32 _width {0};

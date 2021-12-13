@@ -9,6 +9,7 @@ Vector3 Vector3::operator+(float s) const { return { X + s, Y + s, Z + s }; }
 
 Vector3 Vector3::operator-(const Vector3& o) const { return { X - o.X, Y - o.Y, Z - o.Z }; }
 Vector3 Vector3::operator-(float s) const { return { X - s, Y - s, Z - s }; }
+Vector3 Vector3::operator-() const { return { -X, -Y, -Z }; }
 
 Vector3 Vector3::operator*(const Vector3& o) const { return { X * o.X, Y * o.Y, Z * o.Z }; }
 Vector3 Vector3::operator*(float s) const { return { X * s, Y * s, Z * s }; }
@@ -36,3 +37,4 @@ Vector3 Vector3::normalize() const {
 float Vector3::cos(const Vector3& o) const { return dot(o) / length() * o.length(); }
 
 Vector2 Vector3::proj() const { return { X / Z, Y / Z }; }
+

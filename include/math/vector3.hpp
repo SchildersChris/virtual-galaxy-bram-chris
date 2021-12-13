@@ -16,6 +16,7 @@ public:
 
     Vector3 operator-(const Vector3& o) const;
     Vector3 operator-(float s) const;
+    Vector3 operator-() const;
 
     Vector3 operator*(const Vector3& o) const;
     Vector3 operator*(float s) const;
