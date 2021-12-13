@@ -34,3 +34,5 @@ Vector3 Vector3::normalize() const {
 }
 
 float Vector3::cos(const Vector3& o) const { return dot(o) / length() * o.length(); }
+
+Vector2 Vector3::proj() const { return { X / Z, Y / Z }; }

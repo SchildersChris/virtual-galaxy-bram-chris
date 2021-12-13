@@ -21,6 +21,11 @@ public:
     Vector2 operator/(const Vector2& o) const;
     Vector2 operator/(float s) const;
 
+    bool operator<(const Vector2& o) const;
+    bool operator>(const Vector2& o) const;
+
+    [[nodiscard]] float cross(const Vector2& o) const;
+
     float X;
     float Y;
 };

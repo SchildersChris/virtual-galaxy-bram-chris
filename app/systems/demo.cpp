@@ -10,12 +10,15 @@ void Demo::init(entt::registry& registry) {
         { 0.f, 0.f, 0.f}
     });
 
-    auto object = registry.emplace<Object>(entity, Object {});
+    auto& object = registry.emplace<Object>(entity, Object {});
 
-    // Adding a triangle object
     object.Vertices.emplace_back(-1.f, -1.f, 1.f); // Left point
     object.Vertices.emplace_back(1.f, -1.f, 1.f); // Right point
     object.Vertices.emplace_back(0.f, 1.f, 1.f); // Top (middle) point
+
+    object.Indices.push_back(0);
+    object.Indices.push_back(1);
+    object.Indices.push_back(2);
 }
 
 void Demo::update(float deltaTime, Buffer& frame) {}
