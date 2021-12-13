@@ -11,11 +11,11 @@ public:
     void terminate() override;
 
 private:
-    void rasterizeTriangle(Buffer& frame, Vector3 triangle[3]);
+    void rasterizeTriangle(Buffer& frame, Vector3 triangle[3], const Vector3& light);
 
     [[nodiscard]] Vector2 toRaster(const Vector2& v) const;
 
-    static float getShade(Vector3 light, Vector3 triangle[3]);
+    static float getShade(const Vector3& light, const Vector3& normal);
 
     entt::registry* _registry {nullptr};
 

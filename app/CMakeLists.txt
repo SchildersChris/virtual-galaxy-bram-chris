@@ -22,4 +22,4 @@ add_executable(app
 
 target_compile_features(app PRIVATE cxx_std_17)
 target_link_libraries(app PRIVATE virtual-galaxy)
-target_include_directories(app PUBLIC ${entt_SOURCE_DIR}/src/entt)
+target_include_directories(app PUBLIC ../extern ${entt_SOURCE_DIR}/src/entt)
