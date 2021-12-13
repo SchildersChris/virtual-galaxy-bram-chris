@@ -71,21 +71,22 @@ void Render::rasterizeTriangle(Buffer& frame, Vector3 triangle[3]) {
      */
     auto v0 = r1 - r2;
     auto v1 = r0 - r2;
-    auto rightBend = v0.cross(v1) > 0;
 
+    std::function<std::tuple<int32, int32>(float y)> interp;
+    if (v0.cross(v1) > 0) {
+        interp = [&r0, &r1, &r2](float y) {
+            return std::make_tuple(static_cast<int32>(r2.interpX(r0, y)), static_cast<int32>(r2.interpX(r1, y)));
+        };
+    } else {
+        interp = [&r0, &r1, &r2](float y) {
+            return std::make_tuple(static_cast<int32>(r2.interpX(r1, y)), static_cast<int32>(r2.interpX(r0, y)));
+        };
+    }
 
     int32 y = bottom + 1;
     if (top > middle) {
         for(; y < middle; ++y) {
-            int32 l, r;
-            if (rightBend) {
-                l = static_cast<int32>(r2.interpX(r0, static_cast<float>(y)));
-                r = static_cast<int32>(r2.interpX(r1, static_cast<float>(y)));
-            } else {
-                l = static_cast<int32>(r2.interpX(r1, static_cast<float>(y)));
-                r = static_cast<int32>(r2.interpX(r0, static_cast<float>(y)));
-            }
-
+            auto [l, r] = interp(static_cast<float>(y));
             for (; l < r; ++l) {
                 frame.setPixel(l, y, 255, 255, 255, 255);
             }
@@ -94,15 +95,7 @@ void Render::rasterizeTriangle(Buffer& frame, Vector3 triangle[3]) {
 
     if (middle > bottom) {
         for(; y < top; ++y) {
-            int32 l, r;
-            if (rightBend) {
-                l = static_cast<int32>(r2.interpX(r0, static_cast<float>(y)));
-                r = static_cast<int32>(r2.interpX(r1, static_cast<float>(y)));
-            } else {
-                l = static_cast<int32>(r2.interpX(r1, static_cast<float>(y)));
-                r = static_cast<int32>(r2.interpX(r0, static_cast<float>(y)));
-            }
-
+            auto [l, r] = interp(static_cast<float>(y));
             for (; l < r; ++l) {
                 frame.setPixel(l, y, 255, 255, 255, 255);
             }
