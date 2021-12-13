@@ -71,30 +71,41 @@ void Render::rasterizeTriangle(Buffer& frame, Vector3 triangle[3]) {
      */
     auto v0 = r1 - r2;
     auto v1 = r0 - r2;
+    auto rightBend = v0.cross(v1) > 0;
 
-    int32 left, right;
 
-    // Right
-    if (v0.cross(v1) > 0) {
-        left = static_cast<int32>(r0.X);
-        right = static_cast<int32>(r1.X);
-    } else { // Left
-        right = static_cast<int32>(r0.X);
-        left = static_cast<int32>(r1.X);
-    }
-
-    // Draw bottom to middle
     int32 y = bottom + 1;
-    for(; y < middle; ++y) {
-        for (int32 x = left; x < right; ++x) {
-            frame.setPixel(x, y, 255, 255, 255, 255);
+    if (top > middle) {
+        for(; y < middle; ++y) {
+            int32 l, r;
+            if (rightBend) {
+                l = static_cast<int32>(r2.interpX(r0, static_cast<float>(y)));
+                r = static_cast<int32>(r2.interpX(r1, static_cast<float>(y)));
+            } else {
+                l = static_cast<int32>(r2.interpX(r1, static_cast<float>(y)));
+                r = static_cast<int32>(r2.interpX(r0, static_cast<float>(y)));
+            }
+
+            for (; l < r; ++l) {
+                frame.setPixel(l, y, 255, 255, 255, 255);
+            }
         }
     }
 
-    // Draw middle to top
-    for(; y < top; ++y) {
-        for (int32 x = left; x < right; ++x) {
-            frame.setPixel(x, y, 255, 255, 255, 255);
+    if (middle > bottom) {
+        for(; y < top; ++y) {
+            int32 l, r;
+            if (rightBend) {
+                l = static_cast<int32>(r2.interpX(r0, static_cast<float>(y)));
+                r = static_cast<int32>(r2.interpX(r1, static_cast<float>(y)));
+            } else {
+                l = static_cast<int32>(r2.interpX(r1, static_cast<float>(y)));
+                r = static_cast<int32>(r2.interpX(r0, static_cast<float>(y)));
+            }
+
+            for (; l < r; ++l) {
+                frame.setPixel(l, y, 255, 255, 255, 255);
+            }
         }
     }
 }
