@@ -12,9 +12,9 @@ void Demo::init(entt::registry& registry) {
 
     auto& object = registry.emplace<Object>(entity, Object {});
 
-    object.Vertices.emplace_back(-1.f, -1.f, 1.f); // Left point
-    object.Vertices.emplace_back(1.f, -1.f, 1.f); // Right point
-    object.Vertices.emplace_back(0.f, 1.f, 1.f); // Top (middle) point
+    object.Vertices.emplace_back(0.f, -.5f, 1.f); // Left point
+    object.Vertices.emplace_back(.5f, -.5f, 1.f); // Right point
+    object.Vertices.emplace_back(0.f, .5f, 1.f); // Top (middle) point
 
     object.Indices.push_back(0);
     object.Indices.push_back(1);
