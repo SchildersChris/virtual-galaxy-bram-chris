@@ -24,7 +24,6 @@ private:
     static float interpZonY(float fromZ, float fromY, float toZ, float toY, float atY);
     static float interpZonX(float fromZ, float fromX, float toZ, float toX, float atX);
 
-
     entt::registry* _registry {nullptr};
 
     int32 _width {0};
