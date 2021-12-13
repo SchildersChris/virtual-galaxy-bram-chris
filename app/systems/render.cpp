@@ -115,8 +115,6 @@ Vector2 Render::toRaster(const Vector2& v) const {
 }
 
 float Render::getShade(Vector3 light, Vector3* triangle) {
-    auto c = triangle[0].cross(triangle[1]);
-    auto v = 1 - std::abs(c.cos(-light));
-
-    return v;
+    auto n = (triangle[1] - triangle[0]).cross(triangle[2] - triangle[0]).normalize();
+    return std::abs(n.dot(light));
 }
