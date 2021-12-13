@@ -26,8 +26,6 @@ public:
 
     [[nodiscard]] float cross(const Vector2& o) const;
 
-    [[nodiscard]] float interpX(const Vector2& o, float y) const;
-
     float X;
     float Y;
 };

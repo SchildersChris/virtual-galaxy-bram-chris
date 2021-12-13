@@ -18,6 +18,7 @@ add_library(virtual-galaxy
     graphics/renderer.cpp
     utils/input.cpp
     utils/color.cpp
+    utils/data.cpp
     ${HEADER_LIST})
 
 target_compile_features(virtual-galaxy PUBLIC cxx_std_17)

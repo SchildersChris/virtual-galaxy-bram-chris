@@ -27,9 +27,9 @@ void Render::update(float deltaTime, Buffer& frame) {
     Vector3 triangle[3];
     for (auto&& [entity, transform, object] : _registry->group<Transform, Object>().each()) {
         for (int i = 0; i < object.Indices.size(); i += 3) {
-            triangle[0] = object.Vertices[object.Indices[i]];
-            triangle[1] = object.Vertices[object.Indices[i+1]];
-            triangle[2] = object.Vertices[object.Indices[i+2]];
+            triangle[0] = object.Vertices[object.Indices[i] - 1];
+            triangle[1] = object.Vertices[object.Indices[i+1] - 1];
+            triangle[2] = object.Vertices[object.Indices[i+2] - 1];
 
             rasterizeTriangle(frame, triangle, light);
         }
@@ -43,7 +43,7 @@ void Render ::terminate() {
 void Render::rasterizeTriangle(Buffer& frame, const Vector3 t[3], const Vector3& light) {
     // Back-face culling
     auto normal = (t[1] - t[0]).cross(t[2] - t[0]).normalize();
-    if (normal.Z < 0) { return; }
+//    if (normal.Z < 0) { return; }
 
     Vector2 r0 = toRaster(t[0].proj());
     Vector2 r1 = toRaster(t[1].proj());
@@ -84,19 +84,19 @@ void Render::rasterizeTriangle(Buffer& frame, const Vector3 t[3], const Vector3&
     if (v0.cross(v1) > 0) {
         interp = [&](float y) {
             return std::make_tuple(
-                static_cast<int32>(r2.interpX(r0, y)),
-                interpZonY(t[0].Z, t[0].Y, t[2].Z, t[2].Y, y),
-                static_cast<int32>(r2.interpX(r1, y)),
-                interpZonY(t[1].Z, t[1].Y, t[2].Z, t[2].Y, y)
+                static_cast<int32>(interpAtoB(r0.X, r0.Y, r2.X, r2.Y, y)),
+                interpAtoB(t[0].Z, t[0].Y, t[2].Z, t[2].Y, y),
+                static_cast<int32>(interpAtoB(r1.X, r1.Y, r2.X, r2.Y, y)),
+                interpAtoB(t[1].Z, t[1].Y, t[2].Z, t[2].Y, y)
             );
         };
     } else {
         interp = [&](float y) {
             return std::make_tuple(
-                static_cast<int32>(r2.interpX(r1, y)),
-                interpZonY(t[0].Z, t[0].Y, t[2].Z, t[2].Y, y),
-                static_cast<int32>(r2.interpX(r0, y)),
-                interpZonY(t[1].Z, t[1].Y, t[2].Z, t[2].Y, y)
+                static_cast<int32>(interpAtoB(r1.X, r1.Y, r2.X, r2.Y, y)),
+                interpAtoB(t[1].Z, t[1].Y, t[2].Z, t[2].Y, y),
+                static_cast<int32>(interpAtoB(r0.X, r0.Y, r2.X, r2.Y, y)),
+                interpAtoB(t[0].Z, t[0].Y, t[2].Z, t[2].Y, y)
             );
         };
     }
@@ -108,7 +108,7 @@ void Render::rasterizeTriangle(Buffer& frame, const Vector3 t[3], const Vector3&
             for (auto x = l; x < r; ++x) {
 
                 auto i = x + y * _width;
-                auto z = interpZonX(zL, static_cast<float>(l), zR, static_cast<float>(r), static_cast<float>(x));
+                auto z = interpAtoB(zL, static_cast<float>(l), zR, static_cast<float>(r), static_cast<float>(x));
                 if (_zBuffer[i] < z) { continue; }
                 _zBuffer[i] = z;
 
@@ -119,13 +119,13 @@ void Render::rasterizeTriangle(Buffer& frame, const Vector3 t[3], const Vector3&
         }
     }
 
-    if (top > bottom) {
+    if (top > middle) {
         for(; y < top; ++y) {
             auto [l, zL, r, zR] = interp(static_cast<float>(y));
             for (auto x = l; x < r; ++x) {
 
                 auto i = x + y * _width;
-                auto z = interpZonX(zL, static_cast<float>(l), zR, static_cast<float>(r), static_cast<float>(x));
+                auto z = interpAtoB(zL, static_cast<float>(l), zR, static_cast<float>(r), static_cast<float>(x));
                 if (_zBuffer[i] < z) { continue; }
                 _zBuffer[i] = z;
 
@@ -148,10 +148,7 @@ float Render::getShade(const Vector3& light, const Vector3& normal) {
     return std::abs(normal.dot(light));
 }
 
-float Render::interpZonY(float fromZ, float fromY, float toZ, float toY, float atY) {
-    return fromZ - (fromZ - toZ) * ((fromY - atY) / (fromY - toY));
+float Render::interpAtoB(float fromA, float fromB, float toA, float toB, float atB) {
+    return fromA - (fromA - toA) * ((fromB - atB) / (fromB - toB));
 }
 
-float Render::interpZonX(float fromZ, float fromX, float toZ, float toX, float atX) {
-    return fromZ - (fromZ - toZ) * ((fromX - atX) / (fromX - toX));
-}

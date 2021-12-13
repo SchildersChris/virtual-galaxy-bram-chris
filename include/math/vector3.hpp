@@ -2,6 +2,7 @@
 #define VIRTUAL_GALAXY_VECTOR3_HPP
 
 #include "vector2.hpp"
+#include "matrix4x4.hpp"
 
 class Vector3 {
 public:
@@ -23,6 +24,8 @@ public:
 
     Vector3 operator/(const Vector3& o) const;
     Vector3 operator/(float s) const;
+
+    void operator*=(const Matrix4x4& o);
 
     [[nodiscard]] float dot(const Vector3& o) const;
 

@@ -32,7 +32,7 @@ Matrix4x4 Matrix4x4::scale(float x, float y, float z) {
     return m;
 }
 
-constexpr bool Matrix4x4::operator==(const Matrix4x4& o) const {
+bool Matrix4x4::operator==(const Matrix4x4& o) const {
     for (auto i = 0; i < 16; ++i) {
         if (_cols[i] != o[i]) {
             return false;
@@ -41,7 +41,7 @@ constexpr bool Matrix4x4::operator==(const Matrix4x4& o) const {
     return true;
 }
 
-constexpr bool Matrix4x4::operator!=(const Matrix4x4& o) const {
+bool Matrix4x4::operator!=(const Matrix4x4& o) const {
     for (auto i = 0; i < 16; ++i) {
         if (_cols[i] != o[i]) {
             return true;
@@ -50,22 +50,18 @@ constexpr bool Matrix4x4::operator!=(const Matrix4x4& o) const {
     return false;
 }
 
-constexpr float& Matrix4x4::operator[](int i) {
-    return i < 0 || i > 16 ? throw std::out_of_range("Index out of range") : _cols[i];
+float& Matrix4x4::operator[](int32 i) {
+    return _cols[i];
 }
 
-constexpr float Matrix4x4::operator[](int i) const {
-    return i < 0 || i > 16 ? throw std::out_of_range("Index out of range") : _cols[i];
+float Matrix4x4::operator[](int32 i) const {
+    return _cols[i];
 }
 
-constexpr float& Matrix4x4::operator()(int x, int y) {
-    return x < 0 || y < 0 || x > 4 || y > 4 ?
-           throw std::out_of_range("Index out of range") :
-           _cols[x + y * 4];
+float& Matrix4x4::operator()(int32 x, int32 y) {
+    return _cols[x + y * 4];
 }
 
-constexpr float Matrix4x4::operator()(int x, int y) const {
-    return x < 0 || y < 0 || x > 4 || y > 4 ?
-           throw std::out_of_range("Index out of range") :
-           _cols[x + y * 4];
+float Matrix4x4::operator()(int32 x, int32 y) const {
+    return _cols[x + y * 4];
 }

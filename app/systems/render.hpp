@@ -21,8 +21,7 @@ private:
      * Algorithm is taken from
      * https://cgl.ethz.ch/teaching/former/vc_master_06/Downloads/9a_scan-conversion_Z-buffering_6.pdf
      */
-    static float interpZonY(float fromZ, float fromY, float toZ, float toY, float atY);
-    static float interpZonX(float fromZ, float fromX, float toZ, float toX, float atX);
+    static float interpAtoB(float fromA, float fromB, float toA, float toB, float atB);
 
     entt::registry* _registry {nullptr};
 

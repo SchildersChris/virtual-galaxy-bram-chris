@@ -2,6 +2,8 @@
 #  Application setup
 # -----------------------------------------------------------------------------
 
+file(COPY assets DESTINATION .)
+
 FetchContent_Declare(entt GIT_REPOSITORY https://github.com/skypjack/entt.git GIT_TAG v3.8.1)
 FetchContent_MakeAvailable(entt)
 
@@ -18,8 +20,10 @@ add_executable(app
     systems/demo.hpp
     components/transform.hpp
     components/object.hpp
+    utils/reader.cpp
+    utils/reader.hpp
 )
 
 target_compile_features(app PRIVATE cxx_std_17)
 target_link_libraries(app PRIVATE virtual-galaxy)
-target_include_directories(app PUBLIC ../extern ${entt_SOURCE_DIR}/src/entt)
+target_include_directories(app PUBLIC extern ${entt_SOURCE_DIR}/src/entt)
