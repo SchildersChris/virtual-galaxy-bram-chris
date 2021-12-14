@@ -1,8 +1,6 @@
 #ifndef VIRTUAL_GALAXY_SYSTEM_HPP
 #define VIRTUAL_GALAXY_SYSTEM_HPP
 
-#include "graphics/buffer.hpp"
-
 #include "entity/registry.hpp"
 
 class System {
@@ -20,7 +18,7 @@ public:
      * @param deltaTime Frame delta time
      * @param frame Active frame buffer
      */
-    virtual void update(float deltaTime, Buffer& frame) = 0;
+    virtual void update(float deltaTime) = 0;
 
     /**
      * Terminate is called to shutdown the system and cleanup all the resources.

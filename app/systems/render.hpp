@@ -7,11 +7,11 @@
 class Render : public System {
 public:
     void init(entt::registry& registry) override;
-    void update(float deltaTime, Buffer& frame) override;
+    void update(float deltaTime) override;
     void terminate() override;
 
 private:
-    void rasterizeTriangle(Buffer& frame, const Vector3 t[3], const Vector3& light);
+    void rasterizeTriangle(const Vector3 t[3], const Vector3& light);
 
     [[nodiscard]] Vector2 toRaster(const Vector2& v) const;
 
@@ -22,7 +22,6 @@ private:
      * https://cgl.ethz.ch/teaching/former/vc_master_06/Downloads/9a_scan-conversion_Z-buffering_6.pdf
      */
     static float interpAtoB(float fromA, float fromB, float toA, float toB, float atB);
-    static float drawLine(Buffer& frame, int32 x0, int32 y0, int32 x1, int32 y1);
 
     entt::registry* _registry {nullptr};
 

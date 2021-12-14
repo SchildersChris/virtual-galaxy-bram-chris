@@ -7,6 +7,10 @@
 #include "systems/collision.hpp"
 
 #include <memory>
+#include <chrono>
+
+using ms = std::chrono::duration<float, std::milli>;
+using c = std::chrono::steady_clock;
 
 int main() {
     /*
@@ -31,19 +35,25 @@ int main() {
         s->init(registry);
     }
 
+    auto deltaTime = 0.f;
+
     /*
-     * Runtime
+     * Main loop
      */
     while (!input.isQuit()) {
-        input.update();
-        auto frame = renderer.beginFrame();
+        auto start = c::now();
 
+        input.update();
+
+        renderer.beginFrame(deltaTime);
         // Todo: Add delta time
         for (auto& s : systems) {
-            s->update(0.f, frame);
+            s->update(deltaTime);
         }
-
         renderer.endFrame();
+
+        auto end = c::now();
+        deltaTime = ms(end - start).count();
     }
 
     /*

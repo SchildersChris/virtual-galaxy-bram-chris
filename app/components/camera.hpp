@@ -1,0 +1,6 @@
+#ifndef VIRTUAL_GALAXY_CAMERA_HPP
+#define VIRTUAL_GALAXY_CAMERA_HPP
+
+struct Camera {};
+
+#endif //VIRTUAL_GALAXY_CAMERA_HPP

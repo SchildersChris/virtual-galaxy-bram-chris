@@ -1,10 +1,12 @@
 #include "render.hpp"
 #include "../components/transform.hpp"
 #include "../components/object.hpp"
+#include "../components/camera.hpp"
 
 #include <graphics/renderer.hpp>
 #include <math/vector2.hpp>
 #include <cmath>
+#include <imgui.h>
 
 void Render::init(entt::registry& registry) {
     _registry = &registry;
@@ -18,12 +20,27 @@ void Render::init(entt::registry& registry) {
     _zBuffer = new float[_zBufferSize];
 }
 
-void Render::update(float deltaTime, Buffer& frame) {
+void Render::update(float deltaTime) {
     if (!_registry || !_zBuffer) { return; }
+
+    static float angle = .3f;
+    ImGui::Begin("Renderer Window");
+    ImGui::SliderFloat("Rotate Y", &angle, -1, 1);
+    ImGui::End();
+
+    float mat[16] = {
+            std::cos(angle), 0, std::sin(angle), 0,
+            0, 1, 0, 0,
+            -std::sin(angle), 0, std::cos(angle), 0,
+            0, 0, 5, 1
+    };
+    auto matrix = Matrix4x4(mat);
+
 
     std::fill(_zBuffer, _zBuffer + _zBufferSize, _far);
 
-    Vector3 light = {0.f, 0.f, 1.f};
+    auto&& [_, cameraTransform] = *_registry->view<Transform, Camera>().each().begin();
+
     Vector3 triangle[3];
     for (auto&& [entity, transform, object] : _registry->group<Transform, Object>().each()) {
         for (int i = 0; i < object.Indices.size(); i += 3) {
@@ -31,7 +48,11 @@ void Render::update(float deltaTime, Buffer& frame) {
             triangle[1] = object.Vertices[object.Indices[i+1] - 1];
             triangle[2] = object.Vertices[object.Indices[i+2] - 1];
 
-            rasterizeTriangle(frame, triangle, light);
+            triangle[0] *= matrix;
+            triangle[1] *= matrix;
+            triangle[2] *= matrix;
+
+            rasterizeTriangle(triangle, cameraTransform.Position);
         }
     }
 }
@@ -40,7 +61,7 @@ void Render ::terminate() {
     delete[] _zBuffer;
 }
 
-void Render::rasterizeTriangle(Buffer& frame, const Vector3 t[3], const Vector3& light) {
+void Render::rasterizeTriangle(const Vector3 t[3], const Vector3& light) {
     // Back-face culling
     auto normal = (t[1] - t[0]).cross(t[2] - t[0]).normalize();
     if (normal.length() < 0) { return; }
@@ -50,9 +71,9 @@ void Render::rasterizeTriangle(Buffer& frame, const Vector3 t[3], const Vector3&
     Vector2 r2 = toRaster(t[2].proj());
 
     // Sort all points from top (0) to bottom (2) using the Y component
-    if (r2.Y > r1.Y) { std::swap(r2, r1); }
-    if (r1.Y > r0.Y) { std::swap(r1, r0); }
     if (r2.Y > r0.Y) { std::swap(r2, r0); }
+    if (r1.Y > r0.Y) { std::swap(r1, r0); }
+    if (r1.Y > r2.Y) { std::swap(r2, r1); }
 
     auto top = static_cast<int32>(r0.Y);
     auto middle = static_cast<int32>(r1.Y);
@@ -119,6 +140,8 @@ void Render::rasterizeTriangle(Buffer& frame, const Vector3 t[3], const Vector3&
         };
     }
 
+    auto& renderer = Renderer::getInstance();
+
     auto y = bottom;
     if (bottom < middle) {
         for(; y < middle; ++y) {
@@ -132,7 +155,7 @@ void Render::rasterizeTriangle(Buffer& frame, const Vector3 t[3], const Vector3&
 
                 auto s = getShade(light, normal);
                 auto c = static_cast<uint8>(s * 255);
-                frame.setPixel(i, c, c, c, 255);
+                renderer.setPixel(i, c, c, c, 255);
             }
         }
     }
@@ -149,7 +172,7 @@ void Render::rasterizeTriangle(Buffer& frame, const Vector3 t[3], const Vector3&
 
                 auto s = getShade(light, normal);
                 auto c = static_cast<uint8>(s * 255);
-                frame.setPixel(i, c, c, c, 255);
+                renderer.setPixel(i, c, c, c, 255);
             }
         }
     }

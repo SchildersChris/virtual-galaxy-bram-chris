@@ -1,6 +1,8 @@
 #include "graphics/renderer.hpp"
 #include "utils/color.hpp"
 
+#include <imgui.h>
+#include <imgui_sdl.h>
 #include <stdexcept>
 
 Renderer Renderer::_instance;
@@ -33,6 +35,9 @@ void Renderer::init(const std::string& title, bool fullscreen, int32 width, int3
             _width, _height))) {
         throw std::runtime_error(SDL_GetError());
     }
+
+    ImGui::CreateContext();
+    ImGuiSDL::Initialize(_renderer, _width, _height);
 }
 
 
@@ -48,7 +53,19 @@ void Renderer::setClearColor(uint8 r, uint8 g, uint8 b) {
     _clearColor = color::rgbToInteger(r, g, b);
 }
 
-Buffer Renderer::beginFrame() {
+void Renderer::beginFrame(float deltaTime) {
+    ImGuiIO& io = ImGui::GetIO();
+
+    int32 mouseX, mouseY;
+    uint32 buttons = SDL_GetMouseState(&mouseX, &mouseY);
+
+    io.DeltaTime = deltaTime;
+    io.MousePos = ImVec2(static_cast<float>(mouseX), static_cast<float>(mouseY));
+    io.MouseDown[0] = buttons & SDL_BUTTON(SDL_BUTTON_LEFT);
+    io.MouseDown[1] = buttons & SDL_BUTTON(SDL_BUTTON_RIGHT);
+
+    ImGui::NewFrame();
+
     SDL_Surface* surface;
     if (SDL_LockTextureToSurface(_texture, nullptr, &surface)) {
         throw std::runtime_error(SDL_GetError());
@@ -56,21 +73,31 @@ Buffer Renderer::beginFrame() {
 
     SDL_FillRect(surface, nullptr, _clearColor);
 
-    return Buffer {
-        static_cast<uint32*>(surface->pixels),
-        surface->w,
-        surface->h
-    };
+    _activeBuffer = static_cast<uint32*>(surface->pixels);
+}
+
+void Renderer::setPixel(int32 x, int32 y, uint8 r, uint8 g, uint8 b, uint8 a) {
+    _activeBuffer[x + y * _width] = color::rgbaToInteger(r, g, b, a);
+}
+
+void Renderer::setPixel(int32 i, uint8 r, uint8 g, uint8 b, uint8 a) {
+    _activeBuffer[i] = color::rgbaToInteger(r, g, b, a);
 }
 
 void Renderer::endFrame() {
     SDL_UnlockTexture(_texture);
     SDL_RenderCopy(_renderer, _texture, nullptr, nullptr);
 
+    ImGui::Render();
+    ImGuiSDL::Render(ImGui::GetDrawData());
+
     SDL_RenderPresent(_renderer);
 }
 
 void Renderer::terminate() {
+    ImGuiSDL::Deinitialize();
+    ImGui::DestroyContext();
+
     SDL_DestroyTexture(_texture);
     SDL_DestroyRenderer(_renderer);
     SDL_DestroyWindow(_window);

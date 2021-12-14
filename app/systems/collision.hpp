@@ -6,7 +6,7 @@
 class Collision : public System {
 public:
     void init(entt::registry& registry) override;
-    void update(float deltaTime, Buffer& frame) override;
+    void update(float deltaTime) override;
     void terminate() override;
 };
 
