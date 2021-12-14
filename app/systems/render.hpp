@@ -22,6 +22,7 @@ private:
      * https://cgl.ethz.ch/teaching/former/vc_master_06/Downloads/9a_scan-conversion_Z-buffering_6.pdf
      */
     static float interpAtoB(float fromA, float fromB, float toA, float toB, float atB);
+    static float drawLine(Buffer& frame, int32 x0, int32 y0, int32 x1, int32 y1);
 
     entt::registry* _registry {nullptr};
 
