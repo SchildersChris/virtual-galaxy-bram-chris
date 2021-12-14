@@ -80,140 +80,78 @@ void Render::rasterizeTriangle(Buffer& frame, const Vector3 t[3], const Vector3&
     /*
      * Todo: Cleanup and impl correct bresenham algorithm
      */
-//    std::function<std::tuple<int32, float, int32, float>(float)> interpTop;
-//    std::function<std::tuple<int32, float, int32, float>(float)> interpBottom;
-//
-//    if (v0.cross(v1) > 0) {
-//        interpTop = [&](float y) {
-//            return std::make_tuple(
-//                static_cast<int32>(interpAtoB( r2.X, r2.Y, r0.X, r0.Y, y)),
-//                interpAtoB(t[2].Z, t[2].Y, t[0].Z, t[0].Y, y),
-//                static_cast<int32>(interpAtoB(r0.X, r0.Y, r1.X, r1.Y, y)),
-//                interpAtoB(t[0].Z, t[0].Y, t[1].Z, t[1].Y, y)
-//            );
-//        };
-//        interpBottom = [&](float y) {
-//            return std::make_tuple(
-//                    static_cast<int32>(interpAtoB(r2.X, r2.Y, r0.X, r0.Y, y)),
-//                    interpAtoB(t[2].Z, t[2].Y, t[0].Z, t[0].Y, y),
-//                    static_cast<int32>(interpAtoB(r2.X, r2.Y, r1.X, r1.Y, y)),
-//                    interpAtoB(t[1].Z, t[1].Y, t[2].Z, t[2].Y, y)
-//            );
-//        };
-//    } else {
-//        interpTop = [&](float y) {
-//            return std::make_tuple(
-//                static_cast<int32>(interpAtoB(r1.X, r1.Y, r0.X, r0.Y, y)),
-//                interpAtoB(t[1].Z, t[1].Y, t[0].Z, t[0].Y, y),
-//                static_cast<int32>(interpAtoB(r2.X, r2.Y, r0.X, r0.Y, y)),
-//                interpAtoB(t[0].Z, t[0].Y, t[2].Z, t[2].Y, y)
-//            );
-//        };
-//        interpBottom = [&](float y) {
-//            return std::make_tuple(
-//                static_cast<int32>(interpAtoB(r2.X, r2.Y, r1.X, r1.Y, y)),
-//                interpAtoB(t[2].Z, t[2].Y, t[1].Z, t[1].Y, y),
-//                static_cast<int32>(interpAtoB(r2.X, r2.Y, r0.X, r0.Y, y)),
-//                interpAtoB(t[0].Z, t[0].Y, t[2].Z, t[2].Y, y)
-//            );
-//        };
-//    }
+    std::function<std::tuple<int32, float, int32, float>(float)> interpTop;
+    std::function<std::tuple<int32, float, int32, float>(float)> interpBottom;
+
+    if (v0.cross(v1) > 0) {
+        interpBottom = [&](float y) {
+            return std::make_tuple(
+                static_cast<int32>(interpAtoB(r0.X, r0.Y, r2.X, r2.Y, y)),
+                interpAtoB(t[0].Z, t[0].Y, t[2].Z, t[2].Y, y),
+                static_cast<int32>(interpAtoB(r1.X, r1.Y, r2.X, r2.Y, y)),
+                interpAtoB(t[1].Z, t[1].Y, t[2].Z, t[2].Y, y)
+            );
+        };
+        interpTop = [&](float y) {
+            return std::make_tuple(
+                static_cast<int32>(interpAtoB(r2.X, r2.Y, r0.X, r0.Y, y)),
+                interpAtoB(t[2].Z, t[2].Y, t[0].Z, t[0].Y, y),
+                static_cast<int32>(interpAtoB(r0.X, r0.Y, r1.X, r1.Y, y)),
+                interpAtoB(t[0].Z, t[0].Y, t[1].Z, t[1].Y, y)
+            );
+        };
+    } else {
+        interpBottom = [&](float y) {
+            return std::make_tuple(
+                static_cast<int32>(interpAtoB(r2.X, r2.Y, r1.X, r1.Y, y)),
+                interpAtoB(t[2].Z, t[2].Y, t[1].Z, t[1].Y, y),
+                static_cast<int32>(interpAtoB(r2.X, r2.Y, r0.X, r0.Y, y)),
+                interpAtoB(t[0].Z, t[0].Y, t[2].Z, t[2].Y, y)
+            );
+        };
+        interpTop = [&](float y) {
+            return std::make_tuple(
+                static_cast<int32>(interpAtoB(r0.X, r0.Y, r1.X, r1.Y, y)),
+                interpAtoB(t[0].Z, t[0].Y, t[1].Z, t[1].Y, y),
+                static_cast<int32>(interpAtoB(r0.X, r0.Y, r2.X, r2.Y, y)),
+                interpAtoB(t[0].Z, t[0].Y, t[2].Z, t[2].Y, y)
+            );
+        };
+    }
 
     auto y = bottom;
     if (bottom < middle) {
-
-        auto x0 = static_cast<int32>(r0.X);
-        auto x1 = static_cast<int32>(r1.X);
-        auto y0 = static_cast<int32>(r0.Y);
-        auto y1 = static_cast<int32>(r1.Y);
-
-        int32 dx, dy, incE, incNE, d, x, y2;
-        dx = x1 - x0; dy = y1 - y0;
-        d = 2*dy - dx;
-        incE = 2*dy;
-        incNE = 2*(dy - dx);
-        x = x0;
-
-        auto s = getShade(light, normal);
-        auto c = static_cast<uint8>(s * 255);
-        frame.setPixel(x, y, c, c, c, 255);
-
-        while (x < x1) {
-            if (d <= 0) { /* choose E */
-                d += incE;
-            }
-            else {
-                d += incNE; /* choose NE */
-                y++;
-            }
-            x++;
-            auto s = getShade(light, normal);
-            auto c = static_cast<uint8>(s * 255);
-            frame.setPixel(x, y, c, c, c, 255);
-        }
-
-
         for(; y < middle; ++y) {
-//            auto [l, zL, r, zR] = interpBottom(static_cast<float>(y));
-//            for (auto x = l; x < r; ++x) {
-//
-//                auto i = x + y * _width;
-//                auto z = interpAtoB(zL, static_cast<float>(l), zR, static_cast<float>(r), static_cast<float>(x));
-//                if (_zBuffer[i] < z) { continue; }
-//                _zBuffer[i] = z;
-//
-//                auto s = getShade(light, normal);
-//                auto c = static_cast<uint8>(s * 255);
-//                frame.setPixel(i, c, c, c, 255);
-//            }
+            auto [l, zL, r, zR] = interpBottom(static_cast<float>(y));
+            for (auto x = l; x < r; ++x) {
+
+                auto i = x + y * _width;
+                auto z = interpAtoB(zL, static_cast<float>(l), zR, static_cast<float>(r), static_cast<float>(x));
+                if (_zBuffer[i] < z) { continue; }
+                _zBuffer[i] = z;
+
+                auto s = getShade(light, normal);
+                auto c = static_cast<uint8>(s * 255);
+                frame.setPixel(i, c, c, c, 255);
+            }
         }
     }
 
     if (middle < top) {
-        auto x0 = static_cast<int32>(r1.X);
-        auto x1 = static_cast<int32>(r2.X);
-        auto y0 = static_cast<int32>(r1.Y);
-        auto y1 = static_cast<int32>(r2.Y);
+        for(; y < top; ++y) {
+            auto [l, zL, r, zR] = interpTop(static_cast<float>(y));
+            for (auto x = l; x < r; ++x) {
 
-        int32 dx, dy, incE, incNE, d, x, y2;
-        dx = x1 - x0; dy = y1 - y0;
-        d = 2*dy - dx;
-        incE = 2*dy;
-        incNE = 2*(dy - dx);
-        x = x0;
+                auto i = x + y * _width;
+                auto z = interpAtoB(zL, static_cast<float>(l), zR, static_cast<float>(r), static_cast<float>(x));
+                if (_zBuffer[i] < z) { continue; }
+                _zBuffer[i] = z;
 
-        auto s = getShade(light, normal);
-        auto c = static_cast<uint8>(s * 255);
-        frame.setPixel(x, y, c, c, c, 255);
-
-        while (x < x1) {
-            if (d <= 0) { /* choose E */
-                d += incE;
+                auto s = getShade(light, normal);
+                auto c = static_cast<uint8>(s * 255);
+                frame.setPixel(i, c, c, c, 255);
             }
-            else {
-                d += incNE; /* choose NE */
-                y++;
-            }
-            x++;
-            auto s = getShade(light, normal);
-            auto c = static_cast<uint8>(s * 255);
-            frame.setPixel(x, y, c, c, c, 255);
         }
-
-//        for(; y < top; ++y) {
-//            auto [l, zL, r, zR] = interpTop(static_cast<float>(y));
-//            for (auto x = l; x < r; ++x) {
-//
-//                auto i = x + y * _width;
-//                auto z = interpAtoB(zL, static_cast<float>(l), zR, static_cast<float>(r), static_cast<float>(x));
-//                if (_zBuffer[i] < z) { continue; }
-//                _zBuffer[i] = z;
-//
-//                auto s = getShade(light, normal);
-//                auto c = static_cast<uint8>(s * 255);
-//                frame.setPixel(i, c, c, c, 255);
-//            }
-//        }
     }
 }
 
