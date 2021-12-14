@@ -18,7 +18,7 @@ void Demo::init(entt::registry& registry) {
 //
     Reader::load("assets/cube.obj", object.Vertices, object.Indices);
 
-    float angle = .5f;
+    float angle = .3f;
     float mat[16] = {
         std::cos(angle), 0, std::sin(angle), 0,
         0, 1, 0, 0,
@@ -38,13 +38,13 @@ void Demo::init(entt::registry& registry) {
 
 
     // Triangle 1
-    object.Vertices.emplace_back(-.5f, -.5f, 1.f); // Left point
-    object.Vertices.emplace_back(.5f, -.5f, 1.9f); // Right point
-    object.Vertices.emplace_back(0.f, .5f, 1.f); // Top (middle) point
-
-    object.Indices.push_back(1);
-    object.Indices.push_back(2);
-    object.Indices.push_back(3);
+//    object.Vertices.emplace_back(-.5f, -.5f, 1.f); // Left point
+//    object.Vertices.emplace_back(.5f, -.5f, 1.9f); // Right point
+//    object.Vertices.emplace_back(0.f, .5f, 1.f); // Top (middle) point
+//
+//    object.Indices.push_back(1);
+//    object.Indices.push_back(2);
+//    object.Indices.push_back(3);
 
     // Triangle 2
 //    object.Vertices.emplace_back(-.5f, -.5f, 2.f); // Left point
