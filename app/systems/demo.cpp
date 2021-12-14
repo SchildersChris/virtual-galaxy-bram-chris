@@ -15,21 +15,21 @@ void Demo::init(entt::registry& registry) {
     });
 
     auto& object = registry.emplace<Object>(entity, Object {});
-
-//    Reader::load("assets/cube.obj", object.Vertices, object.Indices);
+//
+//    Reader::load("assets/vector.obj", object.Vertices, object.Indices);
 //    float angle = .5f;
 
 //    float mat[16] = {
 //        std::cos(angle), 0, std::sin(angle), 0,
 //        0, 1, 0, 0,
 //        -std::sin(angle), 0, std::cos(angle), 0,
-//        0, 20, 15, 1
+//        0, 0, 6, 1
 //    };
 
 //    auto matrix = Matrix4x4(mat);
 
 //    for (auto& v : object.Vertices) {
-//        v.Z += 10;
+//        v.Z += 4;
 //    }
 
     // Triangle 1

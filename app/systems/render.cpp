@@ -80,18 +80,37 @@ void Render::rasterizeTriangle(Buffer& frame, const Vector3 t[3], const Vector3&
     /*
      * Todo: Cleanup and impl correct bresenham algorithm
      */
-    std::function<std::tuple<int32, float, int32, float>(float)> interp;
-    if (v0.cross(v1) > 0) {
-        interp = [&](float y) {
+    std::function<std::tuple<int32, float, int32, float>(float)> interpTop;
+    std::function<std::tuple<int32, float, int32, float>(float)> interpBottom;
+
+    auto rightEdge = v0.cross(v1) > 0;
+    if (rightEdge) {
+        interpTop = [&](float y) {
             return std::make_tuple(
                 static_cast<int32>(interpAtoB(r0.X, r0.Y, r2.X, r2.Y, y)),
                 interpAtoB(t[0].Z, t[0].Y, t[2].Z, t[2].Y, y),
-                static_cast<int32>(interpAtoB(r1.X, r1.Y, r2.X, r2.Y, y)),
-                interpAtoB(t[1].Z, t[1].Y, t[2].Z, t[2].Y, y)
+                static_cast<int32>(interpAtoB(r1.X, r1.Y, r0.X, r0.Y, y)),
+                interpAtoB(t[1].Z, t[1].Y, t[0].Z, t[0].Y, y)
+            );
+        };
+        interpBottom = [&](float y) {
+            return std::make_tuple(
+                    static_cast<int32>(interpAtoB(r0.X, r0.Y, r2.X, r2.Y, y)),
+                    interpAtoB(t[0].Z, t[0].Y, t[2].Z, t[2].Y, y),
+                    static_cast<int32>(interpAtoB(r1.X, r1.Y, r2.X, r2.Y, y)),
+                    interpAtoB(t[1].Z, t[1].Y, t[2].Z, t[2].Y, y)
             );
         };
     } else {
-        interp = [&](float y) {
+        interpTop = [&](float y) {
+            return std::make_tuple(
+                static_cast<int32>(interpAtoB(r1.X, r1.Y, r0.X, r0.Y, y)),
+                interpAtoB(t[1].Z, t[1].Y, t[0].Z, t[0].Y, y),
+                static_cast<int32>(interpAtoB(r0.X, r0.Y, r2.X, r2.Y, y)),
+                interpAtoB(t[0].Z, t[0].Y, t[2].Z, t[2].Y, y)
+            );
+        };
+        interpBottom = [&](float y) {
             return std::make_tuple(
                 static_cast<int32>(interpAtoB(r1.X, r1.Y, r2.X, r2.Y, y)),
                 interpAtoB(t[1].Z, t[1].Y, t[2].Z, t[2].Y, y),
@@ -102,9 +121,9 @@ void Render::rasterizeTriangle(Buffer& frame, const Vector3 t[3], const Vector3&
     }
 
     auto y = bottom + 1;
-    if (middle > bottom) {
+    if (bottom < middle) {
         for(; y < middle; ++y) {
-            auto [l, zL, r, zR] = interp(static_cast<float>(y));
+            auto [l, zL, r, zR] = interpBottom(static_cast<float>(y));
             for (auto x = l; x < r; ++x) {
 
                 auto i = x + y * _width;
@@ -119,9 +138,9 @@ void Render::rasterizeTriangle(Buffer& frame, const Vector3 t[3], const Vector3&
         }
     }
 
-    if (top > middle) {
+    if (middle < top) {
         for(; y < top; ++y) {
-            auto [l, zL, r, zR] = interp(static_cast<float>(y));
+            auto [l, zL, r, zR] = interpTop(static_cast<float>(y));
             for (auto x = l; x < r; ++x) {
 
                 auto i = x + y * _width;
