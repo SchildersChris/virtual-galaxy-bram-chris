@@ -16,20 +16,22 @@ void Demo::init(entt::registry& registry) {
 
     auto& object = registry.emplace<Object>(entity, Object {});
 //
-    Reader::load("assets/cube.obj", object.Vertices, object.Indices);
+    Reader::load("assets/vector.obj", object.Vertices, object.Indices);
 
     float angle = .3f;
     float mat[16] = {
         std::cos(angle), 0, std::sin(angle), 0,
         0, 1, 0, 0,
         -std::sin(angle), 0, std::cos(angle), 0,
-        0, 0, 6, 1
+        0, 0, 5, 1
     };
 
     auto matrix = Matrix4x4(mat);
+    auto scale = Matrix4x4::scale(0.7, 1, 1);
 
     for (auto& v : object.Vertices) {
         v *= matrix;
+        v *= scale;
     }
 //
 //    object.Vertices.emplace_back(-.5f, -.5f, 1.f); // Left point

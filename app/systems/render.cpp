@@ -43,7 +43,7 @@ void Render ::terminate() {
 void Render::rasterizeTriangle(Buffer& frame, const Vector3 t[3], const Vector3& light) {
     // Back-face culling
     auto normal = (t[1] - t[0]).cross(t[2] - t[0]).normalize();
-//    if (normal.Z < 0) { return; }
+    if (normal.length() < 0) { return; }
 
     Vector2 r0 = toRaster(t[0].proj());
     Vector2 r1 = toRaster(t[1].proj());

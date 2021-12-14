@@ -22,7 +22,7 @@ int main() {
     auto& renderer = Renderer::getInstance();
     auto& input = Input::getInstance();
 
-    renderer.init("Virtual Galaxy", false, 800, 600);
+    renderer.init("Virtual Galaxy", false, 1920, 1080);
     input.init();
 
     entt::registry registry;
