@@ -17,7 +17,7 @@ void Demo::init(entt::registry& registry) {
     auto camera = registry.create();
     registry.emplace<Camera>(camera);
     registry.emplace<Transform>(camera, Transform {
-            { 0.f, 0.f, -1.f},
+            { 0.f, 0.f, 1.f},
             { 0.f, 0.f, 0.f},
             { 1.f, 1.f, 1.f}
     });
@@ -31,7 +31,7 @@ void Demo::init(entt::registry& registry) {
 
     auto& object = registry.emplace<Object>(entity, Object {});
 
-    Reader::load("assets/vector.obj", object.Vertices, object.Indices);
+    Reader::load("assets/cube.obj", object.Vertices, object.Indices);
 
     float angle = .3f;
     float mat[16] = {
@@ -76,10 +76,8 @@ void Demo::init(entt::registry& registry) {
 void Demo::update(float deltaTime) {
     if (!_registry) { return; }
 
-    ImGui::Begin("Statistics");
     ++_fps;
     _step += deltaTime;
-    ImGui::Text("MS: %.3f/s FPS: %.d", 1000 / deltaTime, _activeFps);
 
     if (_step >= 1000) {
         _activeFps = _fps;
@@ -87,6 +85,8 @@ void Demo::update(float deltaTime) {
         _step = 0;
     }
 
+    ImGui::Begin("Statistics");
+    ImGui::Text("FPS: %.d", _activeFps);
     ImGui::End();
 }
 
