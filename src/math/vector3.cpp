@@ -39,8 +39,8 @@ float Vector3::cos(const Vector3& o) const { return dot(o) / length() * o.length
 Vector2 Vector3::proj() const { return { X / Z, Y / Z }; }
 
 void Vector3::operator*=(const Matrix4x4& o) {
-    X = o(0, 0) * X + o(0, 1) * Y + o(0, 2) * Z + o(0, 3);
-    Y = o(1, 0) * X + o(1, 1) * Y + o(1, 2) * Z + o(1, 3);
-    Z = o(2, 0) * X + o(2, 1) * Y + o(2, 2) * Z + o(2, 3);
+    X = o(0, 0) * X + o(1, 0) * Y + o( 2, 0) * Z + o(3, 0);
+    Y = o(0, 1) * X + o(1, 1) * Y + o( 2, 1) * Z + o(3, 1);
+    Z = o(0, 2) * X + o(1, 2) * Y + o( 2, 2) * Z + o(3, 2);
 }
 

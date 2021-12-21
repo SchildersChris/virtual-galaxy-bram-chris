@@ -1,6 +1,7 @@
 #include "wireframe.hpp"
 #include "../../components/transform.hpp"
 #include "../../components/object.hpp"
+#include "../../components/camera.hpp"
 
 #include "math/vector3.hpp"
 #include "graphics/renderer.hpp"
@@ -19,18 +20,25 @@ void Wireframe::init(entt::registry& registry) {
 void Wireframe::update(float deltaTime) {
     auto& renderer = Renderer::getInstance();
 
-    static float angle = .3f;
-    ImGui::Begin("Renderer Window");
-    ImGui::SliderFloat("Rotate Y", &angle, -1, 1);
-    ImGui::End();
+    auto&& [_, camTrans] = *_registry->view<Transform, Camera>().each().begin();
 
-    float mat[16] = {
-            std::cos(angle), 0, std::sin(angle), 0,
-            0, 1, 0, 0,
-            -std::sin(angle), 0, std::cos(angle), 0,
-            0, 0, 5, 1
-    };
-    auto matrix = Matrix4x4(mat);
+    ImGui::Begin("Renderer");
+    if (ImGui::CollapsingHeader("Camera Transform")) {
+        ImGui::Text("Translation");
+        ImGui::SliderFloat("Tx", &camTrans.Translation.X, -10, 10);
+        ImGui::SliderFloat("Ty", &camTrans.Translation.Y, -10, 10);
+        ImGui::SliderFloat("Tz", &camTrans.Translation.Z, -10, 10);
+        ImGui::Text("Rotation");
+        ImGui::SliderFloat("Rx", &camTrans.Rotation.X, -10, 10);
+        ImGui::SliderFloat("Ry", &camTrans.Rotation.Y, -10, 10);
+        ImGui::SliderFloat("Rz", &camTrans.Rotation.Z, -10, 10);
+        ImGui::Text("Scale");
+        ImGui::SliderFloat("Sx", &camTrans.Scale.X, -10, 10);
+        ImGui::SliderFloat("Sy", &camTrans.Scale.Y, -10, 10);
+        ImGui::SliderFloat("Sz", &camTrans.Scale.Z, -10, 10);
+    }
+    ImGui::End();
+    auto matrix = camTrans.GetMatrix();
 
     for (auto&& [entity, transform, object] : _registry->group<Transform, Object>().each()) {
         for (int i = 0; i < object.Indices.size(); i += 3) {

@@ -15,16 +15,16 @@ void Scene::init(entt::registry& registry) {
     _isFpsCamera = false;
 
     _worldCamera = registry.create();
-    registry.emplace<Camera>(_fpsCamera);
+    registry.emplace<Camera>(_worldCamera);
     registry.emplace<Transform>(_worldCamera, Transform {
-        Vector3 { 0.f, 0.f, 0.f},
+        Vector3 { 0.f, 0.f, 1.f},
         Vector3 { 0.f, 0.f, 0.f},
         Vector3 { 1.f, 1.f, 1.f}
     });
 
     _fpsCamera = registry.create();
     registry.emplace<Transform>(_fpsCamera, Transform {
-        Vector3 { 0.f, 0.f, 0.f},
+        Vector3 { 0.f, 0.f, 1.f},
         Vector3 { 0.f, 0.f, 0.f},
         Vector3 { 1.f, 1.f, 1.f}
     });
@@ -36,6 +36,7 @@ void Scene::update(float deltaTime) {
     if (!_registry) { return; }
 
     if (Input::getInstance().getKeyUp(Input::KeyCode::C)) {
+        _isFpsCamera = !_isFpsCamera;
         if (_isFpsCamera) {
             _registry->remove<Camera>(_worldCamera);
             _registry->emplace<Camera>(_fpsCamera);
@@ -43,7 +44,6 @@ void Scene::update(float deltaTime) {
             _registry->remove<Camera>(_fpsCamera);
             _registry->emplace<Camera>(_worldCamera);
         }
-        _isFpsCamera = !_isFpsCamera;
     }
 
     ++_fps;
@@ -57,7 +57,17 @@ void Scene::update(float deltaTime) {
 
     ImGui::Begin("Scene");
     ImGui::Text("FPS: %.d", _activeFps);
-    ImGui::Text(_isFpsCamera ? "Camera: First Person" : "Camera: World");
+    if (ImGui::CollapsingHeader("Info", false)) {
+        ImGui::Text(_isFpsCamera ? "Camera: First Person" : "Camera: World");
+    }
+
+    if (ImGui::CollapsingHeader("Controls", false)) {
+        ImGui::Text("Switch Camera (FPS/World): C");
+        ImGui::Text("Roll: Q/E");
+        ImGui::Text("Pitch: W/S");
+        ImGui::Text("Yaw: A/D");
+        ImGui::Text("Shoot: Space");
+    }
     ImGui::End();
 }
 
