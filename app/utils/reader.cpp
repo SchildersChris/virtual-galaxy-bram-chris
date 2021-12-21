@@ -19,6 +19,7 @@ void Reader::load(const std::string& path, std::vector<Vector3>& vertices, std::
         vertices.push_back(((Vector3*)objData.p_positions)[i]);
     }
 
+    std::cout << "Loaded object: " <<  path << std::endl;
     std::cout << "Vertices Count: " <<  objData.position_count << std::endl;
-    std::cout <<"Face Count: " <<  objData.face_count << std::endl;
+    std::cout << "Face Count: " <<  objData.face_count << std::endl;
 }

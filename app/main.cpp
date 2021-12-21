@@ -14,7 +14,7 @@ using c = std::chrono::steady_clock;
 
 int main() {
     /*
-     * Setup
+     * Setup application and systems
      */
     std::vector<std::unique_ptr<System>> systems;
 
@@ -31,22 +31,23 @@ int main() {
 
     entt::registry registry;
 
+    /*
+     * Initialize systems
+     */
     for (auto& s : systems) {
         s->init(registry);
     }
 
-    auto deltaTime = 0.f;
-
     /*
      * Main loop
      */
+    float deltaTime = 0.f;
     while (!input.isQuit()) {
         auto start = c::now();
 
         input.update();
 
         renderer.beginFrame(deltaTime);
-        // Todo: Add delta time
         for (auto& s : systems) {
             s->update(deltaTime);
         }
@@ -57,7 +58,7 @@ int main() {
     }
 
     /*
-     * Shutdown
+     * Shutdown systems
      */
     for (auto& s : systems) {
         s->terminate();

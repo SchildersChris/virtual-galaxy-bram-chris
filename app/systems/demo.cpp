@@ -38,7 +38,7 @@ void Demo::init(entt::registry& registry) {
         std::cos(angle), 0, std::sin(angle), 0,
         0, 1, 0, 0,
         -std::sin(angle), 0, std::cos(angle), 0,
-        0, 0, 5, 1
+        0, 0, 2, 1
     };
 
     auto matrix = Matrix4x4(mat);
