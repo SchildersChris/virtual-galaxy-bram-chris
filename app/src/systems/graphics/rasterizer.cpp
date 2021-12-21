@@ -26,8 +26,6 @@ void Rasterizer::init(entt::registry& registry) {
 void Rasterizer::update(float deltaTime) {
     if (!_registry || !_zBuffer) { return; }
 
-    auto stream = _texture->lock();
-
     static float angle = .3f;
     ImGui::Begin("Renderer Window");
     ImGui::SliderFloat("Rotate Y", &angle, -1, 1);
@@ -45,20 +43,28 @@ void Rasterizer::update(float deltaTime) {
 
     auto&& [_, cameraTransform] = *_registry->view<Transform, Camera>().each().begin();
 
-    Vector3 triangle[3];
-    for (auto&& [entity, transform, object] : _registry->group<Transform, Object>().each()) {
-        for (int i = 0; i < object.Indices.size(); i += 3) {
-            triangle[0] = object.Vertices[object.Indices[i] - 1];
-            triangle[1] = object.Vertices[object.Indices[i+1] - 1];
-            triangle[2] = object.Vertices[object.Indices[i+2] - 1];
+    {
+        auto stream = _texture->lock();
+        stream.clear(Color::black());
 
-            triangle[0] *= matrix;
-            triangle[1] *= matrix;
-            triangle[2] *= matrix;
+        Vector3 triangle[3];
+        for (auto&& [entity, transform, object] : _registry->group<Transform, Object>().each()) {
+            for (int i = 0; i < object.Indices.size(); i += 3) {
+                triangle[0] = object.Vertices[object.Indices[i] - 1];
+                triangle[1] = object.Vertices[object.Indices[i+1] - 1];
+                triangle[2] = object.Vertices[object.Indices[i+2] - 1];
 
-            rasterizeTriangle(triangle, cameraTransform.Position, stream);
+                triangle[0] *= matrix;
+                triangle[1] *= matrix;
+                triangle[2] *= matrix;
+
+                rasterizeTriangle(triangle, cameraTransform.Position, stream);
+            }
         }
     }
+
+    Renderer::getInstance().drawTexture(*_texture);
+
 }
 
 void Rasterizer ::terminate() {

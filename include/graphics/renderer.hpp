@@ -54,7 +54,6 @@ public:
      */
     void drawTexture(const Texture& texture);
 
-
     /**
      * Draw a point from p1 to p2 with a color
      *
