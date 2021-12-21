@@ -31,7 +31,7 @@ void Demo::init(entt::registry& registry) {
 
     auto& object = registry.emplace<Object>(entity, Object {});
 
-    Reader::load("assets/cube.obj", object.Vertices, object.Indices);
+    Reader::load("assets/vector.obj", object.Vertices, object.Indices);
 
     float angle = .3f;
     float mat[16] = {

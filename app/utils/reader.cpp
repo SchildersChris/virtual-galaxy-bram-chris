@@ -1,6 +1,6 @@
 #include "reader.hpp"
-
 #include "utils/data.hpp"
+
 #include "objpar.h"
 #include <iostream>
 
@@ -8,7 +8,7 @@ void Reader::load(const std::string& path, std::vector<Vector3>& vertices, std::
     auto data = Data::read(path);
 
     objpar_data_t objData;
-    auto buffer = malloc(objpar_get_size(data.c_str(), data.size()));
+    auto buffer = new char[objpar_get_size(data.c_str(), data.size())];
     objpar(data.c_str(), data.size(), buffer, &objData);
 
     for (int i = 0, j = 0; j < objData.face_count * 3 * 3; i++, j+=3) {
@@ -22,4 +22,6 @@ void Reader::load(const std::string& path, std::vector<Vector3>& vertices, std::
     std::cout << "Loaded object: " <<  path << std::endl;
     std::cout << "Vertices Count: " <<  objData.position_count << std::endl;
     std::cout << "Face Count: " <<  objData.face_count << std::endl;
+
+    delete[] buffer;
 }
