@@ -12,7 +12,6 @@
 void Rasterizer::init(entt::registry& registry) {
     _registry = &registry;
 
-    // Setup z-buffer algorithm
     auto& renderer = Renderer::getInstance();
     _width = renderer.getWidth();
     _height = renderer.getHeight();
