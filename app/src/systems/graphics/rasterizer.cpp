@@ -30,17 +30,10 @@ void Rasterizer::update(float deltaTime) {
     ImGui::SliderFloat("Rotate Y", &angle, -1, 1);
     ImGui::End();
 
-    float mat[16] = {
-            std::cos(angle), 0, std::sin(angle), 0,
-            0, 1, 0, 0,
-            -std::sin(angle), 0, std::cos(angle), 0,
-            0, 0, 5, 1
-    };
-    auto matrix = Matrix4x4(mat);
 
     std::fill(_zBuffer, _zBuffer + _zBufferSize, _far);
 
-    auto&& [_, cameraTransform] = *_registry->view<Transform, Camera>().each().begin();
+    auto&& [_, camTrans] = *_registry->view<Transform, Camera>().each().begin();
 
     {
         auto stream = _texture->lock();
@@ -53,11 +46,7 @@ void Rasterizer::update(float deltaTime) {
                 triangle[1] = object.Vertices[object.Indices[i+1] - 1];
                 triangle[2] = object.Vertices[object.Indices[i+2] - 1];
 
-                triangle[0] *= matrix;
-                triangle[1] *= matrix;
-                triangle[2] *= matrix;
-
-                rasterizeTriangle(triangle, cameraTransform.Translation, stream);
+                rasterizeTriangle(triangle, camTrans.Translation, stream);
             }
         }
     }
