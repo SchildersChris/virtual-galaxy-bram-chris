@@ -31,45 +31,6 @@ void Scene::init(entt::registry& registry) {
 
     auto& object = registry.emplace<Object>(spaceship, Object {});
     WavefrontObject::load("assets/spaceship.obj", object.Vertices, object.Indices);
-
-    float angle = .3f;
-    float mat[16] = {
-        std::cos(angle), 0, std::sin(angle), 0,
-        0, 1, 0, 0,
-        -std::sin(angle), 0, std::cos(angle), 0,
-        0, 0, 2, 1
-    };
-
-    auto matrix = Matrix4x4(mat);
-    auto scale = Matrix4x4::scale(0.7, 1, 1);
-
-    for (auto& v : object.Vertices) {
-        v *= matrix;
-        v *= scale;
-    }
-
-//    object.Vertices.emplace_back(-.5f, -.5f, 1.f); // Left point
-//    object.Vertices.emplace_back(.5f, -.5f, 1.f); // Right point
-//    object.Vertices.emplace_back(0.f, .5f, 1.f); // Top (middle) point
-
-
-//    // Triangle 1
-//    object.Vertices.emplace_back(-.2f, -.5f, 1.f); // Left point
-//    object.Vertices.emplace_back(.5f, -.5f, 1.9f); // Right point
-//    object.Vertices.emplace_back(0.f, .5f, 1.f); // Top (middle) point
-//
-//    object.Indices.push_back(1);
-//    object.Indices.push_back(2);
-//    object.Indices.push_back(3);
-//
-//     Triangle 2
-//    object.Vertices.emplace_back(-.5f, -.5f, 2.f); // Left point
-//    object.Vertices.emplace_back(.0f, -.5f, 2.f); // Right point
-//    object.Vertices.emplace_back(0.f, .5f, 2.f); // Top (middle) point
-//
-//    object.Indices.push_back(4);
-//    object.Indices.push_back(5);
-//    object.Indices.push_back(6);
 }
 
 void Scene::update(float deltaTime) {
