@@ -17,12 +17,16 @@ void Rasterizer::init(entt::registry& registry) {
     _width = renderer.getWidth();
     _height = renderer.getHeight();
 
+    _texture = renderer.createTexture(_width, _height);
+
     _zBufferSize = _width * _height;
     _zBuffer = new float[_zBufferSize];
 }
 
 void Rasterizer::update(float deltaTime) {
     if (!_registry || !_zBuffer) { return; }
+
+    auto stream = _texture->lock();
 
     static float angle = .3f;
     ImGui::Begin("Renderer Window");
@@ -36,7 +40,6 @@ void Rasterizer::update(float deltaTime) {
             0, 0, 5, 1
     };
     auto matrix = Matrix4x4(mat);
-
 
     std::fill(_zBuffer, _zBuffer + _zBufferSize, _far);
 
@@ -53,7 +56,7 @@ void Rasterizer::update(float deltaTime) {
             triangle[1] *= matrix;
             triangle[2] *= matrix;
 
-            rasterizeTriangle(triangle, cameraTransform.Position);
+            rasterizeTriangle(triangle, cameraTransform.Position, stream);
         }
     }
 }
@@ -62,7 +65,7 @@ void Rasterizer ::terminate() {
     delete[] _zBuffer;
 }
 
-void Rasterizer::rasterizeTriangle(const Vector3 t[3], const Vector3& light) {
+void Rasterizer::rasterizeTriangle(const Vector3 t[3], const Vector3& light, Texture::Stream& stream) {
     // Back-face culling
     auto normal = (t[1] - t[0]).cross(t[2] - t[0]).normalize();
     if (normal.length() < 0) { return; }
@@ -156,7 +159,7 @@ void Rasterizer::rasterizeTriangle(const Vector3 t[3], const Vector3& light) {
 
                 auto s = getShade(light, normal);
                 auto c = static_cast<uint8>(s * 255);
-                renderer.setPixel(i, c, c, c, 255);
+                stream.setPixel(i, Color::white());
             }
         }
     }
@@ -173,7 +176,7 @@ void Rasterizer::rasterizeTriangle(const Vector3 t[3], const Vector3& light) {
 
                 auto s = getShade(light, normal);
                 auto c = static_cast<uint8>(s * 255);
-                renderer.setPixel(i, c, c, c, 255);
+                stream.setPixel(i, Color::white());
             }
         }
     }

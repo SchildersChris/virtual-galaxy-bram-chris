@@ -4,6 +4,7 @@
 #include <imgui.h>
 #include <imgui_sdl.h>
 #include <stdexcept>
+#include <memory>
 
 Renderer Renderer::_instance;
 Renderer& Renderer::getInstance() {
@@ -28,32 +29,24 @@ void Renderer::init(const std::string& title, bool fullscreen, int32 width, int3
     _width = width;
     _height = height;
 
-    if (!(_texture = SDL_CreateTexture(
-            _renderer,
-            SDL_PIXELFORMAT_RGBA8888,
-            SDL_TEXTUREACCESS_STREAMING,
-            _width, _height))) {
-        throw std::runtime_error(SDL_GetError());
-    }
-
     ImGui::CreateContext();
     ImGuiSDL::Initialize(_renderer, _width, _height);
 }
 
-
 int32 Renderer::getWidth() const {
     return _width;
 }
-
 int32 Renderer::getHeight() const {
     return _height;
 }
-
-void Renderer::setClearColor(uint8 r, uint8 g, uint8 b) {
-    _clearColor = color::rgbToInteger(r, g, b);
+void Renderer::setClearColor(Color color) {
+    _clearColor = color;
 }
 
 void Renderer::beginFrame(float deltaTime) {
+    SDL_SetRenderDrawColor(_renderer, _clearColor.R, _clearColor.G, _clearColor.B, _clearColor.A);
+    SDL_RenderClear(_renderer);
+
     ImGuiIO& io = ImGui::GetIO();
 
     int32 mouseX, mouseY;
@@ -65,47 +58,43 @@ void Renderer::beginFrame(float deltaTime) {
     io.MouseDown[1] = buttons & SDL_BUTTON(SDL_BUTTON_RIGHT);
 
     ImGui::NewFrame();
-
-    SDL_Surface* surface;
-    if (SDL_LockTextureToSurface(_texture, nullptr, &surface)) {
-        throw std::runtime_error(SDL_GetError());
-    }
-
-    SDL_FillRect(surface, nullptr, _clearColor);
-
-    _activeBuffer = static_cast<uint32*>(surface->pixels);
 }
-
-void Renderer::setPixel(int32 x, int32 y, uint8 r, uint8 g, uint8 b, uint8 a) {
-    _activeBuffer[x + y * _width] = color::rgbaToInteger(r, g, b, a);
+void Renderer::drawTexture(const Texture& texture) {
+    SDL_RenderCopy(_renderer, texture._texture, nullptr, nullptr);
 }
-
-void Renderer::setPixel(int32 i, uint8 r, uint8 g, uint8 b, uint8 a) {
-    _activeBuffer[i] = color::rgbaToInteger(r, g, b, a);
+void Renderer::drawLine(const Vector2& p1, const Vector2& p2, Color color) {
+    SDL_SetRenderDrawColor(_renderer, color.R, color.G, color.B, color.A);
+    SDL_RenderDrawLineF(_renderer, p1.X, p1.Y, p2.X, p2.Y);
 }
-
 void Renderer::endFrame() {
-    SDL_UnlockTexture(_texture);
-    SDL_RenderCopy(_renderer, _texture, nullptr, nullptr);
-
     ImGui::Render();
     ImGuiSDL::Render(ImGui::GetDrawData());
 
     SDL_RenderPresent(_renderer);
 }
-
 void Renderer::terminate() {
     ImGuiSDL::Deinitialize();
     ImGui::DestroyContext();
 
-    SDL_DestroyTexture(_texture);
     SDL_DestroyRenderer(_renderer);
     SDL_DestroyWindow(_window);
 
     SDL_QuitSubSystem(SDL_INIT_EVERYTHING);
     SDL_Quit();
 
-    _texture = nullptr;
     _renderer = nullptr;
     _window = nullptr;
+}
+
+std::unique_ptr<Texture> Renderer::createTexture(int32 width, int32 height) {
+    SDL_Texture* texture;
+    if (!(texture = SDL_CreateTexture(
+            _renderer,
+            SDL_PIXELFORMAT_RGBA8888,
+            SDL_TEXTUREACCESS_STREAMING,
+            _width, _height))) {
+        throw std::runtime_error(SDL_GetError());
+    }
+
+    return std::make_unique<Texture>(texture, width, height);
 }

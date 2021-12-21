@@ -3,6 +3,7 @@
 
 #include "core/system.hpp"
 #include "math/vector3.hpp"
+#include "graphics/texture.hpp"
 
 class Rasterizer : public System {
 public:
@@ -11,7 +12,7 @@ public:
     void terminate() override;
 
 private:
-    void rasterizeTriangle(const Vector3 t[3], const Vector3& light);
+    void rasterizeTriangle(const Vector3 t[3], const Vector3& light, Texture::Stream& stream);
 
     [[nodiscard]] Vector2 toRaster(const Vector2& v) const;
 
@@ -28,6 +29,7 @@ private:
     int32 _width {0};
     int32 _height {0};
 
+    std::unique_ptr<Texture> _texture {nullptr};
     float* _zBuffer {nullptr};
     std::size_t _zBufferSize {0};
 

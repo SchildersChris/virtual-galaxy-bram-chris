@@ -1,9 +1,27 @@
 #include "utils/color.hpp"
 
-uint32 color::rgbaToInteger(uint8 r, uint8 g, uint8 b, uint8 a) {
+Color Color::_white {255, 255, 255, 255};
+Color Color::_red {255, 0, 0, 255};
+Color Color::_green {0, 255, 0, 255};
+Color Color::_blue {0, 0, 255, 255};
+Color Color::_black {0, 0, 0, 255};
+
+uint32 Color::rgbaToInteger(uint8 r, uint8 g, uint8 b, uint8 a) {
     return (r << 24) + (g << 16) + (b << 8) + a;
 }
 
-uint32 color::rgbToInteger(uint8 r, uint8 g, uint8 b) {
+uint32 Color::rgbToInteger(uint8 r, uint8 g, uint8 b) {
     return (r << 24) + (g << 16) + (b << 8);
+}
+
+Color::operator uint32() const {
+    return Color::rgbaToInteger(R, G, B, A);
+}
+
+bool Color::operator==(const Color& other) const {
+    return A == other.A && G == other.G && B == other.B && A == other.A;
+}
+
+bool Color::operator!=(const Color& other) const {
+    return A != other.A || G != other.G || B != other.B || A != other.A;
 }

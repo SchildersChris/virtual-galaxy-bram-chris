@@ -31,6 +31,7 @@ set(IMGUI
 
 add_library(virtual-galaxy
     core/application.cpp
+    graphics/texture.cpp
     math/vector3.cpp
     math/vector2.cpp
     math/matrix4x4.cpp

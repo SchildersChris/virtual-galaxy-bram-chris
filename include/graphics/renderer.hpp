@@ -2,6 +2,8 @@
 #define VIRTUAL_GALAXY_RENDERER_HPP
 
 #include "base.hpp"
+#include "graphics/texture.hpp"
+#include "math/vector2.hpp"
 
 #include "SDL.h"
 
@@ -36,11 +38,9 @@ public:
     /**
      * Set renderer clear color after each frame
      *
-     * @param r Red component
-     * @param g Green component
-     * @param b Blue component
+     * @param color Clearing color
      */
-    void setClearColor(uint8 r, uint8 g, uint8 b);
+    void setClearColor(Color color);
 
     /**
      * Start a new rendering frame
@@ -48,27 +48,21 @@ public:
     void beginFrame(float deltaTime);
 
     /**
-     * Sets a RGBA pixel on the buffer
+     * Draw complete texture to the screen
      *
-     * @param x X component in the buffer index
-     * @param y Y component in the buffer index
-     * @param r Pixel red component
-     * @param g Pixel green component
-     * @param b Pixel blue component
-     * @param a Pixel alpha component
+     * @param texture Texture to draw
      */
-    void setPixel(int32 x, int32 y, uint8 r, uint8 g, uint8 b, uint8 a);
+    void drawTexture(const Texture& texture);
+
 
     /**
-     * Sets a RGBA pixel on the buffer
+     * Draw a point from p1 to p2 with a color
      *
-     * @param i Pixel index in the buffer
-     * @param r Pixel red component
-     * @param g Pixel green component
-     * @param b Pixel blue component
-     * @param a Pixel alpha component
+     * @param p1 Starting point
+     * @param p2 Ending point
+     * @param color Line color
      */
-    void setPixel(int32 i, uint8 r, uint8 g, uint8 b, uint8 a);
+    void drawLine(const Vector2& p1, const Vector2& p2, Color color);
 
     /**
      * End a rendering frame
@@ -82,6 +76,15 @@ public:
      */
     void terminate();
 
+    /**
+     * Create empty texture
+     *
+     * @param width Texture width
+     * @param height Texture height
+     * @return Texture structure
+     */
+    std::unique_ptr<Texture> createTexture(int32 width, int32 height);
+
 private:
     static Renderer _instance;
 
@@ -91,13 +94,10 @@ private:
     SDL_Window* _window {nullptr};
     SDL_Renderer* _renderer {nullptr};
 
-    SDL_Texture* _texture {nullptr};
-    uint32* _activeBuffer {nullptr};
-
     int32 _width {0};
     int32 _height {0};
 
-    uint32 _clearColor {0};
+    Color _clearColor {Color::black()};
 };
 
 #endif //VIRTUAL_GALAXY_RENDERER_HPP

@@ -1,6 +1,7 @@
 #ifndef VIRTUAL_GALAXY_BASE_HPP
 #define VIRTUAL_GALAXY_BASE_HPP
 
+#include <memory>
 #include <functional>
 #include <utility>
 #include <string>
