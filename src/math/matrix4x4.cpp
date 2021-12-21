@@ -59,9 +59,28 @@ float Matrix4x4::operator[](int32 i) const {
 }
 
 float& Matrix4x4::operator()(int32 x, int32 y) {
-    return _cols[x + y * 4];
+    return _cols[x + y * Cols];
 }
 
 float Matrix4x4::operator()(int32 x, int32 y) const {
-    return _cols[x + y * 4];
+    return _cols[x + y * Cols];
+}
+
+Matrix4x4 Matrix4x4::operator*(const Matrix4x4& o) const {
+    auto res = Matrix4x4();
+
+    for (int x = 0; x < Cols; ++x) {
+        for (int y = 0; y < Rows; ++y) {
+            res(x, y) = (*this)(x, y) * o(x, y);
+        }
+    }
+    return res;
+}
+
+void Matrix4x4::operator*=(const Matrix4x4& o) {
+    for (int x = 0; x < Cols; ++x) {
+        for (int y = 0; y < Rows; ++y) {
+            (*this)(x, y) *= o(x, y);
+        }
+    }
 }

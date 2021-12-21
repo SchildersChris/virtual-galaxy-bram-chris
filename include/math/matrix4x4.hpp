@@ -31,7 +31,13 @@ public:
     float& operator()(int32 x, int32 y);
     float operator()(int32 x, int32 y) const;
 
+    Matrix4x4 operator*(const Matrix4x4& o) const;
+    void operator*=(const Matrix4x4& o);
+
 private:
+    static constexpr int32 Rows = 4;
+    static constexpr int32 Cols = 4;
+
     float _cols[16]{};
 };
 

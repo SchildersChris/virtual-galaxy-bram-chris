@@ -6,7 +6,6 @@
 #include "math/vector3.hpp"
 #include "graphics/renderer.hpp"
 
-#include <cmath>
 #include <imgui.h>
 
 void Wireframe::init(entt::registry& registry) {
@@ -22,7 +21,10 @@ void Wireframe::update(float deltaTime) {
 
     auto&& [_, camTrans] = *_registry->view<Transform, Camera>().each().begin();
 
+    static bool drawAxis = true;
+
     ImGui::Begin("Renderer");
+    ImGui::Checkbox("Test", &drawAxis);
     if (ImGui::CollapsingHeader("Camera Transform")) {
         ImGui::Text("Translation");
         ImGui::SliderFloat("Tx", &camTrans.Translation.X, -10, 10);
@@ -38,17 +40,20 @@ void Wireframe::update(float deltaTime) {
         ImGui::SliderFloat("Sz", &camTrans.Scale.Z, -10, 10);
     }
     ImGui::End();
-    auto matrix = camTrans.GetMatrix();
+    auto v = camTrans.GetMatrix();
 
     for (auto&& [entity, transform, object] : _registry->group<Transform, Object>().each()) {
+        auto m = transform.GetMatrix();
+        auto mv = (m * v);
+
         for (int i = 0; i < object.Indices.size(); i += 3) {
             Vector3 v0 = object.Vertices[object.Indices[i] - 1];
             Vector3 v1 = object.Vertices[object.Indices[i+1] - 1];
             Vector3 v2 = object.Vertices[object.Indices[i+2] - 1];
 
-            v0 *= matrix;
-            v1 *= matrix;
-            v2 *= matrix;
+            v0 *= mv;
+            v1 *= mv;
+            v2 *= mv;
 
             Vector2 r0 = toRaster(v0.proj());
             Vector2 r1 = toRaster(v1.proj());
