@@ -16,7 +16,7 @@ void Reader::load(const std::string& path, std::vector<Vector3>& vertices, std::
     }
 
     for (int i = 0; i < objData.position_count; ++i) {
-        vertices.push_back(((Vector3*)objData.p_positions)[i]);
+        vertices.push_back((reinterpret_cast<Vector3*>(objData.p_positions))[i]);
     }
 
     std::cout << "Loaded object: " <<  path << std::endl;
