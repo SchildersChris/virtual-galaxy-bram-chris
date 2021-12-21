@@ -1,10 +1,10 @@
-#include "reader.hpp"
+#include "wavefront-object.hpp"
 #include "utils/data.hpp"
 
 #include "objpar.h"
 #include <iostream>
 
-void Reader::load(const std::string& path, std::vector<Vector3>& vertices, std::vector<uint32>& indices) {
+void WavefrontObject::load(const std::string& path, std::vector<Vector3>& vertices, std::vector<uint32>& indices) {
     auto data = Data::read(path);
 
     objpar_data_t objData;

@@ -1,10 +1,13 @@
-#ifndef VIRTUAL_GALAXY_DEMO_HPP
-#define VIRTUAL_GALAXY_DEMO_HPP
+#ifndef VIRTUAL_GALAXY_SCENE_HPP
+#define VIRTUAL_GALAXY_SCENE_HPP
 
 #include "base.hpp"
-#include "system.hpp"
+#include "core/system.hpp"
 
-class Demo : public System {
+/**
+ * Scene system handles scene activities such as loading objects and events (e.g. quit)
+ */
+class Scene : public System {
 public:
     void init(entt::registry& registry) override;
     void update(float deltaTime) override;
@@ -18,6 +21,4 @@ private:
     float _step{};
 };
 
-
-
-#endif //VIRTUAL_GALAXY_DEMO_HPP
+#endif //VIRTUAL_GALAXY_SCENE_HPP

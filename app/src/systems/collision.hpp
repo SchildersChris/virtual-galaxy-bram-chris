@@ -1,7 +1,7 @@
 #ifndef VIRTUAL_GALAXY_COLLISION_HPP
 #define VIRTUAL_GALAXY_COLLISION_HPP
 
-#include "system.hpp"
+#include "core/system.hpp"
 
 class Collision : public System {
 public:

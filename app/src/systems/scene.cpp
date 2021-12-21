@@ -1,14 +1,14 @@
-#include "demo.hpp"
+#include "scene.hpp"
 #include "../components/transform.hpp"
 #include "../components/object.hpp"
-#include "../utils/reader.hpp"
+#include "../utils/wavefront-object.hpp"
 #include "../components/camera.hpp"
 
 #include "math/matrix4x4.hpp"
 #include <imgui.h>
 #include <valarray>
 
-void Demo::init(entt::registry& registry) {
+void Scene::init(entt::registry& registry) {
     _step = 0;
     _fps = 0;
     _activeFps = 0;
@@ -31,7 +31,7 @@ void Demo::init(entt::registry& registry) {
 
     auto& object = registry.emplace<Object>(entity, Object {});
 
-    Reader::load("assets/vector.obj", object.Vertices, object.Indices);
+    WavefrontObject::load("assets/spaceship.obj", object.Vertices, object.Indices);
 
     float angle = .3f;
     float mat[16] = {
@@ -73,7 +73,7 @@ void Demo::init(entt::registry& registry) {
 //    object.Indices.push_back(6);
 }
 
-void Demo::update(float deltaTime) {
+void Scene::update(float deltaTime) {
     if (!_registry) { return; }
 
     ++_fps;
@@ -85,9 +85,9 @@ void Demo::update(float deltaTime) {
         _step = 0;
     }
 
-    ImGui::Begin("Statistics");
+    ImGui::Begin("Scene");
     ImGui::Text("FPS: %.d", _activeFps);
     ImGui::End();
 }
 
-void Demo::terminate() {}
+void Scene::terminate() {}

@@ -6,9 +6,11 @@ file(GLOB HEADER_LIST CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/include/*.hpp")
 
 FetchContent_Declare(sdl GIT_REPOSITORY https://github.com/libsdl-org/SDL.git GIT_TAG release-2.0.16)
 FetchContent_Declare(sdl-image GIT_REPOSITORY https://github.com/42IN7SPICg/SDL_image.git GIT_TAG re-release-2.0.5)
+FetchContent_Declare(entt GIT_REPOSITORY https://github.com/skypjack/entt.git GIT_TAG v3.8.1)
 
 FetchContent_MakeAvailable(sdl)
 FetchContent_MakeAvailable(sdl-image)
+FetchContent_MakeAvailable(entt)
 
 set(imgui_DIR ${PROJECT_SOURCE_DIR}/extern/imgui/)
 set(imgui-sdl_DIR ${PROJECT_SOURCE_DIR}/extern/imgui-sdl)
@@ -28,6 +30,7 @@ set(IMGUI
 
 
 add_library(virtual-galaxy
+    core/application.cpp
     math/vector3.cpp
     math/vector2.cpp
     math/matrix4x4.cpp
@@ -39,7 +42,7 @@ add_library(virtual-galaxy
     ${HEADER_LIST})
 
 target_compile_features(virtual-galaxy PUBLIC cxx_std_17)
-target_link_libraries(virtual-galaxy PRIVATE SDL2 SDL2_image)
+target_link_libraries(virtual-galaxy PRIVATE SDL2 SDL2_image EnTT)
 
 target_include_directories(virtual-galaxy
         PUBLIC
@@ -47,7 +50,8 @@ target_include_directories(virtual-galaxy
         ${sdl_SOURCE_DIR}/include
         ${sdl-image_SOURCE_DIR}
         ${imgui_DIR}
-        ${imgui-sdl_DIR})
+        ${imgui-sdl_DIR}
+        ${entt_SOURCE_DIR}/src/entt)
 
 target_compile_features(virtual-galaxy PUBLIC cxx_std_11)
 

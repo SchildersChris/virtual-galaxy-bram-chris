@@ -1,7 +1,7 @@
 #ifndef VIRTUAL_GALAXY_MOVEMENT_HPP
 #define VIRTUAL_GALAXY_MOVEMENT_HPP
 
-#include "system.hpp"
+#include "core/system.hpp"
 
 class Movement : public System {
 public:

@@ -6,7 +6,8 @@
 class System {
 public:
     /**
-     * Init is called to initialize the system with the component registry
+     * Init is called to initialize the system, providing
+     * the active component registry
      *
      * @param registry Component registry
      */

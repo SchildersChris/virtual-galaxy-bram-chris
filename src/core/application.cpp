@@ -1,32 +1,18 @@
+#include "core/application.hpp"
 #include "graphics/renderer.hpp"
 #include "utils/input.hpp"
-#include "systems/system.hpp"
-#include "systems/demo.hpp"
-#include "systems/movement.hpp"
-#include "systems/render.hpp"
-#include "systems/collision.hpp"
 
-#include <memory>
+#include "entity/registry.hpp"
 #include <chrono>
 
 using ms = std::chrono::duration<float, std::milli>;
 using c = std::chrono::steady_clock;
 
-int main() {
-    /*
-     * Setup application and systems
-     */
-    std::vector<std::unique_ptr<System>> systems;
-
-    systems.emplace_back(std::make_unique<Demo>());
-    systems.emplace_back(std::make_unique<Collision>());
-    systems.emplace_back(std::make_unique<Movement>());
-    systems.emplace_back(std::make_unique<Render>());
-
+void Application::run() {
     auto& renderer = Renderer::getInstance();
     auto& input = Input::getInstance();
 
-    renderer.init("Virtual Galaxy", false, 1920, 1080);
+    renderer.init(_title, false, 1920, 1080);
     input.init();
 
     entt::registry registry;
@@ -34,7 +20,7 @@ int main() {
     /*
      * Initialize systems
      */
-    for (auto& s : systems) {
+    for (auto& s : Systems) {
         s->init(registry);
     }
 
@@ -48,7 +34,7 @@ int main() {
         input.update();
 
         renderer.beginFrame(deltaTime);
-        for (auto& s : systems) {
+        for (auto& s : Systems) {
             s->update(deltaTime);
         }
         renderer.endFrame();
@@ -60,11 +46,12 @@ int main() {
     /*
      * Shutdown systems
      */
-    for (auto& s : systems) {
+    for (auto& s : Systems) {
         s->terminate();
     }
 
     input.terminate();
     renderer.terminate();
-    return 0;
 }
+
+Application::Application(std::string title) : _title(std::move(title)) {}

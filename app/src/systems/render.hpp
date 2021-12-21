@@ -1,7 +1,7 @@
 #ifndef VIRTUAL_GALAXY_RENDER_HPP
 #define VIRTUAL_GALAXY_RENDER_HPP
 
-#include "system.hpp"
+#include "core/system.hpp"
 #include "math/vector3.hpp"
 
 class Render : public System {
