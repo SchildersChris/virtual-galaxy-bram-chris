@@ -31,6 +31,10 @@ void Input::terminate() {
 }
 
 void Input::update() {
+    for (int i = 0; i < AmountOfKeys; ++i) {
+        _keysUp[i] = 0;
+    }
+
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
