@@ -4,7 +4,7 @@
 #include "math/vector3.hpp"
 
 struct Transform {
-    Vector3 Position;
+    Vector3 Translation;
     Vector3 Rotation;
     Vector3 Scale;
 };

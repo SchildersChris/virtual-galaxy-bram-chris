@@ -57,7 +57,7 @@ void Rasterizer::update(float deltaTime) {
                 triangle[1] *= matrix;
                 triangle[2] *= matrix;
 
-                rasterizeTriangle(triangle, cameraTransform.Position, stream);
+                rasterizeTriangle(triangle, cameraTransform.Translation, stream);
             }
         }
     }

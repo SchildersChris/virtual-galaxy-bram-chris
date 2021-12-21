@@ -4,37 +4,47 @@
 #include "../utils/wavefront-object.hpp"
 #include "../components/camera.hpp"
 
-#include "math/matrix4x4.hpp"
 #include <imgui.h>
-#include <valarray>
+#include <utils/input.hpp>
 
 void Scene::init(entt::registry& registry) {
     _step = 0;
     _fps = 0;
     _activeFps = 0;
     _registry = &registry;
+    _isFpsCamera = false;
 
-    auto camera = registry.create();
-    registry.emplace<Camera>(camera);
-    registry.emplace<Transform>(camera, Transform {
-            { 0.f, 0.f, 1.f},
-            { 0.f, 0.f, 0.f},
-            { 1.f, 1.f, 1.f}
+    _worldCamera = registry.create();
+    registry.emplace<Camera>(_fpsCamera);
+    registry.emplace<Transform>(_worldCamera, Transform {
+        Vector3 { 0.f, 0.f, 0.f},
+        Vector3 { 0.f, 0.f, 0.f},
+        Vector3 { 1.f, 1.f, 1.f}
     });
 
-    auto spaceship = registry.create();
-    registry.emplace<Transform>(spaceship, Transform {
-        { 0.f, 0.f, 0.f},
-        { 0.f, 0.f, 0.f},
-        { 0.f, 0.f, 0.f}
+    _fpsCamera = registry.create();
+    registry.emplace<Transform>(_fpsCamera, Transform {
+        Vector3 { 0.f, 0.f, 0.f},
+        Vector3 { 0.f, 0.f, 0.f},
+        Vector3 { 1.f, 1.f, 1.f}
     });
-
-    auto& object = registry.emplace<Object>(spaceship, Object {});
+    auto& object = registry.emplace<Object>(_fpsCamera, Object {});
     WavefrontObject::load("assets/spaceship.obj", object.Vertices, object.Indices);
 }
 
 void Scene::update(float deltaTime) {
     if (!_registry) { return; }
+
+    if (Input::getInstance().getKeyUp(Input::KeyCode::C)) {
+        if (_isFpsCamera) {
+            _registry->remove<Camera>(_worldCamera);
+            _registry->emplace<Camera>(_fpsCamera);
+        } else {
+            _registry->remove<Camera>(_fpsCamera);
+            _registry->emplace<Camera>(_worldCamera);
+        }
+        _isFpsCamera = !_isFpsCamera;
+    }
 
     ++_fps;
     _step += deltaTime;
@@ -47,6 +57,7 @@ void Scene::update(float deltaTime) {
 
     ImGui::Begin("Scene");
     ImGui::Text("FPS: %.d", _activeFps);
+    ImGui::Text(_isFpsCamera ? "Camera: First Person" : "Camera: World");
     ImGui::End();
 }
 
