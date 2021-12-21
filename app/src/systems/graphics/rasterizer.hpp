@@ -1,10 +1,10 @@
-#ifndef VIRTUAL_GALAXY_RENDER_HPP
-#define VIRTUAL_GALAXY_RENDER_HPP
+#ifndef VIRTUAL_GALAXY_RASTERIZER_HPP
+#define VIRTUAL_GALAXY_RASTERIZER_HPP
 
 #include "core/system.hpp"
 #include "math/vector3.hpp"
 
-class Render : public System {
+class Rasterizer : public System {
 public:
     void init(entt::registry& registry) override;
     void update(float deltaTime) override;
@@ -36,4 +36,4 @@ private:
 };
 
 
-#endif //VIRTUAL_GALAXY_RENDER_HPP
+#endif //VIRTUAL_GALAXY_RASTERIZER_HPP

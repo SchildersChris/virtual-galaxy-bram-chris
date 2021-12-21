@@ -22,15 +22,14 @@ void Scene::init(entt::registry& registry) {
             { 1.f, 1.f, 1.f}
     });
 
-    auto entity = registry.create();
-    registry.emplace<Transform>(entity, Transform {
+    auto spaceship = registry.create();
+    registry.emplace<Transform>(spaceship, Transform {
         { 0.f, 0.f, 0.f},
         { 0.f, 0.f, 0.f},
         { 0.f, 0.f, 0.f}
     });
 
-    auto& object = registry.emplace<Object>(entity, Object {});
-
+    auto& object = registry.emplace<Object>(spaceship, Object {});
     WavefrontObject::load("assets/spaceship.obj", object.Vertices, object.Indices);
 
     float angle = .3f;

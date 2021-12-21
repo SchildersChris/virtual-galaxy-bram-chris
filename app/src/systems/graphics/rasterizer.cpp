@@ -1,14 +1,15 @@
-#include "render.hpp"
-#include "../components/transform.hpp"
-#include "../components/object.hpp"
-#include "../components/camera.hpp"
+#include "rasterizer.hpp"
+#include "../../components/transform.hpp"
+#include "../../components/object.hpp"
+#include "../../components/camera.hpp"
 
-#include <graphics/renderer.hpp>
-#include <math/vector2.hpp>
+#include "graphics/renderer.hpp"
+#include "math/vector2.hpp"
+
 #include <cmath>
 #include <imgui.h>
 
-void Render::init(entt::registry& registry) {
+void Rasterizer::init(entt::registry& registry) {
     _registry = &registry;
 
     // Setup z-buffer algorithm
@@ -20,7 +21,7 @@ void Render::init(entt::registry& registry) {
     _zBuffer = new float[_zBufferSize];
 }
 
-void Render::update(float deltaTime) {
+void Rasterizer::update(float deltaTime) {
     if (!_registry || !_zBuffer) { return; }
 
     static float angle = .3f;
@@ -57,11 +58,11 @@ void Render::update(float deltaTime) {
     }
 }
 
-void Render ::terminate() {
+void Rasterizer ::terminate() {
     delete[] _zBuffer;
 }
 
-void Render::rasterizeTriangle(const Vector3 t[3], const Vector3& light) {
+void Rasterizer::rasterizeTriangle(const Vector3 t[3], const Vector3& light) {
     // Back-face culling
     auto normal = (t[1] - t[0]).cross(t[2] - t[0]).normalize();
     if (normal.length() < 0) { return; }
@@ -178,17 +179,17 @@ void Render::rasterizeTriangle(const Vector3 t[3], const Vector3& light) {
     }
 }
 
-Vector2 Render::toRaster(const Vector2& v) const {
+Vector2 Rasterizer::toRaster(const Vector2& v) const {
     return {
         (1 + v.X) * 0.5f * static_cast<float>(_width),
         (1 - v.Y) * 0.5f * static_cast<float>(_height)
     };
 }
 
-float Render::getShade(const Vector3& light, const Vector3& normal) {
+float Rasterizer::getShade(const Vector3& light, const Vector3& normal) {
     return std::abs(normal.dot(light));
 }
 
-float Render::interpAtoB(float fromA, float fromB, float toA, float toB, float atB) {
+float Rasterizer::interpAtoB(float fromA, float fromB, float toA, float toB, float atB) {
     return fromA - (fromA - toA) * ((fromB - atB) / (fromB - toB));
 }
