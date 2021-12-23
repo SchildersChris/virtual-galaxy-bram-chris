@@ -1,5 +1,5 @@
 #include "graphics/renderer.hpp"
-#include "utils/color.hpp"
+#include "graphics/color.hpp"
 
 #include <imgui.h>
 #include <imgui_sdl.h>
@@ -36,9 +36,11 @@ void Renderer::init(const std::string& title, bool fullscreen, int32 width, int3
 int32 Renderer::getWidth() const {
     return _width;
 }
+
 int32 Renderer::getHeight() const {
     return _height;
 }
+
 void Renderer::setClearColor(Color color) {
     _clearColor = color;
 }
@@ -59,19 +61,23 @@ void Renderer::beginFrame(float deltaTime) {
 
     ImGui::NewFrame();
 }
+
 void Renderer::drawTexture(const Texture& texture) {
     SDL_RenderCopy(_renderer, texture._texture, nullptr, nullptr);
 }
+
 void Renderer::drawLine(const Vector2& p1, const Vector2& p2, Color color) {
     SDL_SetRenderDrawColor(_renderer, color.R, color.G, color.B, color.A);
     SDL_RenderDrawLineF(_renderer, p1.X, p1.Y, p2.X, p2.Y);
 }
+
 void Renderer::endFrame() {
     ImGui::Render();
     ImGuiSDL::Render(ImGui::GetDrawData());
 
     SDL_RenderPresent(_renderer);
 }
+
 void Renderer::terminate() {
     ImGuiSDL::Deinitialize();
     ImGui::DestroyContext();

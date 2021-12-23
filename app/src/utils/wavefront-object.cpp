@@ -1,11 +1,11 @@
 #include "wavefront-object.hpp"
-#include "utils/data.hpp"
+#include "core/data.hpp"
 
 #include "objpar.h"
 #include <iostream>
 
 void WavefrontObject::load(const std::string& path, std::vector<Vector3>& vertices, std::vector<uint32>& indices) {
-    auto data = Data::read(path);
+    auto data = data::read(path);
 
     objpar_data_t objData;
     auto buffer = new char[objpar_get_size(data.c_str(), data.size())];

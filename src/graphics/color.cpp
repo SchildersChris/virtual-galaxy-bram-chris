@@ -1,4 +1,4 @@
-#include "utils/color.hpp"
+#include "graphics/color.hpp"
 
 Color Color::_white {255, 255, 255, 255};
 Color Color::_red {255, 0, 0, 255};

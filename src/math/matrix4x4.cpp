@@ -1,5 +1,11 @@
 #include "math/matrix4x4.hpp"
 
+Matrix4x4::Matrix4x4() {
+    for (float& _col : _cols) {
+        _col = 0;
+    }
+}
+
 Matrix4x4 Matrix4x4::identity() {
     auto m = Matrix4x4();
 
@@ -33,7 +39,7 @@ Matrix4x4 Matrix4x4::scale(float x, float y, float z) {
 }
 
 bool Matrix4x4::operator==(const Matrix4x4& o) const {
-    for (auto i = 0; i < 16; ++i) {
+    for (int32 i = 0; i < 16; ++i) {
         if (_cols[i] != o[i]) {
             return false;
         }
@@ -42,7 +48,7 @@ bool Matrix4x4::operator==(const Matrix4x4& o) const {
 }
 
 bool Matrix4x4::operator!=(const Matrix4x4& o) const {
-    for (auto i = 0; i < 16; ++i) {
+    for (int32 i = 0; i < 16; ++i) {
         if (_cols[i] != o[i]) {
             return true;
         }
@@ -69,8 +75,8 @@ float Matrix4x4::operator()(int32 x, int32 y) const {
 Matrix4x4 Matrix4x4::operator*(const Matrix4x4& o) const {
     auto res = Matrix4x4();
 
-    for (int x = 0; x < Cols; ++x) {
-        for (int y = 0; y < Rows; ++y) {
+    for (int32 x = 0; x < Cols; ++x) {
+        for (int32 y = 0; y < Rows; ++y) {
             res(x, y) = (*this)(x, y) * o(x, y);
         }
     }
@@ -78,8 +84,8 @@ Matrix4x4 Matrix4x4::operator*(const Matrix4x4& o) const {
 }
 
 void Matrix4x4::operator*=(const Matrix4x4& o) {
-    for (int x = 0; x < Cols; ++x) {
-        for (int y = 0; y < Rows; ++y) {
+    for (int32 x = 0; x < Cols; ++x) {
+        for (int32 y = 0; y < Rows; ++y) {
             (*this)(x, y) *= o(x, y);
         }
     }

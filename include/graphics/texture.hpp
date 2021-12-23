@@ -2,7 +2,7 @@
 #define VIRTUAL_GALAXY_TEXTURE_HPP
 
 #include "base.hpp"
-#include "utils/color.hpp"
+#include "color.hpp"
 
 #include "SDL.h"
 

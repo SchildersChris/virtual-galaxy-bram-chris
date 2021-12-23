@@ -5,7 +5,7 @@
 #include "../components/camera.hpp"
 
 #include <imgui.h>
-#include <utils/input.hpp>
+#include <core/input.hpp>
 
 void Scene::init(entt::registry& registry) {
     _step = 0;

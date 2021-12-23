@@ -3,15 +3,14 @@
 
 #include <string>
 
-class Data {
-public:
+namespace data {
     /**
      * @brief Read the contents of a file as a string
      *
      * @param path of the file
      * @return the string content of a file
      */
-    static std::string read(const std::string& path);
-};
+    std::string read(const std::string& path);
+}
 
 #endif //VIRTUAL_GALAXY_DATA_HPP

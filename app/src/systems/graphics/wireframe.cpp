@@ -5,8 +5,11 @@
 
 #include "math/vector3.hpp"
 #include "graphics/renderer.hpp"
+#include "math/utils.hpp"
 
 #include <imgui.h>
+
+Wireframe::Wireframe(float fov, float near, float far) : _projection(utils::getProjectionMatrix(near, far, fov)) {}
 
 void Wireframe::init(entt::registry& registry) {
     _registry = &registry;
@@ -40,20 +43,23 @@ void Wireframe::update(float deltaTime) {
         ImGui::SliderFloat("Sz", &camTrans.Scale.Z, -10, 10);
     }
     ImGui::End();
-    auto v = camTrans.GetMatrix();
+    auto vp = camTrans.GetMatrix() * _projection;
 
     for (auto&& [entity, transform, object] : _registry->group<Transform, Object>().each()) {
-        auto m = transform.GetMatrix();
-        auto mv = (m * v);
+        auto mvp = (transform.GetMatrix() * vp);
 
         for (int i = 0; i < object.Indices.size(); i += 3) {
             Vector3 v0 = object.Vertices[object.Indices[i] - 1];
             Vector3 v1 = object.Vertices[object.Indices[i+1] - 1];
             Vector3 v2 = object.Vertices[object.Indices[i+2] - 1];
 
-            v0 *= mv;
-            v1 *= mv;
-            v2 *= mv;
+            v0 *= mvp;
+            v1 *= mvp;
+            v2 *= mvp;
+
+            if (v0.Z == 0 || v1.Z == 0 || v2.Z == 0) {
+                continue;
+            }
 
             Vector2 r0 = toRaster(v0.proj());
             Vector2 r1 = toRaster(v1.proj());

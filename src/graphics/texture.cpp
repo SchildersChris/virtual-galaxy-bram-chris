@@ -1,4 +1,4 @@
-#include <utils/color.hpp>
+#include <graphics/color.hpp>
 #include <stdexcept>
 #include "graphics/texture.hpp"
 

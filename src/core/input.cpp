@@ -1,4 +1,4 @@
-#include "utils/input.hpp"
+#include "core/input.hpp"
 
 #include "SDL.h"
 

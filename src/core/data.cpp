@@ -1,9 +1,9 @@
-#include "utils/data.hpp"
+#include "core/data.hpp"
 
 #include <fstream>
 #include <sstream>
 
-std::string Data::read(const std::string& path) {
+std::string data::read(const std::string& path) {
     std::ifstream fileReadStream;
     fileReadStream.exceptions(fileReadStream.exceptions() | std::ios::failbit);
     fileReadStream.open(path);

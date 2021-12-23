@@ -8,13 +8,7 @@
 
 class Matrix4x4 {
 public:
-    Matrix4x4() = default;
-
-    explicit Matrix4x4(const float cols[16]) {
-        for (int32 i = 0; i < 16; ++i) {
-            _cols[i] = cols[i];
-        }
-    };
+    Matrix4x4();
 
     static Matrix4x4 identity();
 

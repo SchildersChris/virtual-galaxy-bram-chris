@@ -31,14 +31,15 @@ set(IMGUI
 
 add_library(virtual-galaxy
     core/application.cpp
+    core/input.cpp
+    core/data.cpp
+    graphics/color.cpp
+    graphics/renderer.cpp
     graphics/texture.cpp
     math/vector3.cpp
     math/vector2.cpp
     math/matrix4x4.cpp
-    graphics/renderer.cpp
-    utils/input.cpp
-    utils/color.cpp
-    utils/data.cpp
+        math/utils.cpp
     ${IMGUI}
     ${HEADER_LIST})
 

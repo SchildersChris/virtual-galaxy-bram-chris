@@ -1,6 +1,6 @@
 #include "core/application.hpp"
 #include "graphics/renderer.hpp"
-#include "utils/input.hpp"
+#include "core/input.hpp"
 
 #include "entity/registry.hpp"
 #include <chrono>
