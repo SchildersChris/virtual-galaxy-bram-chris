@@ -14,3 +14,7 @@ Matrix4x4 utils::getProjectionMatrix(float fov, float near, float far) {
 
     return mat;
 }
+
+Matrix4x4 utils::lookAt() {
+    return Matrix4x4();
+}

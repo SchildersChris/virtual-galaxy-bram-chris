@@ -21,8 +21,6 @@ add_executable(app
     src/components/object.hpp
     src/utils/wavefront-object.cpp
     src/utils/wavefront-object.hpp
-        ../src/math/utils.cpp
-        ../include/math/utils.hpp
 )
 
 target_compile_features(app PRIVATE cxx_std_17)

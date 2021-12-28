@@ -8,7 +8,7 @@ struct Transform {
     Vector3 Rotation;
     Vector3 Scale;
 
-    Matrix4x4 GetMatrix() {
+    Matrix4x4 getMatrix() {
         return Matrix4x4::translation(Translation.X, Translation.Y, Translation.Z);
     }
 };

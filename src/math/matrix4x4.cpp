@@ -75,18 +75,22 @@ float Matrix4x4::operator()(int32 x, int32 y) const {
 Matrix4x4 Matrix4x4::operator*(const Matrix4x4& o) const {
     auto res = Matrix4x4();
 
-    for (int32 x = 0; x < Cols; ++x) {
-        for (int32 y = 0; y < Rows; ++y) {
-            res(x, y) = (*this)(x, y) * o(x, y);
+    for (int32 row = 0; row < 4; ++row) {
+        for (int32 col = 0; col < 4; ++col) {
+            for (int i = 0; i < 4; ++i) {
+                res(col, row) = (*this)(i, row) * o(col, i);
+            }
         }
     }
     return res;
 }
 
 void Matrix4x4::operator*=(const Matrix4x4& o) {
-    for (int32 x = 0; x < Cols; ++x) {
-        for (int32 y = 0; y < Rows; ++y) {
-            (*this)(x, y) *= o(x, y);
+    for (int32 row = 0; row < 4; ++row) {
+        for (int32 col = 0; col < 4; ++col) {
+            for (int i = 0; i < 4; ++i) {
+                (*this)(i, row) = (*this)(i, row) * o(col, i);
+            }
         }
     }
 }

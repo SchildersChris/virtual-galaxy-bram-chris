@@ -5,7 +5,8 @@
 
 namespace utils {
     /**
-     * Provides a projection matrix based on the given parameters
+     * Returns a projection matrix that encodes the near and far clipping
+     * while projection to the correct fov
      *
      * @param fov Field of view
      * @param near Near clipping plane
@@ -13,6 +14,8 @@ namespace utils {
      * @return Projection matrix to translate points
      */
     Matrix4x4 getProjectionMatrix(float near, float far, float fov);
+
+    Matrix4x4 lookAt();
 }
 
 

@@ -36,10 +36,11 @@ add_library(virtual-galaxy
     graphics/color.cpp
     graphics/renderer.cpp
     graphics/texture.cpp
+    math/vector4.cpp
     math/vector3.cpp
     math/vector2.cpp
     math/matrix4x4.cpp
-        math/utils.cpp
+    math/utils.cpp
     ${IMGUI}
     ${HEADER_LIST})
 
