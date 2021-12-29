@@ -1,12 +1,16 @@
 #ifndef VIRTUAL_GALAXY_RASTERIZER_HPP
 #define VIRTUAL_GALAXY_RASTERIZER_HPP
 
+#include <math/utils.hpp>
 #include "core/system.hpp"
 #include "math/vector3.hpp"
 #include "graphics/texture.hpp"
 
 class Rasterizer : public System {
 public:
+    Rasterizer(float fov, float near, float far) : _projection(utils::getProjectionMatrix(fov, near, far, 16.f / 9.f)) {}
+
+
     void init(entt::registry& registry) override;
     void update(float deltaTime) override;
     void terminate() override;
@@ -35,6 +39,8 @@ private:
 
     static constexpr float _near = 1.f;
     static constexpr float _far = 100.f;
+
+    Matrix4x4 _projection;
 };
 
 

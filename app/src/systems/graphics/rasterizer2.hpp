@@ -32,7 +32,7 @@ private:
 
     Matrix4x4 _projection;
 
-    static constexpr float _near = 1.f;
+    static constexpr float _near = 2.f;
     static constexpr float _far = 100.f;
 
     float edgeFunction(const Vector3* v1, const Vector3* v2, const Vector3* p);

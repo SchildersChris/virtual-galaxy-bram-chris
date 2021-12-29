@@ -23,9 +23,9 @@ void Movement::update(float deltaTime) {
     Vector3 rot;
     auto& input = Input::getInstance();
     if (input.getKeyDown(Input::KeyCode::A)) {
-        rot.Y -= actualRotation;
-    } else if (input.getKeyDown(Input::KeyCode::D)) {
         rot.Y += actualRotation;
+    } else if (input.getKeyDown(Input::KeyCode::D)) {
+        rot.Y -= actualRotation;
     }
 
     if (input.getKeyDown(Input::KeyCode::W)) {
@@ -35,9 +35,9 @@ void Movement::update(float deltaTime) {
     }
 
     if (input.getKeyDown(Input::KeyCode::Q)) {
-        rot.Z -= actualRotation;
-    } else if (input.getKeyDown(Input::KeyCode::E)) {
         rot.Z += actualRotation;
+    } else if (input.getKeyDown(Input::KeyCode::E)) {
+        rot.Z -= actualRotation;
     }
 
     auto shouldMove = input.getKeyDown(Input::KeyCode::LEFT_SHIFT);

@@ -25,15 +25,32 @@ void Rasterizer::init(entt::registry& registry) {
 void Rasterizer::update(float deltaTime) {
     if (!_registry || !_zBuffer) { return; }
 
-    static float angle = .3f;
-    ImGui::Begin("Renderer Window");
-    ImGui::SliderFloat("Rotate Y", &angle, -1, 1);
+    auto& renderer = Renderer::getInstance();
+
+    auto&& [_, camTrans] = *_registry->view<Transform, Camera>().each().begin();
+
+    static bool drawAxis = true;
+
+    ImGui::Begin("Renderer");
+    ImGui::Checkbox("Draw Axis", &drawAxis);
+    if (ImGui::CollapsingHeader("Camera Transform")) {
+        ImGui::Text("Translation");
+        ImGui::SliderFloat("Tx", &camTrans.Translation.X, -40, 40);
+        ImGui::SliderFloat("Ty", &camTrans.Translation.Y, -40, 40);
+        ImGui::SliderFloat("Tz", &camTrans.Translation.Z, -40, 40);
+        ImGui::Text("Rotation");
+        ImGui::SliderFloat("Rx", &camTrans.Rotation.X, -40, 40);
+        ImGui::SliderFloat("Ry", &camTrans.Rotation.Y, -40, 40);
+        ImGui::SliderFloat("Rz", &camTrans.Rotation.Z, -40, 40);
+        ImGui::Text("Scale");
+        ImGui::SliderFloat("Sx", &camTrans.Scale.X, -40, 40);
+        ImGui::SliderFloat("Sy", &camTrans.Scale.Y, -40, 40);
+        ImGui::SliderFloat("Sz", &camTrans.Scale.Z, -40, 40);
+    }
     ImGui::End();
 
 
     std::fill(_zBuffer, _zBuffer + _zBufferSize, _far);
-
-    auto&& [_, camTrans] = *_registry->view<Transform, Camera>().each().begin();
 
     {
         auto stream = _texture->lock();
