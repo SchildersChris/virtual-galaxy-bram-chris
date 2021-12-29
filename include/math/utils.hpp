@@ -14,7 +14,7 @@ namespace utils {
      * @param far Far clipping plane
      * @return Projection matrix to translate points
      */
-    Matrix4x4 getProjectionMatrix(float near, float far, float fov);
+    Matrix4x4 getProjectionMatrix(float fov, float near, float far);
 
     /**
      * Degrees to radians constant
