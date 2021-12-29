@@ -9,7 +9,7 @@ struct Transform {
     Vector3 Scale;
 
     Matrix4x4 getMatrix() {
-        return Matrix4x4::translation(Translation.X, Translation.Y, Translation.Z);
+        return Matrix4x4::translation(Translation.X, Translation.Y, Translation.Z) * Matrix4x4::scale(Scale.X, Scale.Y, Scale.Z);
     }
 };
 

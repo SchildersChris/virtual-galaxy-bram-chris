@@ -26,7 +26,6 @@ public:
     float operator()(int32 x, int32 y) const;
 
     Matrix4x4 operator*(const Matrix4x4& o) const;
-    void operator*=(const Matrix4x4& o);
 
 private:
     static constexpr int32 Rows = 4;

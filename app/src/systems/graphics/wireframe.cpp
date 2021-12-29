@@ -30,40 +30,37 @@ void Wireframe::update(float deltaTime) {
     ImGui::Checkbox("Test", &drawAxis);
     if (ImGui::CollapsingHeader("Camera Transform")) {
         ImGui::Text("Translation");
-        ImGui::SliderFloat("Tx", &camTrans.Translation.X, -20, 20);
-        ImGui::SliderFloat("Ty", &camTrans.Translation.Y, -20, 20);
-        ImGui::SliderFloat("Tz", &camTrans.Translation.Z, -20, 20);
+        ImGui::SliderFloat("Tx", &camTrans.Translation.X, -40, 40);
+        ImGui::SliderFloat("Ty", &camTrans.Translation.Y, -40, 40);
+        ImGui::SliderFloat("Tz", &camTrans.Translation.Z, -40, 40);
         ImGui::Text("Rotation");
-        ImGui::SliderFloat("Rx", &camTrans.Rotation.X, -20, 20);
-        ImGui::SliderFloat("Ry", &camTrans.Rotation.Y, -20, 20);
-        ImGui::SliderFloat("Rz", &camTrans.Rotation.Z, -20, 20);
+        ImGui::SliderFloat("Rx", &camTrans.Rotation.X, -40, 40);
+        ImGui::SliderFloat("Ry", &camTrans.Rotation.Y, -40, 40);
+        ImGui::SliderFloat("Rz", &camTrans.Rotation.Z, -40, 40);
         ImGui::Text("Scale");
-        ImGui::SliderFloat("Sx", &camTrans.Scale.X, -20, 20);
-        ImGui::SliderFloat("Sy", &camTrans.Scale.Y, -20, 20);
-        ImGui::SliderFloat("Sz", &camTrans.Scale.Z, -20, 20);
+        ImGui::SliderFloat("Sx", &camTrans.Scale.X, -40, 40);
+        ImGui::SliderFloat("Sy", &camTrans.Scale.Y, -40, 40);
+        ImGui::SliderFloat("Sz", &camTrans.Scale.Z, -40, 40);
     }
     ImGui::End();
-    auto vp = camTrans.getMatrix() * _projection;
+    auto view = camTrans.getMatrix();
+    auto vp = _projection * view;
 
     for (auto&& [entity, transform, object] : _registry->group<Transform, Object>().each()) {
         auto mvp = (transform.getMatrix() * vp);
 
         for (int i = 0; i < object.Indices.size(); i += 3) {
-            auto v0 = object.Vertices[object.Indices[i] - 1];
-            auto v1 = object.Vertices[object.Indices[i+1] - 1];
-            auto v2 = object.Vertices[object.Indices[i+2] - 1];
+            auto v0 = object.Vertices[object.Indices[i] - 1] * mvp;
+            auto v1 = object.Vertices[object.Indices[i+1] - 1] * mvp;
+            auto v2 = object.Vertices[object.Indices[i+2] - 1] * mvp;
 
-            v0 *= mvp;
-            v1 *= mvp;
-            v2 *= mvp;
-
-            if (v0.Z == 0 || v1.Z == 0 || v2.Z == 0) {
+            if (v0.W > 0 || v1.W > 0 || v2.W > 0) {
                 continue;
             }
 
-           auto r0 = toRaster(v0.proj());
-           auto r1 = toRaster(v1.proj());
-           auto r2 = toRaster(v2.proj());
+           auto r0 = toRaster(v0);
+           auto r1 = toRaster(v1);
+           auto r2 = toRaster(v2);
 
             renderer.drawLine(r0, r1, Color::white());
             renderer.drawLine(r1, r2, Color::white());
@@ -74,9 +71,9 @@ void Wireframe::update(float deltaTime) {
 
 void Wireframe::terminate() {}
 
-Vector2 Wireframe::toRaster(const Vector2& v) const {
+Vector2 Wireframe::toRaster(const Vector4& v) const {
     return {
-        (1 + v.X) * 0.5f * static_cast<float>(_width),
-        (1 - v.Y) * 0.5f * static_cast<float>(_height)
+        (1 + v.X / v.W) * 0.5f * static_cast<float>(_width),
+        (1 - v.Y / v.W) * 0.5f * static_cast<float>(_height)
     };
 }

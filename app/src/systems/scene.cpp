@@ -17,34 +17,34 @@ void Scene::init(entt::registry& registry) {
     _worldCamera = registry.create();
     registry.emplace<Camera>(_worldCamera);
     registry.emplace<Transform>(_worldCamera, Transform {
-        Vector3 { 0.f, 0.f, 20.f},
+        Vector3 { 0.f, 0.f, -40.f},
         Vector3 { 0.f, 0.f, 0.f},
         Vector3 { 1.f, 1.f, 1.f}
     });
 
     _fpsCamera = registry.create();
     registry.emplace<Transform>(_fpsCamera, Transform {
-        Vector3 { 0.f, 0.f, 20.f},
+        Vector3 { 0.f, 0.f, 0.f},
         Vector3 { 0.f, 0.f, 0.f},
         Vector3 { 1.f, 1.f, 1.f}
     });
 
     auto o = registry.create();
     registry.emplace<Transform>(o, Transform {
-            Vector3 { 0.f, -0.5f, -10.f},
+            Vector3 { 0.f, 0.f, 0.f},
             Vector3 { 0.f, 0.f, 0.f},
             Vector3 { 1.f, 1.f, 1.f}
     });
     auto& object = registry.emplace<Object>(o, Object {});
-//    WavefrontObject::load("assets/spaceship.obj", object.Vertices, object.Indices);
+    WavefrontObject::load("assets/spaceship.obj", object.Vertices, object.Indices);
 
-    object.Vertices.emplace_back(-.5f, -.5f, 1.f); // Left point
-    object.Vertices.emplace_back(.5f, -.5f, 1.f); // Right point
-    object.Vertices.emplace_back(0.f, .5f, 1.f); // Top (middle) point
-
-    object.Indices.push_back(1);
-    object.Indices.push_back(2);
-    object.Indices.push_back(3);
+//    object.Vertices.emplace_back(-.5f, -.5f, 1.f); // Left point
+//    object.Vertices.emplace_back(.5f, -.5f, 1.f); // Right point
+//    object.Vertices.emplace_back(0.f, .5f, 1.f); // Top (middle) point
+//
+//    object.Indices.push_back(1);
+//    object.Indices.push_back(2);
+//    object.Indices.push_back(3);
 }
 
 void Scene::update(float deltaTime) {

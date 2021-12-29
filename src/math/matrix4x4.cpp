@@ -20,6 +20,10 @@ Matrix4x4 Matrix4x4::identity() {
 Matrix4x4 Matrix4x4::translation(float x, float y, float z) {
     auto m = identity();
 
+//    m[3] = x;
+//    m[7]= y;
+//    m[11] = z;
+
     m[3] = x;
     m[7]= y;
     m[11] = z;
@@ -78,19 +82,10 @@ Matrix4x4 Matrix4x4::operator*(const Matrix4x4& o) const {
     for (int32 row = 0; row < 4; ++row) {
         for (int32 col = 0; col < 4; ++col) {
             for (int i = 0; i < 4; ++i) {
-                res(col, row) = (*this)(i, row) * o(col, i);
+                res(col, row) += (*this)(i, row) * o(col, i);
             }
         }
     }
-    return res;
-}
 
-void Matrix4x4::operator*=(const Matrix4x4& o) {
-    for (int32 row = 0; row < 4; ++row) {
-        for (int32 col = 0; col < 4; ++col) {
-            for (int i = 0; i < 4; ++i) {
-                (*this)(i, row) = (*this)(i, row) * o(col, i);
-            }
-        }
-    }
+    return res;
 }

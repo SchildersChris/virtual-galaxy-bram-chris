@@ -64,9 +64,9 @@ void Rasterizer::rasterizeTriangle(const Vector3 t[3], const Vector3& light, Tex
     auto normal = (t[1] - t[0]).cross(t[2] - t[0]).normalize();
     if (normal.length() < 0) { return; }
 
-    Vector2 r0 = toRaster(t[0].proj());
-    Vector2 r1 = toRaster(t[1].proj());
-    Vector2 r2 = toRaster(t[2].proj());
+    Vector2 r0 = toRaster(Vector2 { t[0].X / t[0].Z, t[0].Y / t[0].Z});
+    Vector2 r1 = toRaster(Vector2 { t[1].X / t[1].Z, t[1].Y / t[1].Z});
+    Vector2 r2 = toRaster(Vector2 { t[2].X / t[2].Z, t[2].Y / t[2].Z});
 
     // Sort all points from top (0) to bottom (2) using the Y component
     if (r2.Y > r0.Y) { std::swap(r2, r0); }

@@ -5,6 +5,7 @@
 #include "core/system.hpp"
 #include "graphics/texture.hpp"
 #include "math/vector2.hpp"
+#include "math/vector4.hpp"
 #include "math/matrix4x4.hpp"
 
 class Wireframe : public System {
@@ -23,7 +24,7 @@ public:
     void terminate() override;
 
 private:
-    [[nodiscard]] Vector2 toRaster(const Vector2& v) const;
+    [[nodiscard]] Vector2 toRaster(const Vector4& v) const;
 
     entt::registry* _registry {nullptr};
 

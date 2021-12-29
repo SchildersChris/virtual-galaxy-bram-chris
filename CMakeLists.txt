@@ -21,3 +21,7 @@ include(FetchContent)
 add_subdirectory(src)
 add_subdirectory(app)
 
+if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR MODERN_CMAKE_BUILD_TESTING) AND BUILD_TESTING)
+  include(CTest)
+  add_subdirectory(tests)
+endif()

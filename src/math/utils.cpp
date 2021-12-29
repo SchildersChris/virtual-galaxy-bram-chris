@@ -10,7 +10,7 @@ Matrix4x4 utils::getProjectionMatrix(float fov, float near, float far) {
     mat[5] = scale;
     mat[10] = -far / (far - near);
     mat[11] = -1;
-    mat[10] = -far * near / (far - near);
+    mat[14] = -far * near / (far - near);
 
     return mat;
 }
