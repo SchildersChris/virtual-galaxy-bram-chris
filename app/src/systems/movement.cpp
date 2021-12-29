@@ -16,12 +16,13 @@ void Movement::update(float deltaTime) {
     ImGui::End();
 
     Vector3 rot;
+    Vector3 trans;
 
     auto& input = Input::getInstance();
     if (input.getKeyDown(Input::KeyCode::A)) {
-        rot.Y -= speed;
-    } else if (input.getKeyDown(Input::KeyCode::D)) {
         rot.Y += speed;
+    } else if (input.getKeyDown(Input::KeyCode::D)) {
+        rot.Y -= speed;
     }
 
     if (input.getKeyDown(Input::KeyCode::W)) {
@@ -31,18 +32,17 @@ void Movement::update(float deltaTime) {
     }
 
     if (input.getKeyDown(Input::KeyCode::Q)) {
-        rot.Z -= speed;
-    } else if (input.getKeyDown(Input::KeyCode::E)) {
         rot.Z += speed;
+    } else if (input.getKeyDown(Input::KeyCode::E)) {
+        rot.Z -= speed;
     }
 
-//    if (input.getKeyDown(Input::KeyCode::LEFT_SHIFT)) {
-//
-//    }
-//
+    if (input.getKeyDown(Input::KeyCode::LEFT_SHIFT)) {
+        trans = { 0, 0, speed };
+    }
 
     for (auto&& [entity, transform] : _registry->view<Transform, Player>().each()) {
-//        transform.Translation += trans;
+        transform.Translation += trans;
         transform.Rotation += rot;
     }
 }

@@ -19,7 +19,7 @@ private:
 
     [[nodiscard]] Vector3 toRaster(const Vector3& v) const;
 
-    float getShade(float z, const Vector3 c[3], const float a[3], const Vector3& normal);
+    float getShade(float z, const Vector3 c[3], const float a[3]);
 
     entt::registry* _registry {nullptr};
 

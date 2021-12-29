@@ -32,7 +32,7 @@ void Rasterizer2::update(float deltaTime) {
     static bool drawAxis = true;
 
     ImGui::Begin("Renderer");
-    ImGui::Checkbox("Test", &drawAxis);
+    ImGui::Checkbox("Draw Axis", &drawAxis);
     if (ImGui::CollapsingHeader("Camera Transform")) {
         ImGui::Text("Translation");
         ImGui::SliderFloat("Tx", &camTrans.Translation.X, -40, 40);
@@ -58,6 +58,22 @@ void Rasterizer2::update(float deltaTime) {
         auto vp = _projection * camTrans.getMatrix();
         for (auto&& [entity, transform, object] : _registry->group<Transform, Object>().each()) {
             auto mvp = vp * transform.getMatrix();
+
+            if (drawAxis) {
+                auto c = Vector3 { 0, 0, 0 } * mvp;
+                auto x = Vector3 { 10, 0, 0 } * mvp;
+                auto y = Vector3 { 0, 10, 0 } * mvp;
+                auto z = Vector3 { 0, 0, 10 } * mvp;
+
+                auto rC = toRaster(Vector3 { c.X, c.Y, c.Z });
+                auto rX = toRaster(Vector3 { x.X, x.Y, x.Z });
+                auto rY = toRaster(Vector3 { y.X, y.Y, y.Z });
+                auto rZ = toRaster(Vector3 { z.X, z.Y, z.Z });
+
+                renderer.drawLine({rC.X, rC.Y}, {rX.X, rX.Y}, Color::green());
+                renderer.drawLine({rC.X, rC.Y}, {rY.X, rY.Y}, Color::red());
+                renderer.drawLine({rC.X, rC.Y}, {rZ.X, rZ.Y}, Color::blue());
+            }
 
             for (int i = 0; i < object.Indices.size(); i += 3) {
                 auto v0 = object.Vertices[object.Indices[i] - 1] * mvp;
@@ -89,10 +105,6 @@ void Rasterizer2 ::terminate() {
 }
 
 void Rasterizer2::rasterizeTriangle(const Vector3 t[3], const Vector3 r[3], const Vector3& light, Texture::Stream& stream) {
-    // Back-face culling
-    auto normal = (t[1] - t[0]).cross(t[2] - t[0]).normalize();
-    if (normal.length() < 0) { return; }
-
     float rMaxY = std::max(r[0].Y, std::max(r[1].Y, r[2].Y));
     float rMinY = std::min(r[0].Y, std::min(r[1].Y, r[2].Y));
     float rMaxX = std::max(r[0].X, std::max(r[1].X, r[2].X));
@@ -139,7 +151,7 @@ void Rasterizer2::rasterizeTriangle(const Vector3 t[3], const Vector3 r[3], cons
                 continue;
 
             _zBuffer[y * _width + x] = z;
-            auto s = getShade(z, t,  a, normal);
+            auto s = getShade(z, t, a);
             auto c = static_cast<uint8>(s * 255);
             stream.setPixel(x, y, Color(c, c, c, 255));
         }
@@ -154,12 +166,15 @@ Vector3 Rasterizer2::toRaster(const Vector3& v) const {
     };
 }
 
-float Rasterizer2::getShade(float z, const Vector3 c[3], const float a[3], const Vector3& normal) {
+float Rasterizer2::getShade(float z, const Vector3 c[3], const float a[3]) {
     float px = (c[0].X / -c[0].Z) * a[0] + (c[1].X / -c[1].Z) * a[1] + (c[2].X / -c[2].Z) * a[2];
     float py = (c[0].Y / -c[0].Z) * a[0] + (c[1].Y / -c[1].Z) * a[1] + (c[2].Y / -c[2].Z) * a[2];
 
     Vector3 viewDirection = {px * -z, py * -z, z };
-    return normal.dot(viewDirection.normalize());
+    Vector3 line1 = c[1] - c[0];
+    Vector3 line2 = c[2] - c[0];
+
+    return line1.cross(line2).normalize().dot(viewDirection.normalize());
 }
 
 // unsigned char Rasterizer2::getPixelShade(float z, const Vector3 c[3], const float a[3]) {

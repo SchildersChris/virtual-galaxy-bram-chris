@@ -27,7 +27,7 @@ void Wireframe::update(float deltaTime) {
     static bool drawAxis = true;
 
     ImGui::Begin("Renderer");
-    ImGui::Checkbox("Test", &drawAxis);
+    ImGui::Checkbox("Draw Axis", &drawAxis);
     if (ImGui::CollapsingHeader("Camera Transform")) {
         ImGui::Text("Translation");
         ImGui::SliderFloat("Tx", &camTrans.Translation.X, -40, 40);
@@ -47,6 +47,22 @@ void Wireframe::update(float deltaTime) {
     auto vp = _projection * camTrans.getMatrix();
     for (auto&& [entity, transform, object] : _registry->group<Transform, Object>().each()) {
         auto mvp = vp * transform.getMatrix();
+
+        if (drawAxis) {
+            auto c = Vector3 { 0, 0, 0 } * mvp;
+            auto x = Vector3 { 1, 0, 0 } * mvp;
+            auto y = Vector3 { 0, 1, 0 } * mvp;
+            auto z = Vector3 { 0, 0, 1 } * mvp;
+
+            auto rC = toRaster(c);
+            auto rX = toRaster(x);
+            auto rY = toRaster(y);
+            auto rZ = toRaster(z);
+
+            renderer.drawLine(rC, rX, Color::green());
+            renderer.drawLine(rC, rY, Color::red());
+            renderer.drawLine(rC, rZ, Color::blue());
+        }
 
         for (int i = 0; i < object.Indices.size(); i += 3) {
             auto v0 = object.Vertices[object.Indices[i] - 1] * mvp;
