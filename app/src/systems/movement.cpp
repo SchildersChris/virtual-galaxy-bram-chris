@@ -14,15 +14,15 @@ void Movement::update(float deltaTime) {
 
     auto& input = Input::getInstance();
     if (input.getKeyDown(Input::KeyCode::A)) {
-        rot.X += speed;
+        rot.Y += speed;
     } else if (input.getKeyDown(Input::KeyCode::D)) {
-        rot.X -= speed;
+        rot.Y -= speed;
     }
 
     if (input.getKeyDown(Input::KeyCode::W)) {
-        rot.Y += speed;
+        rot.X += speed;
     } else if (input.getKeyDown(Input::KeyCode::S)) {
-        rot.Y -= speed;
+        rot.X -= speed;
     }
 
     if (input.getKeyDown(Input::KeyCode::Q)) {
