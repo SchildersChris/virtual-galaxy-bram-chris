@@ -10,7 +10,6 @@ class Rasterizer : public System {
 public:
     Rasterizer(float fov, float near, float far) : _projection(utils::getProjectionMatrix(fov, near, far, 16.f / 9.f)) {}
 
-
     void init(entt::registry& registry) override;
     void update(float deltaTime) override;
     void terminate() override;
@@ -18,7 +17,7 @@ public:
 private:
     void rasterizeTriangle(const Vector3 t[3], const Vector3& light, Texture::Stream& stream);
 
-    [[nodiscard]] Vector2 toRaster(const Vector2& v) const;
+    [[nodiscard]] Vector2 toRaster(const Vector3& v) const;
 
     static float getShade(const Vector3& light, const Vector3& normal);
 

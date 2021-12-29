@@ -33,19 +33,10 @@ void Rasterizer2::update(float deltaTime) {
 
     ImGui::Begin("Renderer");
     ImGui::Checkbox("Draw Axis", &drawAxis);
-    if (ImGui::CollapsingHeader("Camera Transform")) {
-        ImGui::Text("Translation");
-        ImGui::SliderFloat("Tx", &camTrans.Translation.X, -40, 40);
-        ImGui::SliderFloat("Ty", &camTrans.Translation.Y, -40, 40);
-        ImGui::SliderFloat("Tz", &camTrans.Translation.Z, -40, 40);
-        ImGui::Text("Rotation");
-        ImGui::SliderFloat("Rx", &camTrans.Rotation.X, -40, 40);
-        ImGui::SliderFloat("Ry", &camTrans.Rotation.Y, -40, 40);
-        ImGui::SliderFloat("Rz", &camTrans.Rotation.Z, -40, 40);
-        ImGui::Text("Scale");
-        ImGui::SliderFloat("Sx", &camTrans.Scale.X, -40, 40);
-        ImGui::SliderFloat("Sy", &camTrans.Scale.Y, -40, 40);
-        ImGui::SliderFloat("Sz", &camTrans.Scale.Z, -40, 40);
+    if (ImGui::CollapsingHeader("Camera Position")) {
+        ImGui::SliderFloat("X", &camTrans.Translation.X, -100, 100);
+        ImGui::SliderFloat("Y", &camTrans.Translation.Y, -100, 100);
+        ImGui::SliderFloat("Z", &camTrans.Translation.Z, -100, 100);
     }
     ImGui::End();
 
@@ -58,22 +49,6 @@ void Rasterizer2::update(float deltaTime) {
         auto vp = _projection * camTrans.getMatrix();
         for (auto&& [entity, transform, object] : _registry->group<Transform, Object>().each()) {
             auto mvp = vp * transform.getMatrix();
-
-            if (drawAxis) {
-                auto c = Vector3 { 0, 0, 0 } * mvp;
-                auto x = Vector3 { 10, 0, 0 } * mvp;
-                auto y = Vector3 { 0, 10, 0 } * mvp;
-                auto z = Vector3 { 0, 0, 10 } * mvp;
-
-                auto rC = toRaster(Vector3 { c.X, c.Y, c.Z });
-                auto rX = toRaster(Vector3 { x.X, x.Y, x.Z });
-                auto rY = toRaster(Vector3 { y.X, y.Y, y.Z });
-                auto rZ = toRaster(Vector3 { z.X, z.Y, z.Z });
-
-                renderer.drawLine({rC.X, rC.Y}, {rX.X, rX.Y}, Color::green());
-                renderer.drawLine({rC.X, rC.Y}, {rY.X, rY.Y}, Color::red());
-                renderer.drawLine({rC.X, rC.Y}, {rZ.X, rZ.Y}, Color::blue());
-            }
 
             for (int i = 0; i < object.Indices.size(); i += 3) {
                 auto v0 = object.Vertices[object.Indices[i] - 1] * mvp;
@@ -93,6 +68,22 @@ void Rasterizer2::update(float deltaTime) {
                 r[2] = toRaster(t[2]);
 
                 rasterizeTriangle(t, r, camTrans.Translation, stream);
+            }
+
+            if (drawAxis) {
+                auto c = Vector3 { 0, 0, 0 } * mvp;
+                auto x = Vector3 { 10, 0, 0 } * mvp;
+                auto y = Vector3 { 0, 10, 0 } * mvp;
+                auto z = Vector3 { 0, 0, 10 } * mvp;
+
+                auto rC = toRaster(Vector3 { c.X, c.Y, c.Z });
+                auto rX = toRaster(Vector3 { x.X, x.Y, x.Z });
+                auto rY = toRaster(Vector3 { y.X, y.Y, y.Z });
+                auto rZ = toRaster(Vector3 { z.X, z.Y, z.Z });
+
+                renderer.drawLine({rC.X, rC.Y}, {rX.X, rX.Y}, Color::green());
+                renderer.drawLine({rC.X, rC.Y}, {rY.X, rY.Y}, Color::red());
+                renderer.drawLine({rC.X, rC.Y}, {rZ.X, rZ.Y}, Color::blue());
             }
         }
     }

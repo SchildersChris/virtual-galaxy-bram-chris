@@ -29,7 +29,7 @@ set(IMGUI
     ${imgui-sdl_DIR}/imgui_sdl.h)
 
 
-add_library(virtual-galaxy
+add_library(virtual-galaxy STATIC
     core/application.cpp
     core/input.cpp
     core/data.cpp
@@ -45,7 +45,7 @@ add_library(virtual-galaxy
     ${HEADER_LIST})
 
 target_compile_features(virtual-galaxy PUBLIC cxx_std_17)
-target_link_libraries(virtual-galaxy PRIVATE SDL2 SDL2_image EnTT)
+target_link_libraries(virtual-galaxy PRIVATE SDL2-static SDL2_image EnTT)
 
 target_include_directories(virtual-galaxy
         PUBLIC

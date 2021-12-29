@@ -49,21 +49,32 @@ void Rasterizer::update(float deltaTime) {
     }
     ImGui::End();
 
-
     std::fill(_zBuffer, _zBuffer + _zBufferSize, _far);
 
     {
         auto stream = _texture->lock();
         stream.clear(Color::black());
 
-        Vector3 triangle[3];
-        for (auto&& [entity, transform, object] : _registry->group<Transform, Object>().each()) {
-            for (int i = 0; i < object.Indices.size(); i += 3) {
-                triangle[0] = object.Vertices[object.Indices[i] - 1];
-                triangle[1] = object.Vertices[object.Indices[i+1] - 1];
-                triangle[2] = object.Vertices[object.Indices[i+2] - 1];
+        Vector3 t[3];
+        auto vp = _projection * camTrans.getMatrix();
 
-                rasterizeTriangle(triangle, camTrans.Translation, stream);
+        for (auto&& [entity, transform, object] : _registry->group<Transform, Object>().each()) {
+            auto mvp = vp * transform.getMatrix();
+
+            for (int i = 0; i < object.Indices.size(); i += 3) {
+                auto v0 = object.Vertices[object.Indices[i] - 1] * mvp;
+                auto v1 = object.Vertices[object.Indices[i+1] - 1] * mvp;
+                auto v2 = object.Vertices[object.Indices[i+2] - 1] * mvp;
+
+                if (v0.W > 0 || v1.W > 0 || v2.W > 0) {
+                    continue;
+                }
+
+                t[0] = Vector3 { v0.X, v0.Y, v0.Z };
+                t[1] = Vector3 { v1.X, v1.Y, v1.Z };
+                t[2] = Vector3 { v2.X, v2.Y, v2.Z };
+
+                rasterizeTriangle(t, camTrans.Translation, stream);
             }
         }
     }
@@ -81,9 +92,9 @@ void Rasterizer::rasterizeTriangle(const Vector3 t[3], const Vector3& light, Tex
     auto normal = (t[1] - t[0]).cross(t[2] - t[0]).normalize();
     if (normal.length() < 0) { return; }
 
-    Vector2 r0 = toRaster(Vector2 { t[0].X / t[0].Z, t[0].Y / t[0].Z});
-    Vector2 r1 = toRaster(Vector2 { t[1].X / t[1].Z, t[1].Y / t[1].Z});
-    Vector2 r2 = toRaster(Vector2 { t[2].X / t[2].Z, t[2].Y / t[2].Z});
+    Vector2 r0 = toRaster(t[0]);
+    Vector2 r1 = toRaster(t[1]);
+    Vector2 r2 = toRaster(t[2]);
 
     // Sort all points from top (0) to bottom (2) using the Y component
     if (r2.Y > r0.Y) { std::swap(r2, r0); }
@@ -193,10 +204,10 @@ void Rasterizer::rasterizeTriangle(const Vector3 t[3], const Vector3& light, Tex
     }
 }
 
-Vector2 Rasterizer::toRaster(const Vector2& v) const {
+Vector2 Rasterizer::toRaster(const Vector3& v) const {
     return {
-        (1 + v.X) * 0.5f * static_cast<float>(_width),
-        (1 - v.Y) * 0.5f * static_cast<float>(_height)
+            (1 + v.X / v.Z) * 0.5f * static_cast<float>(_width),
+            (1 - v.Y / v.Z) * 0.5f * static_cast<float>(_height),
     };
 }
 
