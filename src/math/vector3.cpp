@@ -5,6 +5,7 @@ constexpr bool Vector3::operator==(const Vector3& o) const { return X == o.X && 
 constexpr bool Vector3::operator!=(const Vector3& o) const { return X != o.X || Y != o.Y || Z != o.Z; }
 
 Vector3 Vector3::operator+(const Vector3& o) const { return { X + o.X, Y + o.Y, Z + o.Z }; }
+void Vector3::operator+=(const Vector3& o) { X += o.X; Y += o.Y; Z += o.Z; }
 Vector3 Vector3::operator+(float s) const { return { X + s, Y + s, Z + s }; }
 
 Vector3 Vector3::operator-(const Vector3& o) const { return { X - o.X, Y - o.Y, Z - o.Z }; }

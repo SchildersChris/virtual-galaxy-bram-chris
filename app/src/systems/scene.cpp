@@ -3,6 +3,7 @@
 #include "../components/object.hpp"
 #include "../utils/wavefront-object.hpp"
 #include "../components/camera.hpp"
+#include "../components/player.hpp"
 
 #include <imgui.h>
 #include <core/input.hpp>
@@ -17,7 +18,7 @@ void Scene::init(entt::registry& registry) {
     _worldCamera = registry.create();
     registry.emplace<Camera>(_worldCamera);
     registry.emplace<Transform>(_worldCamera, Transform {
-        Vector3 { 0.f, 0.f, -40.f},
+        Vector3 { 0.f, 0.f, 40.f},
         Vector3 { 0.f, 0.f, 0.f},
         Vector3 { 1.f, 1.f, 1.f}
     });
@@ -31,10 +32,11 @@ void Scene::init(entt::registry& registry) {
 
     auto o = registry.create();
     registry.emplace<Transform>(o, Transform {
-            Vector3 { 0.f, 0.f, -20.f},
+            Vector3 { 0.f, 0.f, 20.f},
             Vector3 { 0.f, 0.f, 0.f},
             Vector3 { 1.f, 1.f, 1.f}
     });
+    registry.emplace<Player>(o);
     auto& object = registry.emplace<Object>(o, Object {});
     WavefrontObject::load("assets/spaceship.obj", object.Vertices, object.Indices);
 

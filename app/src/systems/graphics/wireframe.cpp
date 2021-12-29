@@ -72,7 +72,7 @@ void Wireframe::terminate() {}
 
 Vector2 Wireframe::toRaster(const Vector4& v) const {
     return {
-        (1 + v.X / v.W) * 0.5f * static_cast<float>(_width),
-        (1 - v.Y / v.W) * 0.5f * static_cast<float>(_height)
+        (1 + v.X / v.Z) * 0.5f * static_cast<float>(_width),
+        (1 - v.Y / v.Z) * 0.5f * static_cast<float>(_height)
     };
 }
