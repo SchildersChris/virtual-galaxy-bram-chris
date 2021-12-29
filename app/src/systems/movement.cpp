@@ -19,21 +19,21 @@ void Movement::update(float deltaTime) {
 
     auto& input = Input::getInstance();
     if (input.getKeyDown(Input::KeyCode::A)) {
-        rot.Y += speed;
-    } else if (input.getKeyDown(Input::KeyCode::D)) {
         rot.Y -= speed;
+    } else if (input.getKeyDown(Input::KeyCode::D)) {
+        rot.Y += speed;
     }
 
     if (input.getKeyDown(Input::KeyCode::W)) {
-        rot.X += speed;
-    } else if (input.getKeyDown(Input::KeyCode::S)) {
         rot.X -= speed;
+    } else if (input.getKeyDown(Input::KeyCode::S)) {
+        rot.X += speed;
     }
 
     if (input.getKeyDown(Input::KeyCode::Q)) {
-        rot.Z += speed;
-    } else if (input.getKeyDown(Input::KeyCode::E)) {
         rot.Z -= speed;
+    } else if (input.getKeyDown(Input::KeyCode::E)) {
+        rot.Z += speed;
     }
 
 //    if (input.getKeyDown(Input::KeyCode::LEFT_SHIFT)) {

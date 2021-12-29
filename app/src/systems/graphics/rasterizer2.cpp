@@ -139,9 +139,9 @@ void Rasterizer2::rasterizeTriangle(const Vector3 t[3], const Vector3 r[3], cons
                 continue;
 
             _zBuffer[y * _width + x] = z;
-            auto s = getShade(light, normal);
+            auto s = getShade(z, t,  a, normal);
             auto c = static_cast<uint8>(s * 255);
-            stream.setPixel(y * _width + x, Color(c, c, c, 255));
+            stream.setPixel(x, y, Color(c, c, c, 255));
         }
     }
 }
@@ -154,9 +154,12 @@ Vector3 Rasterizer2::toRaster(const Vector3& v) const {
     };
 }
 
-//
-float Rasterizer2::getShade(const Vector3& light, const Vector3& normal) {
-    return std::abs(normal.dot(light));
+float Rasterizer2::getShade(float z, const Vector3 c[3], const float a[3], const Vector3& normal) {
+    float px = (c[0].X / -c[0].Z) * a[0] + (c[1].X / -c[1].Z) * a[1] + (c[2].X / -c[2].Z) * a[2];
+    float py = (c[0].Y / -c[0].Z) * a[0] + (c[1].Y / -c[1].Z) * a[1] + (c[2].Y / -c[2].Z) * a[2];
+
+    Vector3 viewDirection = {px * -z, py * -z, z };
+    return normal.dot(viewDirection.normalize());
 }
 
 // unsigned char Rasterizer2::getPixelShade(float z, const Vector3 c[3], const float a[3]) {
