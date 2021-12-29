@@ -20,9 +20,9 @@ void Movement::update(float deltaTime) {
 
     auto& input = Input::getInstance();
     if (input.getKeyDown(Input::KeyCode::A)) {
-        rot.Y += speed;
-    } else if (input.getKeyDown(Input::KeyCode::D)) {
         rot.Y -= speed;
+    } else if (input.getKeyDown(Input::KeyCode::D)) {
+        rot.Y += speed;
     }
 
     if (input.getKeyDown(Input::KeyCode::W)) {
