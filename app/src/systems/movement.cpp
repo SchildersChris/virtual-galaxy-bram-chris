@@ -20,7 +20,7 @@ void Movement::update(float deltaTime) {
 
     auto actualRotation = rotationSpeed * deltaTime;
 
-    Vector3 rot, trans;
+    Vector3 rot;
     auto& input = Input::getInstance();
     if (input.getKeyDown(Input::KeyCode::A)) {
         rot.Y -= actualRotation;
@@ -40,12 +40,13 @@ void Movement::update(float deltaTime) {
         rot.Z += actualRotation;
     }
 
+    auto shouldMove = input.getKeyDown(Input::KeyCode::LEFT_SHIFT);
     for (auto&& [entity, transform] : _registry->view<Transform, Player>().each()) {
         transform.Rotation += rot;
 
-        if (input.getKeyDown(Input::KeyCode::LEFT_SHIFT)) {
+        if (shouldMove) {
             auto rotation = Matrix4x4::rotation(transform.Rotation.X, transform.Rotation.Y, transform.Rotation.Z);
-            auto heading = Vector4 { 0, 0, 1, 1 } * rotation;
+            auto heading = Vector4 { 0, 0, 1, 1 } * rotation; // Move in positive Z direction * current rotation
 
             transform.Translation += Vector3 { heading.X, heading.Y, heading.Z } * movementSpeed * deltaTime;
         }
