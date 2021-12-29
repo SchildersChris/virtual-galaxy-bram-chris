@@ -18,7 +18,7 @@ void Scene::init(entt::registry& registry) {
     _worldCamera = registry.create();
     registry.emplace<Camera>(_worldCamera);
     registry.emplace<Transform>(_worldCamera, Transform {
-        Vector3 { 0.f, 0.f, 40.f},
+        Vector3 { 0.f, 0.f, 0.f},
         Vector3 { 0.f, 0.f, 0.f},
         Vector3 { 1.f, 1.f, 1.f}
     });
@@ -32,7 +32,7 @@ void Scene::init(entt::registry& registry) {
 
     auto o = registry.create();
     registry.emplace<Transform>(o, Transform {
-            Vector3 { 0.f, 0.f, 20.f},
+            Vector3 { 0.f, 0.f, 10.f},
             Vector3 { 0.f, 0.f, 0.f},
             Vector3 { 1.f, 1.f, 1.f}
     });
