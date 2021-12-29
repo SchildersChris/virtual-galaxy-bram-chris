@@ -10,35 +10,35 @@ void Movement::init(entt::registry& registry) {
 }
 
 void Movement::update(float deltaTime) {
-    static float speed = 0.001f;
+    static float speed = 0.001;
     ImGui::Begin("Movement");
-    ImGui::SliderFloat("Speed", &speed, 0, 1);
+    ImGui::SliderFloat("Speed", &speed, 0, 0.02);
     ImGui::End();
 
-    Vector3 rot;
-    Vector3 trans;
+    auto actualSpeed = speed * deltaTime;
 
+    Vector3 rot, trans;
     auto& input = Input::getInstance();
     if (input.getKeyDown(Input::KeyCode::A)) {
-        rot.Y -= speed;
+        rot.Y -= actualSpeed;
     } else if (input.getKeyDown(Input::KeyCode::D)) {
-        rot.Y += speed;
+        rot.Y += actualSpeed;
     }
 
     if (input.getKeyDown(Input::KeyCode::W)) {
-        rot.X -= speed;
+        rot.X -= actualSpeed;
     } else if (input.getKeyDown(Input::KeyCode::S)) {
-        rot.X += speed;
+        rot.X += actualSpeed;
     }
 
     if (input.getKeyDown(Input::KeyCode::Q)) {
-        rot.Z += speed;
+        rot.Z += actualSpeed;
     } else if (input.getKeyDown(Input::KeyCode::E)) {
-        rot.Z -= speed;
+        rot.Z -= actualSpeed;
     }
 
     if (input.getKeyDown(Input::KeyCode::LEFT_SHIFT)) {
-        trans = { 0, 0, speed };
+        trans = { 0, 0, actualSpeed };
     }
 
     for (auto&& [entity, transform] : _registry->view<Transform, Player>().each()) {
