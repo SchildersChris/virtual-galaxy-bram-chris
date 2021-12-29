@@ -3,6 +3,7 @@
 #include "systems/collision.hpp"
 #include "systems/movement.hpp"
 #include "systems/graphics/wireframe.hpp"
+#include "systems/graphics/rasterizer2.hpp"
 
 App::App() : Application("Virtual Galaxy") {
     /*
@@ -13,5 +14,6 @@ App::App() : Application("Virtual Galaxy") {
     Systems.emplace_back(std::make_unique<Movement>());
 
 //    Systems.emplace_back(std::make_unique<Rasterizer>());
-    Systems.emplace_back(std::make_unique<Wireframe>(90, 1.f, 100.f));
+    Systems.emplace_back(std::make_unique<Rasterizer2>(90, 1.f, 100.f));
+//    Systems.emplace_back(std::make_unique<Wireframe>(90, 1.f, 100.f));
 }

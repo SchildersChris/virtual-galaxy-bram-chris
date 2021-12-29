@@ -9,6 +9,8 @@ add_executable(app
     src/app.hpp
     src/systems/graphics/rasterizer.cpp
     src/systems/graphics/rasterizer.hpp
+    src/systems/graphics/rasterizer2.cpp
+    src/systems/graphics/rasterizer2.hpp
     src/systems/graphics/wireframe.cpp
     src/systems/graphics/wireframe.hpp
     src/systems/movement.cpp
