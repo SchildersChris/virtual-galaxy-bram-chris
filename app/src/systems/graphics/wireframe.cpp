@@ -9,7 +9,7 @@
 
 #include <imgui.h>
 
-Wireframe::Wireframe(float fov, float near, float far) : _projection(utils::getProjectionMatrix(near, far, fov)) {}
+Wireframe::Wireframe(float fov, float near, float far) : _projection(utils::getProjectionMatrix(fov, near, far)) {}
 
 void Wireframe::init(entt::registry& registry) {
     _registry = &registry;
@@ -43,11 +43,10 @@ void Wireframe::update(float deltaTime) {
         ImGui::SliderFloat("Sz", &camTrans.Scale.Z, -40, 40);
     }
     ImGui::End();
-    auto view = camTrans.getMatrix();
-    auto vp = _projection * view;
 
+    auto vp = _projection * camTrans.getMatrix();
     for (auto&& [entity, transform, object] : _registry->group<Transform, Object>().each()) {
-        auto mvp = (transform.getMatrix() * vp);
+        auto mvp = vp * transform.getMatrix();
 
         for (int i = 0; i < object.Indices.size(); i += 3) {
             auto v0 = object.Vertices[object.Indices[i] - 1] * mvp;
@@ -58,9 +57,9 @@ void Wireframe::update(float deltaTime) {
                 continue;
             }
 
-           auto r0 = toRaster(v0);
-           auto r1 = toRaster(v1);
-           auto r2 = toRaster(v2);
+            auto r0 = toRaster(v0);
+            auto r1 = toRaster(v1);
+            auto r2 = toRaster(v2);
 
             renderer.drawLine(r0, r1, Color::white());
             renderer.drawLine(r1, r2, Color::white());

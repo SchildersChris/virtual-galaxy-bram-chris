@@ -1,3 +1,4 @@
+#include <complex>
 #include "math/matrix4x4.hpp"
 
 Matrix4x4::Matrix4x4() {
@@ -20,15 +21,48 @@ Matrix4x4 Matrix4x4::identity() {
 Matrix4x4 Matrix4x4::translation(float x, float y, float z) {
     auto m = identity();
 
-//    m[3] = x;
-//    m[7]= y;
-//    m[11] = z;
-
     m[3] = x;
     m[7]= y;
     m[11] = z;
 
     return m;
+}
+
+Matrix4x4 Matrix4x4::rotation(float x, float y, float z) {
+    auto mX = identity();
+    if (x != 0) {
+        auto cosX = std::cos(x);
+        auto sinX = std::sin(x);
+
+        mX(1, 1) = cosX; // cos
+        mX(2, 1) = -sinX; // -sin
+        mX(1, 2) = sinX; // sin
+        mX(2, 2) = cosX; // cos
+    }
+
+    auto mY = identity();
+    if (y != 0) {
+        auto cosY = std::cos(y);
+        auto sinY = std::sin(y);
+
+        mY(0, 0) = cosY; // cos
+        mY(2, 0) = sinY; // sin
+        mY(0, 2) = -sinY; // -sin
+        mY(2, 2) = cosY; // cos
+    }
+
+    auto mZ = identity();
+    if (z != 0) {
+        auto cosZ = std::cos(z);
+        auto sinZ = std::sin(z);
+
+        mZ(0, 0) = cosZ; // cos
+        mZ(1, 0) = sinZ; // -sin
+        mZ(0, 1) = -sinZ; // sin
+        mZ(1, 1) = cosZ; // cos
+    }
+
+    return mX * mY * mZ;
 }
 
 Matrix4x4 Matrix4x4::scale(float x, float y, float z) {
@@ -79,9 +113,9 @@ float Matrix4x4::operator()(int32 x, int32 y) const {
 Matrix4x4 Matrix4x4::operator*(const Matrix4x4& o) const {
     auto res = Matrix4x4();
 
-    for (int32 row = 0; row < 4; ++row) {
-        for (int32 col = 0; col < 4; ++col) {
-            for (int i = 0; i < 4; ++i) {
+    for (int32 row = 0; row < Rows; ++row) {
+        for (int32 col = 0; col < Cols; ++col) {
+            for (int32 i = 0; i < Cols ; ++i) {
                 res(col, row) += (*this)(i, row) * o(col, i);
             }
         }

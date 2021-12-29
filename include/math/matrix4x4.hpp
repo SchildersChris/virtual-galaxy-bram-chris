@@ -2,7 +2,6 @@
 #define VIRTUAL_GALAXY_MATRIX4X4_HPP
 
 #include "base.hpp"
-#include "math/axis.hpp"
 
 #include <stdexcept>
 
@@ -13,6 +12,8 @@ public:
     static Matrix4x4 identity();
 
     static Matrix4x4 translation(float x, float y, float z);
+
+    static Matrix4x4 rotation(float x, float y, float z);
 
     static Matrix4x4 scale(float x, float y, float z);
 

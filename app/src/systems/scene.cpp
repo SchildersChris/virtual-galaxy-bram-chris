@@ -31,7 +31,7 @@ void Scene::init(entt::registry& registry) {
 
     auto o = registry.create();
     registry.emplace<Transform>(o, Transform {
-            Vector3 { 0.f, 0.f, 0.f},
+            Vector3 { 0.f, 0.f, -20.f},
             Vector3 { 0.f, 0.f, 0.f},
             Vector3 { 1.f, 1.f, 1.f}
     });

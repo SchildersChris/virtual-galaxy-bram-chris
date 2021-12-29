@@ -8,8 +8,11 @@ struct Transform {
     Vector3 Rotation;
     Vector3 Scale;
 
-    Matrix4x4 getMatrix() {
-        return Matrix4x4::translation(Translation.X, Translation.Y, Translation.Z) * Matrix4x4::scale(Scale.X, Scale.Y, Scale.Z);
+    [[nodiscard]] Matrix4x4 getMatrix() const {
+        return
+            Matrix4x4::translation(Translation.X, Translation.Y, Translation.Z) *
+            Matrix4x4::rotation(Rotation.X, Rotation.Y, Rotation.Z) *
+            Matrix4x4::scale(Scale.X, Scale.Y, Scale.Z);
     }
 };
 

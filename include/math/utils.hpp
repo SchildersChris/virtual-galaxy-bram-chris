@@ -2,6 +2,7 @@
 #define VIRTUAL_GALAXY_UTILS_HPP
 
 #include "math/matrix4x4.hpp"
+#include <valarray>
 
 namespace utils {
     /**
@@ -15,7 +16,15 @@ namespace utils {
      */
     Matrix4x4 getProjectionMatrix(float near, float far, float fov);
 
-    Matrix4x4 lookAt();
+    /**
+     * Degrees to radians constant
+     */
+    constexpr float Deg2Rad = M_PI / 180;
+
+    /**
+     * Radians to degrees constant
+     */
+    constexpr float Rad2Deg = 1 / Deg2Rad;
 }
 
 

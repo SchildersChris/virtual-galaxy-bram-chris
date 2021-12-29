@@ -14,8 +14,6 @@ public:
 
     [[nodiscard]] Vector4 operator*(const Matrix4x4& o) const;
 
-    [[nodiscard]] Vector2 proj() const;
-
     float X;
     float Y;
     float Z;

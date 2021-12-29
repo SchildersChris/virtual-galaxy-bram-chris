@@ -13,7 +13,7 @@ public:
     /**
      * Construct wireframe renderer
      *
-     * @param fov Field of view
+     * @param fov Field of view in degrees
      * @param near Near clipping
      * @param far Far clipping
      */
