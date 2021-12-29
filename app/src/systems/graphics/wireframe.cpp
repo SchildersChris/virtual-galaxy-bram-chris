@@ -9,7 +9,7 @@
 
 #include <imgui.h>
 
-Wireframe::Wireframe(float fov, float near, float far) : _projection(utils::getProjectionMatrix(fov, near, far)) {}
+Wireframe::Wireframe(float fov, float near, float far) : _projection(utils::getProjectionMatrix(fov, near, far, 16.f / 9.f)) {}
 
 void Wireframe::init(entt::registry& registry) {
     _registry = &registry;

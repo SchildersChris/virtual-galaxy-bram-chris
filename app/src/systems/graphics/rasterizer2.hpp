@@ -8,7 +8,7 @@
 
 class Rasterizer2 : public System {
 public:
-    Rasterizer2(float fov, float near, float far) : _projection(utils::getProjectionMatrix(fov, near, far)) {}
+    Rasterizer2(float fov, float near, float far) : _projection(utils::getProjectionMatrix(fov, near, far, 16.f / 9.f)) {}
 
     void init(entt::registry& registry) override;
     void update(float deltaTime) override;

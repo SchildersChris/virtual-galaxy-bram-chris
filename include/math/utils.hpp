@@ -12,9 +12,10 @@ namespace utils {
      * @param fov Field of view
      * @param near Near clipping plane
      * @param far Far clipping plane
+     * @param aspect Aspect ratio
      * @return Projection matrix to translate points
      */
-    Matrix4x4 getProjectionMatrix(float fov, float near, float far);
+    Matrix4x4 getProjectionMatrix(float fov, float near, float far, float aspect);
 
     /**
      * Degrees to radians constant
