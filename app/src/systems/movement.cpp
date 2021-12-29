@@ -1,3 +1,4 @@
+#include <imgui.h>
 #include "movement.hpp"
 #include "../components/transform.hpp"
 #include "../components/player.hpp"
@@ -9,7 +10,11 @@ void Movement::init(entt::registry& registry) {
 }
 
 void Movement::update(float deltaTime) {
-    constexpr float speed = 0.001f;
+    static float speed = 0.001f;
+    ImGui::Begin("Movement");
+    ImGui::SliderFloat("Speed", &speed, 0, 1);
+    ImGui::End();
+
     Vector3 rot;
 
     auto& input = Input::getInstance();
