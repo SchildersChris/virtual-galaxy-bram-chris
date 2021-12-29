@@ -1,5 +1,7 @@
-#include <complex>
+#include "math/utils.hpp"
 #include "math/matrix4x4.hpp"
+
+#include <complex>
 
 Matrix4x4::Matrix4x4() {
     for (float& _col : _cols) {
@@ -30,9 +32,10 @@ Matrix4x4 Matrix4x4::translation(float x, float y, float z) {
 
 Matrix4x4 Matrix4x4::rotation(float x, float y, float z) {
     auto mX = identity();
+
     if (x != 0) {
-        auto cosX = std::cos(x);
-        auto sinX = std::sin(x);
+        auto cosX = std::cos(x * utils::Deg2Rad);
+        auto sinX = std::sin(x * utils::Deg2Rad);
 
         mX(1, 1) = cosX; // cos
         mX(2, 1) = -sinX; // -sin
@@ -42,8 +45,8 @@ Matrix4x4 Matrix4x4::rotation(float x, float y, float z) {
 
     auto mY = identity();
     if (y != 0) {
-        auto cosY = std::cos(y);
-        auto sinY = std::sin(y);
+        auto cosY = std::cos(y * utils::Deg2Rad);
+        auto sinY = std::sin(y * utils::Deg2Rad);
 
         mY(0, 0) = cosY; // cos
         mY(2, 0) = sinY; // sin
@@ -53,8 +56,8 @@ Matrix4x4 Matrix4x4::rotation(float x, float y, float z) {
 
     auto mZ = identity();
     if (z != 0) {
-        auto cosZ = std::cos(z);
-        auto sinZ = std::sin(z);
+        auto cosZ = std::cos(z * utils::Deg2Rad);
+        auto sinZ = std::sin(z * utils::Deg2Rad);
 
         mZ(0, 0) = cosZ; // cos
         mZ(1, 0) = sinZ; // -sin
@@ -62,7 +65,7 @@ Matrix4x4 Matrix4x4::rotation(float x, float y, float z) {
         mZ(1, 1) = cosZ; // cos
     }
 
-    return mX * mY * mZ;
+    return mZ * mY * mX;
 }
 
 Matrix4x4 Matrix4x4::scale(float x, float y, float z) {

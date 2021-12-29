@@ -28,6 +28,8 @@ Vector3 Vector3::cross(const Vector3& o) const {
     };
 }
 
+float Vector3::lengthSq() const { return X * X + Y * Y + Z * Z; }
+
 float Vector3::length() const { return std::sqrt(std::abs(X * X + Y * Y + Z * Z)); }
 
 Vector3 Vector3::normalize() const {
@@ -38,6 +40,7 @@ Vector3 Vector3::normalize() const {
 float Vector3::cos(const Vector3& o) const { return dot(o) / length() * o.length(); }
 
 Vector4 Vector3::operator*(const Matrix4x4& o) const {
-    auto v = Vector4 {X,Y,Z,1};
+    auto v = Vector4 { X, Y, Z, 1};
     return v * o;
 }
+
