@@ -39,8 +39,5 @@ Vector3 Vector3::normalize() const {
 
 float Vector3::cos(const Vector3& o) const { return dot(o) / length() * o.length(); }
 
-Vector4 Vector3::operator*(const Matrix4x4& o) const {
-    auto v = Vector4 { X, Y, Z, 1};
-    return v * o;
-}
+Vector4 Vector3::operator*(const Matrix4x4& o) const { return Vector4 { X, Y, Z, 1 } * o; }
 
