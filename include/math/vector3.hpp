@@ -33,8 +33,6 @@ public:
 
     [[nodiscard]] float cos(const Vector3& o) const;
 
-    [[nodiscard]] float lengthSq() const;
-
     [[nodiscard]] float length() const;
 
     [[nodiscard]] Vector3 normalize() const;

@@ -15,7 +15,7 @@ public:
     void terminate() override;
 
 private:
-    void rasterizeTriangle(const Vector3 t[3], const Vector3 r[3], const Vector3& light, Texture::Stream& stream);
+    void rasterizeTriangle(const Vector3 t[3], const Vector3 r[3], Texture::Stream& stream);
 
     [[nodiscard]] Vector3 toRaster(const Vector3& v) const;
 

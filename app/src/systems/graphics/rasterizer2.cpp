@@ -67,7 +67,7 @@ void Rasterizer2::update(float deltaTime) {
                 r[1] = toRaster(t[1]);
                 r[2] = toRaster(t[2]);
 
-                rasterizeTriangle(t, r, camTrans.Translation, stream);
+                rasterizeTriangle(t, r, stream);
             }
 
             if (drawAxis) {
@@ -95,34 +95,34 @@ void Rasterizer2 ::terminate() {
     delete[] _zBuffer;
 }
 
-void Rasterizer2::rasterizeTriangle(const Vector3 t[3], const Vector3 r[3], const Vector3& light, Texture::Stream& stream) {
+void Rasterizer2::rasterizeTriangle(const Vector3 t[3], const Vector3 r[3], Texture::Stream& stream) {
     float rMaxY = std::max(r[0].Y, std::max(r[1].Y, r[2].Y));
     float rMinY = std::min(r[0].Y, std::min(r[1].Y, r[2].Y));
     float rMaxX = std::max(r[0].X, std::max(r[1].X, r[2].X));
     float rMinX = std::min(r[0].X, std::min(r[1].X, r[2].X));
 
-    int w = _width - 1;
-    int h = _height - 1;
+    int32 w = _width - 1;
+    int32 h = _height - 1;
 
     /*
      * We test weather the box is completely out side of the raster image dimensions
      * if this is true we can immediately return
      */
-    if (rMinX > (float)w || rMaxX < 0 || rMinY > (float)h || rMaxY < 0)
+    if (rMinX > static_cast<float>(w) || rMaxX < 0 || rMinY > static_cast<float>(h) || rMaxY < 0)
         return;
 
     // Calculate raster image bounding box
-    int minY = std::max(0, (int)floorf(rMinY));
-    int maxY = std::min(h, (int)floorf(rMaxY));
-    int minX = std::max(0, (int)floorf(rMinX));
-    int maxX = std::min(w, (int)floorf(rMaxX));
+    int32 minY = std::max(0, static_cast<int32>(std::floor(rMinY)));
+    int32 maxY = std::min(h, static_cast<int32>(std::floor(rMaxY)));
+    int32 minX = std::max(0, static_cast<int32>(std::floor(rMinX)));
+    int32 maxX = std::min(w, static_cast<int32>(std::floor(rMaxX)));
 
     // Total area of triangle
     float area = edgeFunction(&r[0], &r[1], &r[2]);
 
-    for (int y = minY; y <= maxY; ++y) {
-        for (int x = minX; x <= maxX; ++x) {
-            Vector3 p = { (float)x, (float)y, 0 };
+    for (int32 y = minY; y <= maxY; ++y) {
+        for (int32 x = minX; x <= maxX; ++x) {
+            auto p = Vector3 { static_cast<float>(x), static_cast<float>(y), 0 };
 
             float a[3] = {
                 edgeFunction(&r[1], &r[2], &p),
@@ -142,17 +142,18 @@ void Rasterizer2::rasterizeTriangle(const Vector3 t[3], const Vector3 r[3], cons
                 continue;
 
             _zBuffer[y * _width + x] = z;
-            auto s = getShade(z, t, a);
-            auto c = static_cast<uint8>(s * 255);
-            stream.setPixel(x, y, Color(c, c, c, 255));
+            float s = getShade(z, t, a);
+
+            auto c = (uint8)(s * 255);
+            stream.setPixel(x, y, Color::rgbaToInteger(c, 50, c, 255));
         }
     }
 }
 
 Vector3 Rasterizer2::toRaster(const Vector3& v) const {
     return {
-        (1 + v.X / v.Z) * 0.5f * static_cast<float>(_width),
-        (1 - v.Y / v.Z) * 0.5f * static_cast<float>(_height),
+        (1 + v.X / -v.Z) * 0.5f * static_cast<float>(_width),
+        (1 - v.Y / -v.Z) * 0.5f * static_cast<float>(_height),
         -v.Z
     };
 }

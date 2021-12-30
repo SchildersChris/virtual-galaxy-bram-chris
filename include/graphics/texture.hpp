@@ -11,6 +11,7 @@ public:
     struct Stream {
         explicit Stream(Texture& texture);
         void clear(Color color);
+        void setPixel(int32 x, int32 y, uint32 color);
         void setPixel(int32 x, int32 y, Color color);
         void setPixel(int32 i, Color color);
         ~Stream();

@@ -10,6 +10,9 @@ Texture::Stream::Stream(Texture& texture) : _texture(texture), _surface(nullptr)
     }
     _pixels = static_cast<uint32*>(_surface->pixels);
 }
+void Texture::Stream::setPixel(int32 x, int32 y, uint32 color) {
+    _pixels[x + y * _texture._width] = color;
+}
 
 void Texture::Stream::setPixel(int32 x, int32 y, Color color) {
     _pixels[x + y * _texture._width] = static_cast<uint32>(color);
