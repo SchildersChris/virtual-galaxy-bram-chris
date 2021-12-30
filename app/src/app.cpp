@@ -14,8 +14,8 @@ App::App() : Application("Virtual Galaxy") {
     Systems.emplace_back(std::make_unique<Collision>());
     Systems.emplace_back(std::make_unique<Movement>());
 
-//    Systems.emplace_back(std::make_unique<Rasterizer>(60, 2.f, 100.f));
-    Systems.emplace_back(std::make_unique<Rasterizer2>(60, 2.f, 100.f));
+    Systems.emplace_back(std::make_unique<Rasterizer>(60, 2.f, 100.f));
+//    Systems.emplace_back(std::make_unique<Rasterizer2>(60, 2.f, 100.f));
 //    Systems.emplace_back(std::make_unique<Wireframe>(60, 2.f, 100.f));
 }
 
