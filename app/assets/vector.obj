@@ -1,4 +1,4 @@
- -1 This file uses centimeters as units for non-parametric coordinates.
+# This file uses centimeters as units for non-parametric coordinates.
 
 mtllib vector.mtl
 g default

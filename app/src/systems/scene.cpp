@@ -38,7 +38,7 @@ void Scene::init(entt::registry& registry) {
     });
     registry.emplace<Player>(o);
     auto& object = registry.emplace<Object>(o, Object {});
-    WavefrontObject::load("assets/spaceship.obj", object.Vertices, object.Indices);
+    WavefrontObject::load("assets/vector.obj", object.Vertices, object.Indices);
 //
 //    object.Vertices.emplace_back(-.5f, -.5f, 1.f); // Left point
 //    object.Vertices.emplace_back(.5f, -.5f, 1.f); // Right point

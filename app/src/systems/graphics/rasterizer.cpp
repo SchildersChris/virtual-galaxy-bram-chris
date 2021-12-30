@@ -7,6 +7,7 @@
 
 #include <cmath>
 #include <imgui.h>
+#include <sys/param.h>
 
 void Rasterizer::init(entt::registry& registry) {
     _registry = &registry;
@@ -42,7 +43,7 @@ void Rasterizer::update(float deltaTime) {
 
     {
         auto stream = _texture->lock();
-        stream.clear(Color::black());
+        stream.clear(Color::white());
         Vector3 t[3];
         Vector3 r[3];
 
@@ -146,10 +147,8 @@ void Rasterizer::rasterizeTriangle(const Vector3 t[3], const Vector3 r[3], Textu
                 continue;
 
             _zBuffer[y * _width + x] = z;
-            float s = getShade(z, t, a, normal);
-
-            auto c = (uint8)(s * 255);
-            stream.setPixel(x, y, Color::rgbaToInteger(c, c, c, 255));
+            auto s = getShade(z, t, a, normal);
+            stream.setPixel(x, y, Color::rgbaToInteger(s, s, s, 255));
         }
     }
 }
@@ -162,12 +161,12 @@ Vector3 Rasterizer::toRaster(const Vector3& v) const {
     };
 }
 
-float Rasterizer::getShade(float z, const Vector3 c[3], const float a[3], const Vector3& normal) {
-    float px = (c[0].X / -c[0].Z) * a[0] + (c[1].X / -c[1].Z) * a[1] + (c[2].X / -c[2].Z) * a[2];
-    float py = (c[0].Y / -c[0].Z) * a[0] + (c[1].Y / -c[1].Z) * a[1] + (c[2].Y / -c[2].Z) * a[2];
+unsigned char Rasterizer::getShade(float z, const Vector3 c[3], const float a[3], const Vector3& normal) {
+    float px = (c[0].X / c[0].Z) * a[0] + (c[1].X / c[1].Z) * a[1] + (c[2].X / c[2].Z) * a[2];
+    float py = (c[0].Y / c[0].Z) * a[0] + (c[1].Y / c[1].Z) * a[1] + (c[2].Y / c[2].Z) * a[2];
 
     Vector3 viewDirection = {px * z, py * z, -z };
-    return normal.dot(viewDirection.normalize());
+    return abs(255-(unsigned char)(MAX(0, normal.dot(viewDirection.normalize())* 255)));
 }
 
 float Rasterizer::edgeFunction(const Vector3* v1, const Vector3* v2, const Vector3* p) {
