@@ -145,7 +145,7 @@ void Rasterizer2::rasterizeTriangle(const Vector3 t[3], const Vector3 r[3], Text
             float s = getShade(z, t, a);
 
             auto c = (uint8)(s * 255);
-            stream.setPixel(x, y, Color::rgbaToInteger(c, 50, c, 255));
+            stream.setPixel(x, y, Color::rgbaToInteger(c, c, c, 255));
         }
     }
 }
@@ -154,7 +154,7 @@ Vector3 Rasterizer2::toRaster(const Vector3& v) const {
     return {
         (1 + v.X / -v.Z) * 0.5f * static_cast<float>(_width),
         (1 - v.Y / -v.Z) * 0.5f * static_cast<float>(_height),
-        -v.Z
+        v.Z
     };
 }
 
