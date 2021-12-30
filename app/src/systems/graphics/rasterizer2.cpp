@@ -96,6 +96,10 @@ void Rasterizer2 ::terminate() {
 }
 
 void Rasterizer2::rasterizeTriangle(const Vector3 t[3], const Vector3 r[3], Texture::Stream& stream) {
+    // Back-face culling
+    auto normal = (t[1] - t[0]).cross(t[2] - t[0]).normalize();
+    if (normal.length() < 0) { return; }
+
     float rMaxY = std::max(r[0].Y, std::max(r[1].Y, r[2].Y));
     float rMinY = std::min(r[0].Y, std::min(r[1].Y, r[2].Y));
     float rMaxX = std::max(r[0].X, std::max(r[1].X, r[2].X));
@@ -142,7 +146,7 @@ void Rasterizer2::rasterizeTriangle(const Vector3 t[3], const Vector3 r[3], Text
                 continue;
 
             _zBuffer[y * _width + x] = z;
-            float s = getShade(z, t, a);
+            float s = getShade(z, t, a, normal);
 
             auto c = (uint8)(s * 255);
             stream.setPixel(x, y, Color::rgbaToInteger(c, c, c, 255));
@@ -152,21 +156,18 @@ void Rasterizer2::rasterizeTriangle(const Vector3 t[3], const Vector3 r[3], Text
 
 Vector3 Rasterizer2::toRaster(const Vector3& v) const {
     return {
-        (1 + v.X / -v.Z) * 0.5f * static_cast<float>(_width),
-        (1 - v.Y / -v.Z) * 0.5f * static_cast<float>(_height),
+        (1 + v.X / v.Z) * 0.5f * static_cast<float>(_width),
+        (1 - v.Y / v.Z) * 0.5f * static_cast<float>(_height),
         v.Z
     };
 }
 
-float Rasterizer2::getShade(float z, const Vector3 c[3], const float a[3]) {
+float Rasterizer2::getShade(float z, const Vector3 c[3], const float a[3], const Vector3& normal) {
     float px = (c[0].X / -c[0].Z) * a[0] + (c[1].X / -c[1].Z) * a[1] + (c[2].X / -c[2].Z) * a[2];
     float py = (c[0].Y / -c[0].Z) * a[0] + (c[1].Y / -c[1].Z) * a[1] + (c[2].Y / -c[2].Z) * a[2];
 
-    Vector3 viewDirection = {px * -z, py * -z, z };
-    Vector3 line1 = c[1] - c[0];
-    Vector3 line2 = c[2] - c[0];
-
-    return line1.cross(line2).normalize().dot(viewDirection.normalize());
+    Vector3 viewDirection = {px * z, py * z, -z };
+    return normal.dot(viewDirection.normalize());
 }
 
 // unsigned char Rasterizer2::getPixelShade(float z, const Vector3 c[3], const float a[3]) {
