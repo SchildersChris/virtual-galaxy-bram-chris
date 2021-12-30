@@ -15,17 +15,11 @@ public:
     void terminate() override;
 
 private:
-    void rasterizeTriangle(const Vector3 t[3], const Vector3& light, Texture::Stream& stream);
+    void rasterizeTriangle(const Vector3 t[3], const Vector3 r[3], Texture::Stream& stream);
 
-    [[nodiscard]] Vector2 toRaster(const Vector3& v) const;
+    [[nodiscard]] Vector3 toRaster(const Vector3& v) const;
 
-    static float getShade(const Vector3& light, const Vector3& normal);
-
-    /*
-     * Algorithm is taken from
-     * https://cgl.ethz.ch/teaching/former/vc_master_06/Downloads/9a_scan-conversion_Z-buffering_6.pdf
-     */
-    static float interpAtoB(float fromA, float fromB, float toA, float toB, float atB);
+    float getShade(float z, const Vector3 c[3], const float a[3], const Vector3& normal);
 
     entt::registry* _registry {nullptr};
 
@@ -36,10 +30,12 @@ private:
     float* _zBuffer {nullptr};
     std::size_t _zBufferSize {0};
 
-    static constexpr float _near = 1.f;
+    Matrix4x4 _projection;
+
+    static constexpr float _near = 2.f;
     static constexpr float _far = 100.f;
 
-    Matrix4x4 _projection;
+    float edgeFunction(const Vector3* v1, const Vector3* v2, const Vector3* p);
 };
 
 

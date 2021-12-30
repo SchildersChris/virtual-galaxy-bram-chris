@@ -4,7 +4,6 @@
 #include "../../components/camera.hpp"
 
 #include "graphics/renderer.hpp"
-#include "math/vector2.hpp"
 
 #include <cmath>
 #include <imgui.h>
@@ -24,6 +23,7 @@ void Rasterizer::init(entt::registry& registry) {
 
 void Rasterizer::update(float deltaTime) {
     if (!_registry || !_zBuffer) { return; }
+    std::fill(_zBuffer, _zBuffer + _zBufferSize, _far);
 
     auto& renderer = Renderer::getInstance();
 
@@ -33,31 +33,20 @@ void Rasterizer::update(float deltaTime) {
 
     ImGui::Begin("Renderer");
     ImGui::Checkbox("Draw Axis", &drawAxis);
-    if (ImGui::CollapsingHeader("Camera Transform")) {
-        ImGui::Text("Translation");
-        ImGui::SliderFloat("Tx", &camTrans.Translation.X, -40, 40);
-        ImGui::SliderFloat("Ty", &camTrans.Translation.Y, -40, 40);
-        ImGui::SliderFloat("Tz", &camTrans.Translation.Z, -40, 40);
-        ImGui::Text("Rotation");
-        ImGui::SliderFloat("Rx", &camTrans.Rotation.X, -40, 40);
-        ImGui::SliderFloat("Ry", &camTrans.Rotation.Y, -40, 40);
-        ImGui::SliderFloat("Rz", &camTrans.Rotation.Z, -40, 40);
-        ImGui::Text("Scale");
-        ImGui::SliderFloat("Sx", &camTrans.Scale.X, -40, 40);
-        ImGui::SliderFloat("Sy", &camTrans.Scale.Y, -40, 40);
-        ImGui::SliderFloat("Sz", &camTrans.Scale.Z, -40, 40);
+    if (ImGui::CollapsingHeader("Camera Position")) {
+        ImGui::SliderFloat("X", &camTrans.Translation.X, -100, 100);
+        ImGui::SliderFloat("Y", &camTrans.Translation.Y, -100, 100);
+        ImGui::SliderFloat("Z", &camTrans.Translation.Z, -100, 100);
     }
     ImGui::End();
-
-    std::fill(_zBuffer, _zBuffer + _zBufferSize, _far);
 
     {
         auto stream = _texture->lock();
         stream.clear(Color::black());
-
         Vector3 t[3];
-        auto vp = _projection * camTrans.getMatrix();
+        Vector3 r[3];
 
+        auto vp = _projection * camTrans.getMatrix();
         for (auto&& [entity, transform, object] : _registry->group<Transform, Object>().each()) {
             auto mvp = vp * transform.getMatrix();
 
@@ -74,147 +63,113 @@ void Rasterizer::update(float deltaTime) {
                 t[1] = Vector3 { v1.X, v1.Y, v1.Z };
                 t[2] = Vector3 { v2.X, v2.Y, v2.Z };
 
-                rasterizeTriangle(t, camTrans.Translation, stream);
+                r[0] = toRaster(t[0]);
+                r[1] = toRaster(t[1]);
+                r[2] = toRaster(t[2]);
+
+                rasterizeTriangle(t, r, stream);
             }
+
+//            if (drawAxis) {
+//                auto c = Vector3 { 0, 0, 0 } * mvp;
+//                auto x = Vector3 { 10, 0, 0 } * mvp;
+//                auto y = Vector3 { 0, 10, 0 } * mvp;
+//                auto z = Vector3 { 0, 0, 10 } * mvp;
+//
+//                auto rC = toRaster(Vector3 { c.X, c.Y, c.Z });
+//                auto rX = toRaster(Vector3 { x.X, x.Y, x.Z });
+//                auto rY = toRaster(Vector3 { y.X, y.Y, y.Z });
+//                auto rZ = toRaster(Vector3 { z.X, z.Y, z.Z });
+//
+//                renderer.drawLine({rC.X, rC.Y}, {rX.X, rX.Y}, Color::green());
+//                renderer.drawLine({rC.X, rC.Y}, {rY.X, rY.Y}, Color::red());
+//                renderer.drawLine({rC.X, rC.Y}, {rZ.X, rZ.Y}, Color::blue());
+//            }
         }
     }
 
     Renderer::getInstance().drawTexture(*_texture);
-
 }
 
 void Rasterizer ::terminate() {
     delete[] _zBuffer;
 }
 
-void Rasterizer::rasterizeTriangle(const Vector3 t[3], const Vector3& light, Texture::Stream& stream) {
+void Rasterizer::rasterizeTriangle(const Vector3 t[3], const Vector3 r[3], Texture::Stream& stream) {
     // Back-face culling
     auto normal = (t[1] - t[0]).cross(t[2] - t[0]).normalize();
     if (normal.length() < 0) { return; }
 
-    Vector2 r0 = toRaster(t[0]);
-    Vector2 r1 = toRaster(t[1]);
-    Vector2 r2 = toRaster(t[2]);
+    float rMaxY = std::max(r[0].Y, std::max(r[1].Y, r[2].Y));
+    float rMinY = std::min(r[0].Y, std::min(r[1].Y, r[2].Y));
+    float rMaxX = std::max(r[0].X, std::max(r[1].X, r[2].X));
+    float rMinX = std::min(r[0].X, std::min(r[1].X, r[2].X));
 
-    // Sort all points from top (0) to bottom (2) using the Y component
-    if (r2.Y > r0.Y) { std::swap(r2, r0); }
-    if (r1.Y > r0.Y) { std::swap(r1, r0); }
-    if (r1.Y > r2.Y) { std::swap(r2, r1); }
-
-    auto top = static_cast<int32>(r0.Y);
-    auto middle = static_cast<int32>(r1.Y);
-    auto bottom = static_cast<int32>(r2.Y);
-
-    // Check if there is any surface between the triangle top and bottom.
-    if(top == bottom) { return; }
+    int32 w = _width - 1;
+    int32 h = _height - 1;
 
     /*
-     * Cross product between the top of the triangle and the bottom.
-     * This will determine whether the bend is on the left or right:
-     *
-     * We take the directional vectors:
-     * v0 = r1 - r2
-     * v1 = r0 - r2
-     *
-     * Followed by the cross product
-     * x = v0 x v1
-     *
-     * Where x < 0 means the bend is on the right side
+     * We test weather the box is completely outside the raster image dimensions
+     * if this is true we can immediately return
      */
-    auto v0 = r1 - r2;
-    auto v1 = r0 - r2;
+    if (rMinX > static_cast<float>(w) || rMaxX < 0 || rMinY > static_cast<float>(h) || rMaxY < 0)
+        return;
 
-    /*
-     * Todo: Cleanup and impl correct bresenham algorithm
-     */
-    std::function<std::tuple<int32, float, int32, float>(float)> interpTop;
-    std::function<std::tuple<int32, float, int32, float>(float)> interpBottom;
+    // Calculate raster image bounding box
+    int32 minY = std::max(0, static_cast<int32>(std::floor(rMinY)));
+    int32 maxY = std::min(h, static_cast<int32>(std::floor(rMaxY)));
+    int32 minX = std::max(0, static_cast<int32>(std::floor(rMinX)));
+    int32 maxX = std::min(w, static_cast<int32>(std::floor(rMaxX)));
 
-    if (v0.cross(v1) > 0) {
-        interpBottom = [&](float y) {
-            return std::make_tuple(
-                static_cast<int32>(interpAtoB(r0.X, r0.Y, r2.X, r2.Y, y)),
-                interpAtoB(t[0].Z, t[0].Y, t[2].Z, t[2].Y, y),
-                static_cast<int32>(interpAtoB(r1.X, r1.Y, r2.X, r2.Y, y)),
-                interpAtoB(t[1].Z, t[1].Y, t[2].Z, t[2].Y, y)
-            );
-        };
-        interpTop = [&](float y) {
-            return std::make_tuple(
-                static_cast<int32>(interpAtoB(r2.X, r2.Y, r0.X, r0.Y, y)),
-                interpAtoB(t[2].Z, t[2].Y, t[0].Z, t[0].Y, y),
-                static_cast<int32>(interpAtoB(r0.X, r0.Y, r1.X, r1.Y, y)),
-                interpAtoB(t[0].Z, t[0].Y, t[1].Z, t[1].Y, y)
-            );
-        };
-    } else {
-        interpBottom = [&](float y) {
-            return std::make_tuple(
-                static_cast<int32>(interpAtoB(r2.X, r2.Y, r1.X, r1.Y, y)),
-                interpAtoB(t[2].Z, t[2].Y, t[1].Z, t[1].Y, y),
-                static_cast<int32>(interpAtoB(r2.X, r2.Y, r0.X, r0.Y, y)),
-                interpAtoB(t[0].Z, t[0].Y, t[2].Z, t[2].Y, y)
-            );
-        };
-        interpTop = [&](float y) {
-            return std::make_tuple(
-                static_cast<int32>(interpAtoB(r0.X, r0.Y, r1.X, r1.Y, y)),
-                interpAtoB(t[0].Z, t[0].Y, t[1].Z, t[1].Y, y),
-                static_cast<int32>(interpAtoB(r0.X, r0.Y, r2.X, r2.Y, y)),
-                interpAtoB(t[0].Z, t[0].Y, t[2].Z, t[2].Y, y)
-            );
-        };
-    }
+    // Total area of triangle
+    float area = edgeFunction(&r[0], &r[1], &r[2]);
 
-    auto& renderer = Renderer::getInstance();
+    for (int32 y = minY; y <= maxY; ++y) {
+        for (int32 x = minX; x <= maxX; ++x) {
+            auto p = Vector3 { static_cast<float>(x), static_cast<float>(y), 0 };
 
-    auto y = bottom;
-    if (bottom < middle) {
-        for(; y < middle; ++y) {
-            auto [l, zL, r, zR] = interpBottom(static_cast<float>(y));
-            for (auto x = l; x < r; ++x) {
+            float a[3] = {
+                edgeFunction(&r[1], &r[2], &p),
+                edgeFunction(&r[2], &r[0], &p),
+                edgeFunction(&r[0], &r[1], &p)
+            };
 
-                auto i = x + y * _width;
-                auto z = interpAtoB(zL, static_cast<float>(l), zR, static_cast<float>(r), static_cast<float>(x));
-                if (_zBuffer[i] < z) { continue; }
-                _zBuffer[i] = z;
+            if (a[0] < 0 || a[1] < 0 || a[2] < 0)
+                continue;
 
-                auto s = getShade(light, normal);
-                auto c = static_cast<uint8>(s * 255);
-                stream.setPixel(i, Color::white());
-            }
-        }
-    }
+            a[0] /= area;
+            a[1] /= area;
+            a[2] /= area;
 
-    if (middle < top) {
-        for(; y < top; ++y) {
-            auto [l, zL, r, zR] = interpTop(static_cast<float>(y));
-            for (auto x = l; x < r; ++x) {
+            float z = 1 / (r[0].Z * a[0] + r[1].Z * a[1] + r[2].Z * a[2]);
+            if (z >= _zBuffer[y * _width + x])
+                continue;
 
-                auto i = x + y * _width;
-                auto z = interpAtoB(zL, static_cast<float>(l), zR, static_cast<float>(r), static_cast<float>(x));
-                if (_zBuffer[i] < z) { continue; }
-                _zBuffer[i] = z;
+            _zBuffer[y * _width + x] = z;
+            float s = getShade(z, t, a, normal);
 
-                auto s = getShade(light, normal);
-                auto c = static_cast<uint8>(s * 255);
-                stream.setPixel(i, Color::white());
-            }
+            auto c = (uint8)(s * 255);
+            stream.setPixel(x, y, Color::rgbaToInteger(c, c, c, 255));
         }
     }
 }
 
-Vector2 Rasterizer::toRaster(const Vector3& v) const {
+Vector3 Rasterizer::toRaster(const Vector3& v) const {
     return {
-            (1 + v.X / v.Z) * 0.5f * static_cast<float>(_width),
-            (1 - v.Y / v.Z) * 0.5f * static_cast<float>(_height),
+        (1 + v.X / v.Z) * 0.5f * static_cast<float>(_width),
+        (1 - v.Y / v.Z) * 0.5f * static_cast<float>(_height),
+        v.Z
     };
 }
 
-float Rasterizer::getShade(const Vector3& light, const Vector3& normal) {
-    return std::abs(normal.dot(light));
+float Rasterizer::getShade(float z, const Vector3 c[3], const float a[3], const Vector3& normal) {
+    float px = (c[0].X / -c[0].Z) * a[0] + (c[1].X / -c[1].Z) * a[1] + (c[2].X / -c[2].Z) * a[2];
+    float py = (c[0].Y / -c[0].Z) * a[0] + (c[1].Y / -c[1].Z) * a[1] + (c[2].Y / -c[2].Z) * a[2];
+
+    Vector3 viewDirection = {px * z, py * z, -z };
+    return normal.dot(viewDirection.normalize());
 }
 
-float Rasterizer::interpAtoB(float fromA, float fromB, float toA, float toB, float atB) {
-    return fromA - (fromA - toA) * ((fromB - atB) / (fromB - toB));
+float Rasterizer::edgeFunction(const Vector3* v1, const Vector3* v2, const Vector3* p) {
+    return (p->X - v1->X) * (v2->Y - v1->Y) - (p->Y - v1->Y) * (v2->X - v1->X);
 }
