@@ -19,7 +19,9 @@ private:
 
     [[nodiscard]] Vector3 toRaster(const Vector3& v) const;
 
-    unsigned char getShade(float z, const Vector3 c[3], const float a[3], const Vector3& normal);
+    uint8 getShade(float z, const Vector3 c[3], const float a[3], const Vector3& normal)  const;
+
+    [[nodiscard]] float edgeFunction(const Vector3& v1, const Vector3& v2, const Vector3& p) const;
 
     entt::registry* _registry {nullptr};
 
@@ -34,8 +36,6 @@ private:
 
     static constexpr float _near = 2.f;
     static constexpr float _far = 100.f;
-
-    float edgeFunction(const Vector3* v1, const Vector3* v2, const Vector3* p);
 };
 
 

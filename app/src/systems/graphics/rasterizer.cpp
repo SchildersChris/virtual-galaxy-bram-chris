@@ -43,7 +43,7 @@ void Rasterizer::update(float deltaTime) {
 
     {
         auto stream = _texture->lock();
-        stream.clear(Color::white());
+        stream.clear(Color::black());
         Vector3 t[3];
         Vector3 r[3];
 
@@ -99,7 +99,6 @@ void Rasterizer ::terminate() {
 void Rasterizer::rasterizeTriangle(const Vector3 t[3], const Vector3 r[3], Texture::Stream& stream) {
     // Back-face culling
     auto normal = (t[1] - t[0]).cross(t[2] - t[0]).normalize();
-    if (normal.length() < 0) { return; }
 
     float rMaxY = std::max(r[0].Y, std::max(r[1].Y, r[2].Y));
     float rMinY = std::min(r[0].Y, std::min(r[1].Y, r[2].Y));
@@ -123,16 +122,16 @@ void Rasterizer::rasterizeTriangle(const Vector3 t[3], const Vector3 r[3], Textu
     int32 maxX = std::min(w, static_cast<int32>(std::floor(rMaxX)));
 
     // Total area of triangle
-    float area = edgeFunction(&r[0], &r[1], &r[2]);
+    float area = edgeFunction(r[0], r[1], r[2]);
 
     for (int32 y = minY; y <= maxY; ++y) {
         for (int32 x = minX; x <= maxX; ++x) {
             auto p = Vector3 { static_cast<float>(x), static_cast<float>(y), 0 };
 
             float a[3] = {
-                edgeFunction(&r[1], &r[2], &p),
-                edgeFunction(&r[2], &r[0], &p),
-                edgeFunction(&r[0], &r[1], &p)
+                edgeFunction(r[1], r[2], p),
+                edgeFunction(r[2], r[0], p),
+                edgeFunction(r[0], r[1], p)
             };
 
             if (a[0] < 0 || a[1] < 0 || a[2] < 0)
@@ -161,14 +160,14 @@ Vector3 Rasterizer::toRaster(const Vector3& v) const {
     };
 }
 
-unsigned char Rasterizer::getShade(float z, const Vector3 c[3], const float a[3], const Vector3& normal) {
+uint8 Rasterizer::getShade(float z, const Vector3 c[3], const float a[3], const Vector3& normal) const {
     float px = (c[0].X / c[0].Z) * a[0] + (c[1].X / c[1].Z) * a[1] + (c[2].X / c[2].Z) * a[2];
     float py = (c[0].Y / c[0].Z) * a[0] + (c[1].Y / c[1].Z) * a[1] + (c[2].Y / c[2].Z) * a[2];
 
     Vector3 viewDirection = {px * z, py * z, -z };
-    return abs(255-(unsigned char)(MAX(0, normal.dot(viewDirection.normalize())* 255)));
+    return (uint8)(std::max(0.f, normal.dot(viewDirection.normalize()) * 255));
 }
 
-float Rasterizer::edgeFunction(const Vector3* v1, const Vector3* v2, const Vector3* p) {
-    return (p->X - v1->X) * (v2->Y - v1->Y) - (p->Y - v1->Y) * (v2->X - v1->X);
+float Rasterizer::edgeFunction(const Vector3& v1, const Vector3& v2, const Vector3& p) const {
+    return (p.X - v1.X) * (v2.Y - v1.Y) - (p.Y - v1.Y) * (v2.X - v1.X);
 }
