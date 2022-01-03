@@ -18,7 +18,13 @@ private:
 
     [[nodiscard]] Vector3 toRaster(const Vector4& v) const;
 
-    uint8 getShade(float z, const Vector3 c[3], const float a[3], const Vector3& normal)  const;
+    /**
+     * Get shading value of the normal vector
+     *
+     * @param normal Normal of the face
+     * @return Grayscale shade value
+     */
+    static uint8 getShade(const Vector3& normal)  ;
 
     entt::registry* _registry {nullptr};
 

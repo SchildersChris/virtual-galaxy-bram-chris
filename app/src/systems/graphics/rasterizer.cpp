@@ -120,6 +120,8 @@ void Rasterizer::rasterizeTriangle(const Vector3 t[3], const Vector3 r[3]) {
 
     // Triangle normal vector
     auto normal = (t[1] - t[0]).cross(t[2] - t[0]).normalize();
+    auto s = getShade(normal);
+    renderer.setColor(Color(s, s, s, 255));
 
     // Total area of triangle
     float area = utils::edgeFunction(r[0], r[1], r[2]);
@@ -146,11 +148,11 @@ void Rasterizer::rasterizeTriangle(const Vector3 t[3], const Vector3 r[3]) {
                 continue;
             _zBuffer[y * _width + x] = z;
 
-            auto s = getShade(z, t, a, normal);
-
-            renderer.drawPoint(x, y, Color(s, s, s, 255));
+            renderer.drawPoint(x, y);
         }
     }
+
+    renderer.setColor(Color::black());
 }
 
 Vector3 Rasterizer::toRaster(const Vector4& v) const {
@@ -161,11 +163,6 @@ Vector3 Rasterizer::toRaster(const Vector4& v) const {
     };
 }
 
-uint8 Rasterizer::getShade(float z, const Vector3 c[3], const float a[3], const Vector3& normal) const {
-    float px = (c[0].X / -c[0].Z) * a[0] + (c[1].X / -c[1].Z) * a[1] + (c[2].X / -c[2].Z) * a[2];
-    float py = (c[0].Y / -c[0].Z) * a[0] + (c[1].Y / -c[1].Z) * a[1] + (c[2].Y / -c[2].Z) * a[2];
-
-    Vector3 viewDirection = {px * z, py * z, -z };
-    return (uint8)(normal.dot(viewDirection.normalize()) * 255);
+uint8 Rasterizer::getShade(const Vector3& normal) {
+    return static_cast<uint8>((std::min(1.f, normal.dot(Vector3 {0, 0, 1 })) * 255));
 }
-

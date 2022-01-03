@@ -41,12 +41,13 @@ int32 Renderer::getHeight() const {
     return _height;
 }
 
-void Renderer::setClearColor(Color color) {
-    _clearColor = color;
+void Renderer::setColor(Color color) {
+    _color = color;
+    SDL_SetRenderDrawColor(_renderer, _color.R, _color.G, _color.B, _color.A);
 }
 
 void Renderer::beginFrame(float deltaTime) {
-    SDL_SetRenderDrawColor(_renderer, _clearColor.R, _clearColor.G, _clearColor.B, _clearColor.A);
+    SDL_SetRenderDrawColor(_renderer, _color.R, _color.G, _color.B, _color.A);
     SDL_RenderClear(_renderer);
 
     ImGuiIO& io = ImGui::GetIO();
@@ -62,10 +63,8 @@ void Renderer::beginFrame(float deltaTime) {
     ImGui::NewFrame();
 }
 
-void Renderer::drawPoint(int32 x, int32 y, Color color) {
-    SDL_SetRenderDrawColor(_renderer, color.R, color.G, color.B, color.A);
+void Renderer::drawPoint(int32 x, int32 y) {
     SDL_RenderDrawPoint(_renderer, x, y);
-    SDL_SetRenderDrawColor(_renderer, _clearColor.R, _clearColor.G, _clearColor.B, _clearColor.A);
 }
 
 void Renderer::drawLine(const Vector2& p1, const Vector2& p2, Color color) {

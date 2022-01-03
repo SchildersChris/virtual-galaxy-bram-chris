@@ -40,7 +40,7 @@ public:
      *
      * @param color Clearing color
      */
-    void setClearColor(Color color);
+    void setColor(Color color);
 
     /**
      * Start a new rendering frame
@@ -54,7 +54,7 @@ public:
      * @param y Y position to draw
      * @param color Color to draw with
      */
-    void drawPoint(int32 x, int32 y, Color color);
+    void drawPoint(int32 x, int32 y);
 
     /**
      * Draw a points from p1 to p2 with a color
@@ -89,7 +89,7 @@ private:
     int32 _width {0};
     int32 _height {0};
 
-    Color _clearColor {Color::black()};
+    Color _color {Color::black()};
 };
 
 #endif //VIRTUAL_GALAXY_RENDERER_HPP
