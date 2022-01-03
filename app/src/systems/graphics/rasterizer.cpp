@@ -55,7 +55,9 @@ void Rasterizer::update(float deltaTime) {
             auto v1 = object.Vertices[object.Indices[i+1] - 1] * mvp;
             auto v2 = object.Vertices[object.Indices[i+2] - 1] * mvp;
 
-            if (v0.W > 0 || v1.W > 0 || v2.W > 0) {
+            if (v0.W > 0 || v0.W < -_far ||
+                v1.W > 0 || v1.W < -_far ||
+                v2.W > 0 || v2.W < -_far) {
                 continue;
             }
 
@@ -153,8 +155,8 @@ void Rasterizer::rasterizeTriangle(const Vector3 t[3], const Vector3 r[3]) {
 
 Vector3 Rasterizer::toRaster(const Vector4& v) const {
     return {
-        (1 + v.X / v.W) * 0.5f * static_cast<float>(_width),
-        (1 - v.Y / v.W) * 0.5f * static_cast<float>(_height),
+        (1 + v.X / v.Z) * 0.5f * static_cast<float>(_width),
+        (1 - v.Y / v.Z) * 0.5f * static_cast<float>(_height),
         v.Z
     };
 }
