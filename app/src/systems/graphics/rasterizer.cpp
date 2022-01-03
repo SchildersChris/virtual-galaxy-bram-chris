@@ -19,9 +19,8 @@ void Rasterizer::init(entt::registry& registry) {
     _zBufferSize = _width * _height;
     _zBuffer = new float[_zBufferSize];
 
-    _projection = utils::getProjectionMatrix(_fov, _near, _far,
-                                             static_cast<float>(_width) /
-                                             static_cast<float>(_height));
+    _projection = utils::getProjectionMatrix(
+            _fov, _near, _far,static_cast<float>(_width) / static_cast<float>(_height));
 }
 
 void Rasterizer::update(float deltaTime) {
@@ -95,8 +94,6 @@ void Rasterizer::terminate() {
 }
 
 void Rasterizer::rasterizeTriangle(const Vector3 t[3], const Vector3 r[3]) {
-    auto& renderer = Renderer::getInstance();
-
     float rMaxY = std::max(r[0].Y, std::max(r[1].Y, r[2].Y));
     float rMinY = std::min(r[0].Y, std::min(r[1].Y, r[2].Y));
     float rMaxX = std::max(r[0].X, std::max(r[1].X, r[2].X));
@@ -104,23 +101,17 @@ void Rasterizer::rasterizeTriangle(const Vector3 t[3], const Vector3 r[3]) {
 
     int32 w = _width - 1;
     int32 h = _height - 1;
-
-    /*
-     * We test whether the box is completely outside the raster image dimensions
-     * if this is true we can immediately return
-     */
     if (rMinX > static_cast<float>(w) || rMaxX < 0 || rMinY > static_cast<float>(h) || rMaxY < 0)
         return;
 
-    // Calculate raster image bounding box
     int32 minY = std::max(0, static_cast<int32>(std::floor(rMinY)));
     int32 maxY = std::min(h, static_cast<int32>(std::floor(rMaxY)));
     int32 minX = std::max(0, static_cast<int32>(std::floor(rMinX)));
     int32 maxX = std::min(w, static_cast<int32>(std::floor(rMaxX)));
 
-    // Triangle normal vector
-    auto normal = (t[1] - t[0]).cross(t[2] - t[0]).normalize();
-    auto s = getShade(normal);
+    auto& renderer = Renderer::getInstance();
+
+    uint8 s = getShade((t[1] - t[0]).cross(t[2] - t[0]).normalize());
     renderer.setColor(Color(s, s, s, 255));
 
     // Total area of triangle
@@ -164,5 +155,6 @@ Vector3 Rasterizer::toRaster(const Vector4& v) const {
 }
 
 uint8 Rasterizer::getShade(const Vector3& normal) {
-    return static_cast<uint8>((std::min(1.f, normal.dot(Vector3 {0, 0, 1 })) * 255));
+    // Flat shading
+    return static_cast<uint8>(std::abs(normal.dot(Vector3 { 0, 0, 1 })) * 255);
 }
