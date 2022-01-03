@@ -20,6 +20,10 @@ void Rasterizer::init(entt::registry& registry) {
 
     _zBufferSize = _width * _height;
     _zBuffer = new float[_zBufferSize];
+
+    _projection = utils::getProjectionMatrix(_fov, _near, _far,
+                                             static_cast<float>(_width) /
+                                             static_cast<float>(_height));
 }
 
 void Rasterizer::update(float deltaTime) {
@@ -97,9 +101,6 @@ void Rasterizer ::terminate() {
 }
 
 void Rasterizer::rasterizeTriangle(const Vector3 t[3], const Vector3 r[3], Texture::Stream& stream) {
-    // Back-face culling
-    auto normal = (t[1] - t[0]).cross(t[2] - t[0]).normalize();
-
     float rMaxY = std::max(r[0].Y, std::max(r[1].Y, r[2].Y));
     float rMinY = std::min(r[0].Y, std::min(r[1].Y, r[2].Y));
     float rMaxX = std::max(r[0].X, std::max(r[1].X, r[2].X));
@@ -109,7 +110,7 @@ void Rasterizer::rasterizeTriangle(const Vector3 t[3], const Vector3 r[3], Textu
     int32 h = _height - 1;
 
     /*
-     * We test weather the box is completely outside the raster image dimensions
+     * We test whether the box is completely outside the raster image dimensions
      * if this is true we can immediately return
      */
     if (rMinX > static_cast<float>(w) || rMaxX < 0 || rMinY > static_cast<float>(h) || rMaxY < 0)
@@ -121,17 +122,20 @@ void Rasterizer::rasterizeTriangle(const Vector3 t[3], const Vector3 r[3], Textu
     int32 minX = std::max(0, static_cast<int32>(std::floor(rMinX)));
     int32 maxX = std::min(w, static_cast<int32>(std::floor(rMaxX)));
 
+    // Triangle normal vector
+    auto normal = (t[1] - t[0]).cross(t[2] - t[0]).normalize();
+
     // Total area of triangle
-    float area = edgeFunction(r[0], r[1], r[2]);
+    float area = utils::edgeFunction(r[0], r[1], r[2]);
 
     for (int32 y = minY; y <= maxY; ++y) {
         for (int32 x = minX; x <= maxX; ++x) {
-            auto p = Vector3 { static_cast<float>(x), static_cast<float>(y), 0 };
+            Vector3 p = { static_cast<float>(x), static_cast<float>(y), 0 };
 
             float a[3] = {
-                edgeFunction(r[1], r[2], p),
-                edgeFunction(r[2], r[0], p),
-                edgeFunction(r[0], r[1], p)
+                utils::edgeFunction(r[1], r[2], p),
+                utils::edgeFunction(r[2], r[0], p),
+                utils::edgeFunction(r[0], r[1], p)
             };
 
             if (a[0] < 0 || a[1] < 0 || a[2] < 0)
@@ -144,8 +148,8 @@ void Rasterizer::rasterizeTriangle(const Vector3 t[3], const Vector3 r[3], Textu
             float z = 1 / (r[0].Z * a[0] + r[1].Z * a[1] + r[2].Z * a[2]);
             if (z >= _zBuffer[y * _width + x])
                 continue;
-
             _zBuffer[y * _width + x] = z;
+
             auto s = getShade(z, t, a, normal);
             stream.setPixel(x, y, Color::rgbaToInteger(s, s, s, 255));
         }
@@ -168,6 +172,3 @@ uint8 Rasterizer::getShade(float z, const Vector3 c[3], const float a[3], const 
     return (uint8)(std::max(0.f, normal.dot(viewDirection.normalize()) * 255));
 }
 
-float Rasterizer::edgeFunction(const Vector3& v1, const Vector3& v2, const Vector3& p) const {
-    return (p.X - v1.X) * (v2.Y - v1.Y) - (p.Y - v1.Y) * (v2.X - v1.X);
-}

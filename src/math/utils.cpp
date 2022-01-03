@@ -14,3 +14,11 @@ Matrix4x4 utils::getProjectionMatrix(float fov, float near, float far, float asp
 
     return mat;
 }
+
+float utils::edgeFunction(const Vector2& start, const Vector2& end, const Vector2& p) {
+    return (p.X - start.X) * (end.Y - start.Y) - (p.Y - start.Y) * (end.X - start.X);
+}
+
+float utils::edgeFunction(const Vector3& start, const Vector3& end, const Vector3& p) {
+    return (p.X - start.X) * (end.Y - start.Y) - (p.Y - start.Y) * (end.X - start.X);
+}

@@ -2,6 +2,9 @@
 #define VIRTUAL_GALAXY_UTILS_HPP
 
 #include "math/matrix4x4.hpp"
+#include "math/vector2.hpp"
+#include "math/vector3.hpp"
+
 #include <valarray>
 
 namespace utils {
@@ -16,6 +19,27 @@ namespace utils {
      * @return Projection matrix to translate points
      */
     Matrix4x4 getProjectionMatrix(float fov, float near, float far, float aspect);
+
+    /**
+     * Determines whether a 3d vector falls on the right of left size of a edge
+     * independent of the z value
+     *
+     * @param start Edge start
+     * @param end Edge end
+     * @param p Point to test
+     * @return A positive value if the point falls on the left of the edge
+     */
+    float edgeFunction(const Vector3& start, const Vector3& end, const Vector3& p);
+
+    /**
+     * Determines whether a 2d vector falls on the right of left size of a edge
+     *
+     * @param start Edge start
+     * @param end Edge end
+     * @param p Point to test
+     * @return A positive value if the point falls on the left of the edge
+     */
+    float edgeFunction(const Vector2& start, const Vector2& end, const Vector2& p);
 
     /**
      * Degrees to radians constant

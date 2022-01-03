@@ -8,7 +8,7 @@
 
 class Rasterizer : public System {
 public:
-    Rasterizer(float fov, float near, float far) : _projection(utils::getProjectionMatrix(fov, near, far, 16.f / 9.f)) {}
+    Rasterizer(float fov, float near, float far) : _fov(fov), _near(near), _far(far) {}
 
     void init(entt::registry& registry) override;
     void update(float deltaTime) override;
@@ -21,21 +21,19 @@ private:
 
     uint8 getShade(float z, const Vector3 c[3], const float a[3], const Vector3& normal)  const;
 
-    [[nodiscard]] float edgeFunction(const Vector3& v1, const Vector3& v2, const Vector3& p) const;
-
     entt::registry* _registry {nullptr};
 
     int32 _width {0};
     int32 _height {0};
+    float _near;
+    float _far;
+    float _fov;
 
     std::unique_ptr<Texture> _texture {nullptr};
     float* _zBuffer {nullptr};
     std::size_t _zBufferSize {0};
 
     Matrix4x4 _projection;
-
-    static constexpr float _near = 2.f;
-    static constexpr float _far = 100.f;
 };
 
 
