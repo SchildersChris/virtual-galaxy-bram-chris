@@ -35,7 +35,6 @@ add_library(virtual-galaxy STATIC
     core/data.cpp
     graphics/color.cpp
     graphics/renderer.cpp
-    graphics/texture.cpp
     math/vector4.cpp
     math/vector3.cpp
     math/vector2.cpp

@@ -2,8 +2,8 @@
 #define VIRTUAL_GALAXY_RENDERER_HPP
 
 #include "base.hpp"
-#include "graphics/texture.hpp"
 #include "math/vector2.hpp"
+#include "graphics/color.hpp"
 
 #include "SDL.h"
 
@@ -48,14 +48,16 @@ public:
     void beginFrame(float deltaTime);
 
     /**
-     * Draw complete texture to the screen
+     * Draw a point on the screen
      *
-     * @param texture Texture to draw
+     * @param x X position to draw
+     * @param y Y position to draw
+     * @param color Color to draw with
      */
-    void drawTexture(const Texture& texture);
+    void drawPoint(int32 x, int32 y, Color color);
 
     /**
-     * Draw a point from p1 to p2 with a color
+     * Draw a points from p1 to p2 with a color
      *
      * @param p1 Starting point
      * @param p2 Ending point
@@ -74,15 +76,6 @@ public:
      * Terminate window and active renderer
      */
     void terminate();
-
-    /**
-     * Create empty texture
-     *
-     * @param width Texture width
-     * @param height Texture height
-     * @return Texture structure
-     */
-    std::unique_ptr<Texture> createTexture(int32 width, int32 height);
 
 private:
     static Renderer _instance;

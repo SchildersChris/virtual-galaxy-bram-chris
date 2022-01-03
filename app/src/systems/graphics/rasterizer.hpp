@@ -4,7 +4,6 @@
 #include <math/utils.hpp>
 #include "core/system.hpp"
 #include "math/vector3.hpp"
-#include "graphics/texture.hpp"
 
 class Rasterizer : public System {
 public:
@@ -15,9 +14,9 @@ public:
     void terminate() override;
 
 private:
-    void rasterizeTriangle(const Vector3 t[3], const Vector3 r[3], Texture::Stream& stream);
+    void rasterizeTriangle(const Vector3 t[3], const Vector3 r[3]);
 
-    [[nodiscard]] Vector3 toRaster(const Vector3& v) const;
+    [[nodiscard]] Vector3 toRaster(const Vector4& v) const;
 
     uint8 getShade(float z, const Vector3 c[3], const float a[3], const Vector3& normal)  const;
 
@@ -29,7 +28,6 @@ private:
     float _far;
     float _fov;
 
-    std::unique_ptr<Texture> _texture {nullptr};
     float* _zBuffer {nullptr};
     std::size_t _zBufferSize {0};
 

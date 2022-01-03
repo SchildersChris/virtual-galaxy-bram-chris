@@ -16,8 +16,6 @@ void Rasterizer::init(entt::registry& registry) {
     _width = renderer.getWidth();
     _height = renderer.getHeight();
 
-    _texture = renderer.createTexture(_width, _height);
-
     _zBufferSize = _width * _height;
     _zBuffer = new float[_zBufferSize];
 
@@ -29,8 +27,6 @@ void Rasterizer::init(entt::registry& registry) {
 void Rasterizer::update(float deltaTime) {
     if (!_registry || !_zBuffer) { return; }
     std::fill(_zBuffer, _zBuffer + _zBufferSize, _far);
-
-    auto& renderer = Renderer::getInstance();
 
     auto&& [_, camTrans] = *_registry->view<Transform, Camera>().each().begin();
 
@@ -45,62 +41,60 @@ void Rasterizer::update(float deltaTime) {
     }
     ImGui::End();
 
-    {
-        auto stream = _texture->lock();
-        stream.clear(Color::black());
-        Vector3 t[3];
-        Vector3 r[3];
+    auto& renderer = Renderer::getInstance();
 
-        auto vp = _projection * camTrans.getMatrix();
-        for (auto&& [entity, transform, object] : _registry->group<Transform, Object>().each()) {
-            auto mvp = vp * transform.getMatrix();
+    Vector3 t[3];
+    Vector3 r[3];
 
-            for (int i = 0; i < object.Indices.size(); i += 3) {
-                auto v0 = object.Vertices[object.Indices[i] - 1] * mvp;
-                auto v1 = object.Vertices[object.Indices[i+1] - 1] * mvp;
-                auto v2 = object.Vertices[object.Indices[i+2] - 1] * mvp;
+    auto vp = _projection * camTrans.getMatrix();
+    for (auto&& [entity, transform, object] : _registry->group<Transform, Object>().each()) {
+        auto mvp = vp * transform.getMatrix();
 
-                if (v0.W > 0 || v1.W > 0 || v2.W > 0) {
-                    continue;
-                }
+        for (int i = 0; i < object.Indices.size(); i += 3) {
+            auto v0 = object.Vertices[object.Indices[i] - 1] * mvp;
+            auto v1 = object.Vertices[object.Indices[i+1] - 1] * mvp;
+            auto v2 = object.Vertices[object.Indices[i+2] - 1] * mvp;
 
-                t[0] = Vector3 { v0.X, v0.Y, v0.Z };
-                t[1] = Vector3 { v1.X, v1.Y, v1.Z };
-                t[2] = Vector3 { v2.X, v2.Y, v2.Z };
-
-                r[0] = toRaster(t[0]);
-                r[1] = toRaster(t[1]);
-                r[2] = toRaster(t[2]);
-
-                rasterizeTriangle(t, r, stream);
+            if (v0.W > 0 || v1.W > 0 || v2.W > 0) {
+                continue;
             }
 
-//            if (drawAxis) {
-//                auto c = Vector3 { 0, 0, 0 } * mvp;
-//                auto x = Vector3 { 10, 0, 0 } * mvp;
-//                auto y = Vector3 { 0, 10, 0 } * mvp;
-//                auto z = Vector3 { 0, 0, 10 } * mvp;
-//
-//                auto rC = toRaster(Vector3 { c.X, c.Y, c.Z });
-//                auto rX = toRaster(Vector3 { x.X, x.Y, x.Z });
-//                auto rY = toRaster(Vector3 { y.X, y.Y, y.Z });
-//                auto rZ = toRaster(Vector3 { z.X, z.Y, z.Z });
-//
-//                renderer.drawLine({rC.X, rC.Y}, {rX.X, rX.Y}, Color::green());
-//                renderer.drawLine({rC.X, rC.Y}, {rY.X, rY.Y}, Color::red());
-//                renderer.drawLine({rC.X, rC.Y}, {rZ.X, rZ.Y}, Color::blue());
-//            }
+            t[0] = Vector3 { v0.X, v0.Y, v0.Z };
+            t[1] = Vector3 { v1.X, v1.Y, v1.Z };
+            t[2] = Vector3 { v2.X, v2.Y, v2.Z };
+
+            r[0] = toRaster(v0);
+            r[1] = toRaster(v1);
+            r[2] = toRaster(v2);
+
+            rasterizeTriangle(t, r);
+        }
+
+        if (drawAxis) {
+            auto c = Vector3 { 0, 0, 0 } * mvp;
+            auto x = Vector3 { 1, 0, 0 } * mvp;
+            auto y = Vector3 { 0, 1, 0 } * mvp;
+            auto z = Vector3 { 0, 0, 1 } * mvp;
+
+            auto rC = toRaster(c);
+            auto rX = toRaster(x);
+            auto rY = toRaster(y);
+            auto rZ = toRaster(z);
+
+            renderer.drawLine({rC.X, rC.Y}, {rX.X, rX.Y}, Color::green());
+            renderer.drawLine({rC.X, rC.Y}, {rY.X, rY.Y}, Color::red());
+            renderer.drawLine({rC.X, rC.Y}, {rZ.X, rZ.Y}, Color::blue());
         }
     }
-
-    Renderer::getInstance().drawTexture(*_texture);
 }
 
-void Rasterizer ::terminate() {
+void Rasterizer::terminate() {
     delete[] _zBuffer;
 }
 
-void Rasterizer::rasterizeTriangle(const Vector3 t[3], const Vector3 r[3], Texture::Stream& stream) {
+void Rasterizer::rasterizeTriangle(const Vector3 t[3], const Vector3 r[3]) {
+    auto& renderer = Renderer::getInstance();
+
     float rMaxY = std::max(r[0].Y, std::max(r[1].Y, r[2].Y));
     float rMinY = std::min(r[0].Y, std::min(r[1].Y, r[2].Y));
     float rMaxX = std::max(r[0].X, std::max(r[1].X, r[2].X));
@@ -151,24 +145,25 @@ void Rasterizer::rasterizeTriangle(const Vector3 t[3], const Vector3 r[3], Textu
             _zBuffer[y * _width + x] = z;
 
             auto s = getShade(z, t, a, normal);
-            stream.setPixel(x, y, Color::rgbaToInteger(s, s, s, 255));
+
+            renderer.drawPoint(x, y, Color(s, s, s, 255));
         }
     }
 }
 
-Vector3 Rasterizer::toRaster(const Vector3& v) const {
+Vector3 Rasterizer::toRaster(const Vector4& v) const {
     return {
-        (1 + v.X / v.Z) * 0.5f * static_cast<float>(_width),
-        (1 - v.Y / v.Z) * 0.5f * static_cast<float>(_height),
+        (1 + v.X / v.W) * 0.5f * static_cast<float>(_width),
+        (1 - v.Y / v.W) * 0.5f * static_cast<float>(_height),
         v.Z
     };
 }
 
 uint8 Rasterizer::getShade(float z, const Vector3 c[3], const float a[3], const Vector3& normal) const {
-    float px = (c[0].X / c[0].Z) * a[0] + (c[1].X / c[1].Z) * a[1] + (c[2].X / c[2].Z) * a[2];
-    float py = (c[0].Y / c[0].Z) * a[0] + (c[1].Y / c[1].Z) * a[1] + (c[2].Y / c[2].Z) * a[2];
+    float px = (c[0].X / -c[0].Z) * a[0] + (c[1].X / -c[1].Z) * a[1] + (c[2].X / -c[2].Z) * a[2];
+    float py = (c[0].Y / -c[0].Z) * a[0] + (c[1].Y / -c[1].Z) * a[1] + (c[2].Y / -c[2].Z) * a[2];
 
     Vector3 viewDirection = {px * z, py * z, -z };
-    return (uint8)(std::max(0.f, normal.dot(viewDirection.normalize()) * 255));
+    return (uint8)(normal.dot(viewDirection.normalize()) * 255);
 }
 

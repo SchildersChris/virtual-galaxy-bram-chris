@@ -62,8 +62,10 @@ void Renderer::beginFrame(float deltaTime) {
     ImGui::NewFrame();
 }
 
-void Renderer::drawTexture(const Texture& texture) {
-    SDL_RenderCopy(_renderer, texture._texture, nullptr, nullptr);
+void Renderer::drawPoint(int32 x, int32 y, Color color) {
+    SDL_SetRenderDrawColor(_renderer, color.R, color.G, color.B, color.A);
+    SDL_RenderDrawPoint(_renderer, x, y);
+    SDL_SetRenderDrawColor(_renderer, _clearColor.R, _clearColor.G, _clearColor.B, _clearColor.A);
 }
 
 void Renderer::drawLine(const Vector2& p1, const Vector2& p2, Color color) {
@@ -90,17 +92,4 @@ void Renderer::terminate() {
 
     _renderer = nullptr;
     _window = nullptr;
-}
-
-std::unique_ptr<Texture> Renderer::createTexture(int32 width, int32 height) {
-    SDL_Texture* texture;
-    if (!(texture = SDL_CreateTexture(
-            _renderer,
-            SDL_PIXELFORMAT_RGBA8888,
-            SDL_TEXTUREACCESS_STREAMING,
-            _width, _height))) {
-        throw std::runtime_error(SDL_GetError());
-    }
-
-    return std::make_unique<Texture>(texture, width, height);
 }
