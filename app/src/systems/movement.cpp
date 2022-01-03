@@ -23,15 +23,15 @@ void Movement::update(float deltaTime) {
     Vector3 rot;
     auto& input = Input::getInstance();
     if (input.getKeyDown(Input::KeyCode::A)) {
-        rot.Y += actualRotation;
+        rot.X += actualRotation;
     } else if (input.getKeyDown(Input::KeyCode::D)) {
-        rot.Y -= actualRotation;
+        rot.X -= actualRotation;
     }
 
     if (input.getKeyDown(Input::KeyCode::W)) {
-        rot.X += actualRotation;
+        rot.Y += actualRotation;
     } else if (input.getKeyDown(Input::KeyCode::S)) {
-        rot.X -= actualRotation;
+        rot.Y -= actualRotation;
     }
 
     if (input.getKeyDown(Input::KeyCode::Q)) {

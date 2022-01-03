@@ -21,17 +21,6 @@ namespace utils {
     Matrix4x4 getProjectionMatrix(float fov, float near, float far, float aspect);
 
     /**
-     * Determines whether a 3d vector falls on the right of left size of a edge
-     * independent of the z value
-     *
-     * @param start Edge start
-     * @param end Edge end
-     * @param p Point to test
-     * @return A positive value if the point falls on the left of the edge
-     */
-    float edgeFunction(const Vector3& start, const Vector3& end, const Vector3& p);
-
-    /**
      * Determines whether a 2d vector falls on the right of left size of a edge
      *
      * @param start Edge start

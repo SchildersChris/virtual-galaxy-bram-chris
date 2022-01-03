@@ -94,10 +94,14 @@ void Rasterizer::terminate() {
 }
 
 void Rasterizer::rasterizeTriangle(const Vector3 t[3], const Vector3 r[3]) {
-    float rMaxY = std::max(r[0].Y, std::max(r[1].Y, r[2].Y));
-    float rMinY = std::min(r[0].Y, std::min(r[1].Y, r[2].Y));
-    float rMaxX = std::max(r[0].X, std::max(r[1].X, r[2].X));
-    float rMinX = std::min(r[0].X, std::min(r[1].X, r[2].X));
+    auto r0 = Vector2 { r[0].X, r[0].Y };
+    auto r1 = Vector2 { r[1].X, r[1].Y };
+    auto r2 = Vector2 { r[2].X, r[2].Y };
+
+    float rMaxY = std::max(r0.Y, std::max(r1.Y, r2.Y));
+    float rMinY = std::min(r0.Y, std::min(r1.Y, r2.Y));
+    float rMaxX = std::max(r0.X, std::max(r1.X, r2.X));
+    float rMinX = std::min(r0.X, std::min(r1.X, r2.X));
 
     int32 w = _width - 1;
     int32 h = _height - 1;
@@ -115,16 +119,16 @@ void Rasterizer::rasterizeTriangle(const Vector3 t[3], const Vector3 r[3]) {
     renderer.setColor(Color(s, s, s, 255));
 
     // Total area of triangle
-    float area = utils::edgeFunction(r[0], r[1], r[2]);
+    float area = utils::edgeFunction(r0, r1, r2);
 
     for (int32 y = minY; y <= maxY; ++y) {
         for (int32 x = minX; x <= maxX; ++x) {
-            Vector3 p = { static_cast<float>(x), static_cast<float>(y), 0 };
+            Vector2 p = { static_cast<float>(x), static_cast<float>(y) };
 
             float a[3] = {
-                utils::edgeFunction(r[1], r[2], p),
-                utils::edgeFunction(r[2], r[0], p),
-                utils::edgeFunction(r[0], r[1], p)
+                utils::edgeFunction(r1, r2, p),
+                utils::edgeFunction(r2, r0, p),
+                utils::edgeFunction(r0, r1, p)
             };
 
             if (a[0] < 0 || a[1] < 0 || a[2] < 0)
@@ -155,6 +159,5 @@ Vector3 Rasterizer::toRaster(const Vector4& v) const {
 }
 
 uint8 Rasterizer::getShade(const Vector3& normal) {
-    // Flat shading
     return static_cast<uint8>(std::abs(normal.dot(Vector3 { 0, 0, 1 })) * 255);
 }
