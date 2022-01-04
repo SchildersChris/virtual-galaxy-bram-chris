@@ -9,6 +9,7 @@
 
 struct Object {
     explicit Object(Color color) : BaseColor(color) { }
+
     std::vector<Vector3> Vertices;
     std::vector<uint32> Indices;
     Color BaseColor;
