@@ -85,9 +85,9 @@ void Rasterizer::rasterizeTriangle(const Vector3 r[3]) {
     // Total area of triangle
     float area = utils::edgeFunction(r0, r1, r2);
 
+    bool found;
     for (int32 y = minY; y <= maxY; ++y) {
-        bool found = false;
-
+        found = false;
         for (int32 x = minX; x <= maxX; ++x) {
             Vector2 p = { static_cast<float>(x), static_cast<float>(y) };
 
@@ -100,6 +100,8 @@ void Rasterizer::rasterizeTriangle(const Vector3 r[3]) {
 
             // Check with CW (Clock wise winding order) if the point falls inside the triangle
             if (a0 < 0 || a1 < 0 || a2 < 0) {
+                // Since a triangle is a Convex shape we can assume once one pixel is found
+                // and the point falls outside the triangle we can continue to the next line
                 if (!found) { continue; }
                 break;
             }

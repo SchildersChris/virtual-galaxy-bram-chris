@@ -19,3 +19,6 @@ cmake --build build
 # Credits
 The base CMake starter has been taken from:  
 https://gitlab.com/CLIUtils/modern-cmake/-/tree/master/examples/extended-project
+
+Edge function technique
+https://www.cs.drexel.edu/~david/Classes/Papers/comp175-06-pineda.pdf
