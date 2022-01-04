@@ -12,7 +12,8 @@ void Axis::update(float deltaTime) {
     ImGui::End();
 }
 
-void Axis::updateObject(const Matrix4x4& mvp, const Object& object) {
+void Axis::updateObject(entt::entity, const Matrix4x4& vp, const Matrix4x4& m, const Object& object) {
+    auto mvp = vp * m;
     auto& renderer = Renderer::getInstance();
 
     if (_drawAxis) {

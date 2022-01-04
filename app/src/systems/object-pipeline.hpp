@@ -16,10 +16,12 @@ public:
         /**
          * Update object based on the mvp matrix
          *
-         * @param mvp Model view projection matrix of the object
-         * @param object Object to update
+         * @param entity Entity id
+         * @param vp View projection matrix of the object
+         * @param mvp Model matrix of the object
+         * @param object Object data
          */
-        [[maybe_unused]] virtual void updateObject(const Matrix4x4& mvp, const Object& object) {};
+        [[maybe_unused]] virtual void updateObject(entt::entity entity, const Matrix4x4& vp, const Matrix4x4& m, const Object& object) {};
     };
 
     ObjectPipeline(float fov, float near, float far) : _fov(fov), _near(near), _far(far) {}

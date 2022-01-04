@@ -11,7 +11,7 @@ class Wireframe : public ObjectPipeline::Element {
 public:
     Wireframe(float near, float far) : _near(near), _far(far) {}
 
-    void updateObject(const Matrix4x4& mvp, const Object& object) override;
+    void updateObject(entt::entity entity, const Matrix4x4& vp, const Matrix4x4& m, const Object& object) override;
 
 private:
     float _near;

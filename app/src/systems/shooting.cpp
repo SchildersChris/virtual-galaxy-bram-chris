@@ -6,6 +6,7 @@
 
 #include "core/input.hpp"
 #include "math/vector4.hpp"
+#include "../components/collider.hpp"
 
 void Shooting::init(entt::registry& registry) {
     _registry = &registry;
@@ -40,9 +41,14 @@ void Shooting::update(float deltaTime) {
         _registry->emplace<Transform>(bullet, Transform {
             transform.Translation,
             transform.Rotation,
-            Vector3 { 0.5f, 0.5f, 0.5f}
+            Vector3 { 0.2f, 0.2f, 0.2f}
         });
         _registry->emplace<Object>(bullet, _bullet);
+        _registry->emplace<Collider>(bullet, [&](entt::entity other){
+            if (!_registry->any_of<Player>(other)) {
+                _registry->destroy(other);
+            }
+        });
     }
 }
 

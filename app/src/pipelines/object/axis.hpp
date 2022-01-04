@@ -9,7 +9,7 @@ public:
 
     void init(entt::registry& registry) override;
     void update(float deltaTime) override;
-    void updateObject(const Matrix4x4& mvp, const Object& object) override;
+    void updateObject(entt::entity, const Matrix4x4& vp, const Matrix4x4& m, const Object& object) override;
 
 private:
     bool _drawAxis {true};

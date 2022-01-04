@@ -28,10 +28,10 @@ void ObjectPipeline::update(float deltaTime) {
     auto&& [_, camTrans] = *_registry->view<Transform, Camera>().each().begin();
     auto vp = _projection * camTrans.getMatrix();
     for (auto&& [entity, transform, object] : _registry->group<Transform, Object>().each()) {
-        auto mvp = vp * transform.getMatrix();
+        auto m = transform.getMatrix();
 
         for (auto& elem : Elements) {
-            elem->updateObject(mvp, object);
+            elem->updateObject(entity, vp, m, object);
         }
     }
 }

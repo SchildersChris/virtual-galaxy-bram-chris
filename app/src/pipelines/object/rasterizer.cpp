@@ -19,28 +19,34 @@ void Rasterizer::update(float deltaTime) {
     std::fill(_zBuffer, _zBuffer + _zBufferSize, -_far);
 }
 
-void Rasterizer::updateObject(const Matrix4x4& mvp, const Object& object) {
+void Rasterizer::updateObject(entt::entity entity, const Matrix4x4& vp, const Matrix4x4& m, const Object& object) {
+    auto mvp = vp * m;
     auto& renderer = Renderer::getInstance();
 
     Vector3 t[3];
     Vector3 r[3];
     for (int i = 0; i < object.Indices.size(); i += 3) {
+        // Fetch triangle points based on their respective indices
         auto v0 = object.Vertices[object.Indices[i] - 1] * mvp;
         auto v1 = object.Vertices[object.Indices[i+1] - 1] * mvp;
         auto v2 = object.Vertices[object.Indices[i+2] - 1] * mvp;
 
+        // Clipping between viewing frustum
         if (v0.W > -_near || v0.W < -_far ||
             v1.W > -_near || v1.W < -_far ||
             v2.W > -_near || v2.W < -_far) {
             continue;
         }
+
         t[0] = v0.toVector3();
         t[1] = v1.toVector3();
         t[2] = v2.toVector3();
 
-        auto shade = getShade((t[1] - t[0]).cross(t[2] - t[0]).normalize());
+        // Defining flat shading color for triangle
+        float shade = getShade((t[1] - t[0]).cross(t[2] - t[0]).normalize());
         renderer.setColor(object.BaseColor * shade);
 
+        // Convert the points to raster coordinates
         r[0] = renderer.toRaster(v0);
         r[1] = renderer.toRaster(v1);
         r[2] = renderer.toRaster(v2);
@@ -92,9 +98,9 @@ void Rasterizer::rasterizeTriangle(const Vector3 r[3]) {
             // The edge function checks whether the point falls on the
             // left or right side of the edge. This is done for each edge of the triangle
             // to test if the point falls inside the triangle
-            auto a0 = utils::edgeFunction(r1, r2, p);
-            auto a1 = utils::edgeFunction(r2, r0, p);
-            auto a2 = utils::edgeFunction(r0, r1, p);
+            float a0 = utils::edgeFunction(r1, r2, p);
+            float a1 = utils::edgeFunction(r2, r0, p);
+            float a2 = utils::edgeFunction(r0, r1, p);
 
             // Check with CW (Clock wise winding order) if the point falls inside the triangle
             if (a0 < 0 || a1 < 0 || a2 < 0) {
