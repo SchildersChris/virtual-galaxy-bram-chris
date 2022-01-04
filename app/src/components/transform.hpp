@@ -11,16 +11,7 @@ struct Transform {
     Vector3 Rotation;
     Vector3 Scale;
 
-    Transform* Parent {nullptr};
-
     [[nodiscard]] Matrix4x4 getMatrix() const {
-        if (Parent) {
-            return
-                Parent->getMatrix() *
-                Matrix4x4::translation(Translation.X, Translation.Y, Translation.Z) *
-                Matrix4x4::rotation(Rotation.X, Rotation.Y, Rotation.Z) *
-                Matrix4x4::scale(Scale.X, Scale.Y, Scale.Z);
-        }
         return
             Matrix4x4::translation(Translation.X, Translation.Y, Translation.Z) *
             Matrix4x4::rotation(Rotation.X, Rotation.Y, Rotation.Z) *

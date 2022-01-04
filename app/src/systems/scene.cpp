@@ -29,33 +29,16 @@ void Scene::init(entt::registry& registry) {
     {
         auto& object = registry.emplace<Object>(spaceship, Color(27, 161, 226, 255));
         WavefrontObject::load("assets/spaceship.obj", object.Vertices, object.Indices);
-    }
 
-    auto planets = registry.create();
-    auto planetsTrans = registry.emplace<Transform>(planets,
-        Vector3 { 10.f, 0.f, 10.f},
-        Vector3 { 0.f, -60.f, 0.f},
-        Vector3 { 1.f, 1.f, 1.f});
+    }
 
     {
         auto planet = registry.create();
-        auto trans = registry.emplace<Transform>(planet,
-            Vector3 { 2.f, 0.f, 10.f},
+        auto& trans = registry.emplace<Transform>(planet,
+            Vector3 { 10.f, 0.f, 10.f},
             Vector3 { 0.f, -60.f, 0.f},
             Vector3 { 1.f, 1.f, 1.f});
-        trans.Parent = &planetsTrans;
         auto& object = registry.emplace<Object>(planet, Color::green());
-        WavefrontObject::load("assets/cube.obj", object.Vertices, object.Indices);
-    }
-
-    {
-        auto planet = registry.create();
-        auto trans = registry.emplace<Transform>(planet,
-            Vector3 { 2.f, 0.f, 10.f},
-            Vector3 { 0.f, -60.f, 0.f},
-            Vector3 { 1.f, 1.f, 1.f});
-        trans.Parent = &planetsTrans;
-        auto& object = registry.emplace<Object>(planet, Color::red());
         WavefrontObject::load("assets/cube.obj", object.Vertices, object.Indices);
     }
 }
