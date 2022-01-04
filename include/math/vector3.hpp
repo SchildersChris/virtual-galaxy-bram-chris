@@ -3,7 +3,8 @@
 
 #include "vector2.hpp"
 #include "matrix4x4.hpp"
-#include "vector4.hpp"
+
+class Vector4;
 
 class Vector3 {
 public:
@@ -23,6 +24,7 @@ public:
 
     Vector3 operator*(const Vector3& o) const;
     Vector3 operator*(float s) const;
+    Vector4 operator*(const Matrix4x4& o) const;
 
     Vector3 operator/(const Vector3& o) const;
     Vector3 operator/(float s) const;
@@ -37,7 +39,7 @@ public:
 
     [[nodiscard]] Vector3 normalize() const;
 
-    [[nodiscard]] Vector4 operator*(const Matrix4x4& o) const;
+    [[nodiscard]] Vector2 toVector2() const;
 
     float X;
     float Y;

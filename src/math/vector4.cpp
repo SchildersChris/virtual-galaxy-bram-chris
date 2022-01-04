@@ -13,3 +13,7 @@ Vector4 Vector4::operator*(const Matrix4x4& o) const {
 
     return v;
 }
+
+Vector3 Vector4::toVector3() const {
+    return Vector3 { X, Y, Z };
+}

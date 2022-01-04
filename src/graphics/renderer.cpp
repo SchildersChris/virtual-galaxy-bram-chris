@@ -100,10 +100,3 @@ Vector3 Renderer::toRaster(const Vector4& v) {
         v.Z
     };
 }
-
-Vector2 Renderer::toRaster(const Vector3& v) {
-    return {
-        (1 + v.X / v.Z) * 0.5f * static_cast<float>(_width),
-        (1 - v.Y / v.Z) * 0.5f * static_cast<float>(_height)
-    };
-}

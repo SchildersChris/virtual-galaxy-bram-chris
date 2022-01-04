@@ -34,18 +34,16 @@ void Rasterizer::updateObject(const Matrix4x4& mvp, const Object& object) {
             v2.W > -_near || v2.W < -_far) {
             continue;
         }
-        t[0] = Vector3 { v0.X, v0.Y, v0.Z };
-        t[1] = Vector3 { v1.X, v1.Y, v1.Z };
-        t[2] = Vector3 { v2.X, v2.Y, v2.Z };
-
-        r[0] = renderer.toRaster(v0);
-        r[1] = renderer.toRaster(v1);
-        r[2] = renderer.toRaster(v2);
-
+        t[0] = v0.toVector3();
+        t[1] = v1.toVector3();
+        t[2] = v2.toVector3();
 
         auto shade = getShade((t[1] - t[0]).cross(t[2] - t[0]).normalize());
         renderer.setColor(object.BaseColor * shade);
 
+        r[0] = renderer.toRaster(v0);
+        r[1] = renderer.toRaster(v1);
+        r[2] = renderer.toRaster(v2);
         rasterizeTriangle(r);
     }
     renderer.setColor(Color::black());
@@ -60,9 +58,9 @@ void Rasterizer::rasterizeTriangle(const Vector3 r[3]) {
     assert(_zBuffer);
     auto& renderer = Renderer::getInstance();
 
-    auto r0 = Vector2 { r[0].X, r[0].Y };
-    auto r1 = Vector2 { r[1].X, r[1].Y };
-    auto r2 = Vector2 { r[2].X, r[2].Y };
+    auto r0 = r[0].toVector2();
+    auto r1 = r[1].toVector2();
+    auto r2 = r[2].toVector2();
 
     // Calculate bounding box
     float rMaxY = std::max(r0.Y, std::max(r1.Y, r2.Y));

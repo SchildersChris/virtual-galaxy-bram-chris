@@ -83,14 +83,6 @@ public:
     Vector3 toRaster(const Vector4& v);
 
     /**
-     * Convert a vector3 to its respective raster coordinate by using perspective divide.
-     *
-     * @param v Vector to convert to raster coordinate
-     * @return Raster coordinate
-     */
-    Vector2 toRaster(const Vector3& v);
-
-    /**
      * Terminate window and active renderer
      */
     void terminate();

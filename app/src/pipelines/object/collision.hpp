@@ -6,6 +6,7 @@
 class Collision : public ObjectPipeline::Element {
 public:
     void init(entt::registry& registry) override;
+    void updateObject(const Matrix4x4& mvp, const Object& object) override;
 
 private:
     entt::registry* _registry {nullptr};

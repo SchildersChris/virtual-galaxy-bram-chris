@@ -1,8 +1,8 @@
 #ifndef VIRTUAL_GALAXY_VECTOR4_HPP
 #define VIRTUAL_GALAXY_VECTOR4_HPP
 
-#include "vector2.hpp"
 #include "matrix4x4.hpp"
+#include "vector3.hpp"
 
 class Vector4 {
 public:
@@ -13,6 +13,8 @@ public:
     constexpr bool operator!=(const Vector4& o) const;
 
     [[nodiscard]] Vector4 operator*(const Matrix4x4& o) const;
+
+    [[nodiscard]] Vector3 toVector3() const;
 
     float X;
     float Y;
