@@ -9,14 +9,15 @@
 
 #include <imgui.h>
 
-Wireframe::Wireframe(float fov, float near, float far) : _projection(utils::getProjectionMatrix(fov, near, far, 16.f / 9.f)) {}
-
 void Wireframe::init(entt::registry& registry) {
     _registry = &registry;
 
     auto& renderer = Renderer::getInstance();
     _width = renderer.getWidth();
     _height = renderer.getHeight();
+
+    _projection = utils::getProjectionMatrix(
+            _fov, _near, _far,static_cast<float>(_width) / static_cast<float>(_height));
 }
 
 void Wireframe::update(float deltaTime) {
@@ -54,6 +55,8 @@ void Wireframe::update(float deltaTime) {
             auto y = Vector3 { 0, 1, 0 } * mvp;
             auto z = Vector3 { 0, 0, 1 } * mvp;
 
+            if (c.W > 0 || c.W < -_far) { continue; }
+
             auto rC = toRaster(c);
             auto rX = toRaster(x);
             auto rY = toRaster(y);
@@ -88,7 +91,7 @@ void Wireframe::terminate() {}
 
 Vector2 Wireframe::toRaster(const Vector4& v) const {
     return {
-        (1 + v.X / v.W) * 0.5f * static_cast<float>(_width),
-        (1 - v.Y / v.W) * 0.5f * static_cast<float>(_height)
+        (1 + v.X / v.Z) * 0.5f * static_cast<float>(_width),
+        (1 - v.Y / v.Z) * 0.5f * static_cast<float>(_height)
     };
 }

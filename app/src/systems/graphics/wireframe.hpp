@@ -9,14 +9,7 @@
 
 class Wireframe : public System {
 public:
-    /**
-     * Construct wireframe renderer
-     *
-     * @param fov Field of view in degrees
-     * @param near Near clipping
-     * @param far Far clipping
-     */
-    Wireframe(float fov, float near, float far);
+    Wireframe(float fov, float near, float far) : _fov(fov), _near(near), _far(far) {}
 
     void init(entt::registry& registry) override;
     void update(float deltaTime) override;
@@ -30,6 +23,9 @@ private:
     int32 _width {0};
     int32 _height {0};
 
+    float _near;
+    float _far;
+    float _fov;
     Matrix4x4 _projection;
 };
 

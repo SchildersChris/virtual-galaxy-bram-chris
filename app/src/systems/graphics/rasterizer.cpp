@@ -80,6 +80,8 @@ void Rasterizer::update(float deltaTime) {
             auto y = Vector3 { 0, 1, 0 } * mvp;
             auto z = Vector3 { 0, 0, 1 } * mvp;
 
+            if (c.W > 0 || c.W < -_far) { continue; }
+
             auto rC = toRaster(c);
             auto rX = toRaster(x);
             auto rY = toRaster(y);

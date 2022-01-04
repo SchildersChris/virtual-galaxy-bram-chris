@@ -45,6 +45,4 @@ void Shooting::update(float deltaTime) {
     }
 }
 
-void Shooting::terminate() {
-
-}
+void Shooting::terminate() {}
