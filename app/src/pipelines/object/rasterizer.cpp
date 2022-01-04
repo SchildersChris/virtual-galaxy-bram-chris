@@ -16,7 +16,7 @@ void Rasterizer::init(entt::registry& registry) {
 
 void Rasterizer::update(float deltaTime) {
     assert(_zBuffer);
-    std::fill(_zBuffer, _zBuffer + _zBufferSize, _far);
+    std::fill(_zBuffer, _zBuffer + _zBufferSize, -_far);
 }
 
 void Rasterizer::updateObject(const Matrix4x4& mvp, const Object& object) {
@@ -64,6 +64,7 @@ void Rasterizer::rasterizeTriangle(const Vector3 r[3]) {
     auto r1 = Vector2 { r[1].X, r[1].Y };
     auto r2 = Vector2 { r[2].X, r[2].Y };
 
+    // Calculate bounding box
     float rMaxY = std::max(r0.Y, std::max(r1.Y, r2.Y));
     float rMinY = std::min(r0.Y, std::min(r1.Y, r2.Y));
     float rMaxX = std::max(r0.X, std::max(r1.X, r2.X));
@@ -71,9 +72,11 @@ void Rasterizer::rasterizeTriangle(const Vector3 r[3]) {
 
     int32 w = _width - 1;
     int32 h = _height - 1;
+    // Check whether the triangle falls inside the screen
     if (rMinX > static_cast<float>(w) || rMaxX < 0 || rMinY > static_cast<float>(h) || rMaxY < 0)
         return;
 
+    // Calculate in-screen bounding box
     int32 minY = std::max(0, static_cast<int32>(std::floor(rMinY)));
     int32 maxY = std::min(h, static_cast<int32>(std::floor(rMaxY)));
     int32 minX = std::max(0, static_cast<int32>(std::floor(rMinX)));
@@ -83,24 +86,29 @@ void Rasterizer::rasterizeTriangle(const Vector3 r[3]) {
     float area = utils::edgeFunction(r0, r1, r2);
 
     for (int32 y = minY; y <= maxY; ++y) {
+        bool found = false;
+
         for (int32 x = minX; x <= maxX; ++x) {
             Vector2 p = { static_cast<float>(x), static_cast<float>(y) };
 
-            float a[3] = {
-                utils::edgeFunction(r1, r2, p),
-                utils::edgeFunction(r2, r0, p),
-                utils::edgeFunction(r0, r1, p)
-            };
+            // The edge function checks whether the point falls on the
+            // left or right side of the edge. This is done for each edge of the triangle
+            // to test if the point falls inside the triangle
+            auto a0 = utils::edgeFunction(r1, r2, p);
+            auto a1 = utils::edgeFunction(r2, r0, p);
+            auto a2 = utils::edgeFunction(r0, r1, p);
 
-            if (a[0] < 0 || a[1] < 0 || a[2] < 0)
-                continue;
+            // Check with CW (Clock wise winding order) if the point falls inside the triangle
+            if (a0 < 0 || a1 < 0 || a2 < 0) {
+                if (!found) { continue; }
+                break;
+            }
+            found = true;
 
-            a[0] /= area;
-            a[1] /= area;
-            a[2] /= area;
-
-            float z = 1 / (r[0].Z * a[0] + r[1].Z * a[1] + r[2].Z * a[2]);
-            if (z >= _zBuffer[y * _width + x])
+            // Interpolate the z by total area
+            // Check whether pixel should be shown using the z-buffer algorithm
+            float z = r[0].Z * a0 / area + r[1].Z * a1 / area + r[2].Z * a2 / area;
+            if (z < _zBuffer[y * _width + x])
                 continue;
             _zBuffer[y * _width + x] = z;
 
