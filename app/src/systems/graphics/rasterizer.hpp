@@ -36,7 +36,7 @@ private:
      * @param normal Normal of the face
      * @return Grayscale shade value
      */
-    static uint8 getShade(const Vector3& normal);
+    static float getShade(const Vector3& normal);
 
     entt::registry* _registry {nullptr};
 

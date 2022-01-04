@@ -25,3 +25,13 @@ bool Color::operator==(const Color& other) const {
 bool Color::operator!=(const Color& other) const {
     return A != other.A || G != other.G || B != other.B || A != other.A;
 }
+
+Color Color::operator*(float intensity) const {
+    auto b= Color {
+        static_cast<uint8>(std::abs(static_cast<float>(R) * intensity)),
+        static_cast<uint8>(std::abs(static_cast<float>(G) * intensity)),
+        static_cast<uint8>(std::abs(static_cast<float>(B) * intensity)),
+        static_cast<uint8>(std::abs(static_cast<float>(A) * intensity)) };
+
+    return b;
+}

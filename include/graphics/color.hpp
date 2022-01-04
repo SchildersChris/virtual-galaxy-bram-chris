@@ -20,6 +20,8 @@ public:
     bool operator==(const Color& other) const;
     bool operator!=(const Color& other) const;
 
+    Color operator*(float intensity) const;
+
     explicit operator uint32() const;
 
     uint8 R;
