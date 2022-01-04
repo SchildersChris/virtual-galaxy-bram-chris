@@ -7,14 +7,18 @@ file(COPY assets DESTINATION .)
 add_executable(app
     src/app.cpp
     src/app.hpp
-    src/systems/graphics/rasterizer.cpp
-    src/systems/graphics/rasterizer.hpp
-    src/systems/graphics/wireframe.cpp
-    src/systems/graphics/wireframe.hpp
+    src/pipelines/object/rasterizer.cpp
+    src/pipelines/object/rasterizer.hpp
+    src/pipelines/object/wireframe.cpp
+    src/pipelines/object/wireframe.hpp
+    src/pipelines/object/collision.cpp
+    src/pipelines/object/collision.hpp
+    src/pipelines/object/axis.cpp
+    src/pipelines/object/axis.hpp
     src/systems/movement.cpp
     src/systems/movement.hpp
-    src/systems/collision.cpp
-    src/systems/collision.hpp
+    src/systems/object-pipeline.cpp
+    src/systems/object-pipeline.hpp
     src/systems/scene.cpp
     src/systems/scene.hpp
     src/systems/shooting.cpp

@@ -1,0 +1,21 @@
+#ifndef VIRTUAL_GALAXY_AXIS_HPP
+#define VIRTUAL_GALAXY_AXIS_HPP
+
+#include "../../systems/object-pipeline.hpp"
+
+class Axis : public ObjectPipeline::Element {
+public:
+    Axis(float near, float far) : _near(near), _far(far) {}
+
+    void init(entt::registry& registry) override;
+    void update(float deltaTime) override;
+    void updateObject(const Matrix4x4& mvp, const Object& object) override;
+
+private:
+    bool _drawAxis {true};
+
+    float _near{0};
+    float _far{0};
+};
+
+#endif //VIRTUAL_GALAXY_AXIS_HPP

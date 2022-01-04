@@ -11,7 +11,6 @@ class Scene : public System {
 public:
     void init(entt::registry& registry) override;
     void update(float deltaTime) override;
-    void terminate() override;
 
 private:
     uint32 _activeFps{};

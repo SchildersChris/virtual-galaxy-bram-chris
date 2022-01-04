@@ -1,10 +1,10 @@
 #include "shooting.hpp"
 #include "../components/transform.hpp"
 #include "../components/player.hpp"
-
-#include "core/input.hpp"
 #include "../components/bullet.hpp"
 #include "../utils/wavefront-object.hpp"
+
+#include "core/input.hpp"
 
 void Shooting::init(entt::registry& registry) {
     _registry = &registry;
@@ -45,4 +45,3 @@ void Shooting::update(float deltaTime) {
     }
 }
 
-void Shooting::terminate() {}

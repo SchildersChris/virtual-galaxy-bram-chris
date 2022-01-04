@@ -3,6 +3,8 @@
 
 #include "base.hpp"
 #include "math/vector2.hpp"
+#include "math/vector3.hpp"
+#include "math/vector4.hpp"
 #include "graphics/color.hpp"
 
 #include "SDL.h"
@@ -70,6 +72,23 @@ public:
      * @param frame Frame to end
      */
     void endFrame();
+
+    /**
+     * Convert a vector4 to its respective raster coordinate by using perspective divide.
+     * While reserving the z coordinate for later use.
+     *
+     * @param v Vector to convert to raster coordinate
+     * @return Raster coordinate
+     */
+    Vector3 toRaster(const Vector4& v);
+
+    /**
+     * Convert a vector3 to its respective raster coordinate by using perspective divide.
+     *
+     * @param v Vector to convert to raster coordinate
+     * @return Raster coordinate
+     */
+    Vector2 toRaster(const Vector3& v);
 
     /**
      * Terminate window and active renderer

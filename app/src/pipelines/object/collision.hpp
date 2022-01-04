@@ -1,14 +1,14 @@
 #ifndef VIRTUAL_GALAXY_COLLISION_HPP
 #define VIRTUAL_GALAXY_COLLISION_HPP
 
-#include "core/system.hpp"
+#include "../../systems/object-pipeline.hpp"
 
-class Collision : public System {
+class Collision : public ObjectPipeline::Element {
 public:
     void init(entt::registry& registry) override;
-    void update(float deltaTime) override;
-    void terminate() override;
-};
 
+private:
+    entt::registry* _registry {nullptr};
+};
 
 #endif //VIRTUAL_GALAXY_COLLISION_HPP

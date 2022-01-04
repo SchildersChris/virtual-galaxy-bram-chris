@@ -31,6 +31,16 @@ namespace utils {
     float edgeFunction(const Vector2& start, const Vector2& end, const Vector2& p);
 
     /**
+     * Find edge point of intersection in a triangle
+     *
+     * @param t Triangle plane
+     * @param start Edge start
+     * @param end Edge end
+     * @return Point of intersection
+     */
+    Vector3 findTriangleIntersection(const Vector3 t[3], const Vector3& start, const Vector3& end);
+
+    /**
      * Degrees to radians constant
      */
     constexpr float Deg2Rad = M_PI / 180;

@@ -24,7 +24,7 @@ public:
     /**
      * Terminate is called to shutdown the system and cleanup all the resources.
      */
-    virtual void terminate() = 0;
+    [[maybe_unused]] virtual void terminate() {};
 };
 
 #endif //VIRTUAL_GALAXY_SYSTEM_HPP
