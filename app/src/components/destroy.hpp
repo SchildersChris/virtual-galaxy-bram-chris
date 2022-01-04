@@ -1,0 +1,6 @@
+#ifndef VIRTUAL_GALAXY_DESTROY_HPP
+#define VIRTUAL_GALAXY_DESTROY_HPP
+
+struct Destroy {};
+
+#endif //VIRTUAL_GALAXY_DESTROY_HPP

@@ -16,6 +16,8 @@ private:
     uint32 _activeFps{};
     uint32 _fps{};
     float _step{};
+
+    entt::registry* _registry;
 };
 
 #endif //VIRTUAL_GALAXY_SCENE_HPP

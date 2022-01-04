@@ -4,10 +4,14 @@
 #include "../utils/wavefront-object.hpp"
 #include "../components/player.hpp"
 #include "../components/camera.hpp"
+#include "../components/collider.hpp"
+#include "../components/destroy.hpp"
+#include "../components/bullet.hpp"
 
 #include <imgui.h>
 
 void Scene::init(entt::registry& registry) {
+    _registry = &registry;
     _step = 0;
     _fps = 0;
     _activeFps = 0;
@@ -24,12 +28,16 @@ void Scene::init(entt::registry& registry) {
         Vector3 { 0.f, 0.f, 10.f},
         Vector3 { 0.f, 0.f, 0.f},
         Vector3 { 1.f, 1.f, 1.f});
+    registry.emplace<Collider>(spaceship, [&, spaceship](entt::entity other) {
+        if (!registry.all_of<Bullet>(other)) {
+            registry.emplace<Destroy>(spaceship);
+        }
+    });
 
     registry.emplace<Player>(spaceship);
     {
         auto& object = registry.emplace<Object>(spaceship, Color(27, 161, 226, 255));
         WavefrontObject::load("assets/spaceship.obj", object.Vertices, object.Indices);
-
     }
 
     {
@@ -44,6 +52,9 @@ void Scene::init(entt::registry& registry) {
 }
 
 void Scene::update(float deltaTime) {
+    auto view = _registry->view<Destroy>();
+    _registry->destroy(view.begin(), view.end());
+
     ++_fps;
     _step += deltaTime;
 

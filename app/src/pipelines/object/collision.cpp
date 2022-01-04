@@ -23,13 +23,13 @@ void Collision::updateObject(entt::entity entity, const Matrix4x4& vp, const Mat
         auto v = object.Vertices[object.Indices[i] - 1] * mvp;
 
         if (v.X < minX) { minX = v.X; }
-        else if (v.X > maxX) { maxX = v.X; }
+        if (v.X > maxX) { maxX = v.X; }
 
         if (v.Y < minY) { minY = v.Y; }
-        else if (v.Y > maxY) { maxY = v.Y; }
+        if (v.Y > maxY) { maxY = v.Y; }
 
         if (v.Z < minZ) { minZ = v.Z; }
-        else if (v.Z > maxZ) { maxZ = v.Z; }
+        if (v.Z > maxZ) { maxZ = v.Z; }
     }
 
     for (auto&& [e, transform, collider] : _registry->view<Transform, Collider>().each()) {
