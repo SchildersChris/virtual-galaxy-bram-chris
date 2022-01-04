@@ -5,6 +5,7 @@
 #include "../utils/wavefront-object.hpp"
 
 #include "core/input.hpp"
+#include "math/vector4.hpp"
 
 void Shooting::init(entt::registry& registry) {
     _registry = &registry;

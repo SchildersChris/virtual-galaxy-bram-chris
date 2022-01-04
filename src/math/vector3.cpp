@@ -1,5 +1,6 @@
 #include <valarray>
 #include "math/vector3.hpp"
+#include "math/vector4.hpp"
 
 constexpr bool Vector3::operator==(const Vector3& o) const { return X == o.X && Y == o.Y && Z == o.Z; }
 constexpr bool Vector3::operator!=(const Vector3& o) const { return X != o.X || Y != o.Y || Z != o.Z; }

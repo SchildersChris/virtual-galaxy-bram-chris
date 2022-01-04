@@ -5,6 +5,7 @@
 #include "../components/camera.hpp"
 
 #include "core/input.hpp"
+#include "math/vector4.hpp"
 
 void Movement::init(entt::registry& registry) {
     _registry = &registry;
