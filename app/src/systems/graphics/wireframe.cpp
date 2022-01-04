@@ -49,6 +49,23 @@ void Wireframe::update(float deltaTime) {
     for (auto&& [entity, transform, object] : _registry->group<Transform, Object>().each()) {
         auto mvp = vp * transform.getMatrix();
 
+        for (int i = 0; i < object.Indices.size(); i += 3) {
+            auto v0 = object.Vertices[object.Indices[i] - 1] * mvp;
+            auto v1 = object.Vertices[object.Indices[i+1] - 1] * mvp;
+            auto v2 = object.Vertices[object.Indices[i+2] - 1] * mvp;
+
+            if (v0.W > 0 || v1.W > 0 || v2.W > 0) {
+                continue;
+            }
+            auto r0 = toRaster(v0);
+            auto r1 = toRaster(v1);
+            auto r2 = toRaster(v2);
+
+            renderer.drawLine(r0, r1, object.BaseColor);
+            renderer.drawLine(r1, r2, object.BaseColor);
+            renderer.drawLine(r2, r0, object.BaseColor);
+        }
+
         if (drawAxis) {
             auto c = Vector3 { 0, 0, 0 } * mvp;
             auto x = Vector3 { 1, 0, 0 } * mvp;
@@ -65,24 +82,6 @@ void Wireframe::update(float deltaTime) {
             renderer.drawLine(rC, rX, Color::green());
             renderer.drawLine(rC, rY, Color::red());
             renderer.drawLine(rC, rZ, Color::blue());
-        }
-
-        for (int i = 0; i < object.Indices.size(); i += 3) {
-            auto v0 = object.Vertices[object.Indices[i] - 1] * mvp;
-            auto v1 = object.Vertices[object.Indices[i+1] - 1] * mvp;
-            auto v2 = object.Vertices[object.Indices[i+2] - 1] * mvp;
-
-            if (v0.W > 0 || v1.W > 0 || v2.W > 0) {
-                continue;
-            }
-
-            auto r0 = toRaster(v0);
-            auto r1 = toRaster(v1);
-            auto r2 = toRaster(v2);
-
-            renderer.drawLine(r0, r1, Color::white());
-            renderer.drawLine(r1, r2, Color::white());
-            renderer.drawLine(r2, r0, Color::white());
         }
     }
 }

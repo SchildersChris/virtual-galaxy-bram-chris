@@ -52,7 +52,6 @@ public:
      *
      * @param x X position to draw
      * @param y Y position to draw
-     * @param color Color to draw with
      */
     void drawPoint(int32 x, int32 y);
 
