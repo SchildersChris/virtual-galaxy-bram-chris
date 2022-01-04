@@ -17,8 +17,11 @@ add_executable(app
     src/systems/collision.hpp
     src/systems/scene.cpp
     src/systems/scene.hpp
+    src/systems/shooting.cpp
+    src/systems/shooting.hpp
     src/components/transform.hpp
     src/components/object.hpp
+    src/components/bullet.hpp
     src/utils/wavefront-object.cpp
     src/utils/wavefront-object.hpp
 )

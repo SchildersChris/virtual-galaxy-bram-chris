@@ -27,11 +27,10 @@ bool Color::operator!=(const Color& other) const {
 }
 
 Color Color::operator*(float intensity) const {
-    auto b= Color {
+    return Color {
         static_cast<uint8>(std::abs(static_cast<float>(R) * intensity)),
         static_cast<uint8>(std::abs(static_cast<float>(G) * intensity)),
         static_cast<uint8>(std::abs(static_cast<float>(B) * intensity)),
-        static_cast<uint8>(std::abs(static_cast<float>(A) * intensity)) };
-
-    return b;
+        static_cast<uint8>(std::abs(static_cast<float>(A) * intensity))
+    };
 }
