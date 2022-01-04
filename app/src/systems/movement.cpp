@@ -18,7 +18,7 @@ void Movement::update(float deltaTime) {
     ImGui::End();
 
     playerMovement(deltaTime);
-//    cameraMovement(deltaTime);
+    cameraMovement(deltaTime);
 }
 
 void Movement::playerMovement(float deltaTime) const {
@@ -58,37 +58,29 @@ void Movement::playerMovement(float deltaTime) const {
 }
 
 void Movement::cameraMovement(float deltaTime) const {
-    auto actualRotation = _rotationSpeed * deltaTime;
+    auto actualSpeed = _movementSpeed * deltaTime;
 
-    Vector3 rot;
+    Vector3 trans;
     auto& input = Input::getInstance();
-    if (input.getKeyDown(Input::KeyCode::A)) {
-        rot.Y += actualRotation;
-    } else if (input.getKeyDown(Input::KeyCode::D)) {
-        rot.Y -= actualRotation;
+    if (input.getKeyDown(Input::KeyCode::PAGE_UP)) {
+        trans.Y -= actualSpeed;
+    } else if (input.getKeyDown(Input::KeyCode::PAGE_DOWN)) {
+        trans.Y += actualSpeed;
     }
 
-    if (input.getKeyDown(Input::KeyCode::W)) {
-        rot.X += actualRotation;
-    } else if (input.getKeyDown(Input::KeyCode::S)) {
-        rot.X -= actualRotation;
+    if (input.getKeyDown(Input::KeyCode::RIGHT_ARROW)) {
+        trans.X += actualSpeed;
+    } else if (input.getKeyDown(Input::KeyCode::LEFT_ARROW)) {
+        trans.X -= actualSpeed;
     }
 
-    if (input.getKeyDown(Input::KeyCode::Q)) {
-        rot.Z += actualRotation;
-    } else if (input.getKeyDown(Input::KeyCode::E)) {
-        rot.Z -= actualRotation;
+    if (input.getKeyDown(Input::KeyCode::UP_ARROW)) {
+        trans.Z -= actualSpeed;
+    } else if (input.getKeyDown(Input::KeyCode::DOWN_ARROW)) {
+        trans.Z += actualSpeed;
     }
 
-    auto shouldMove = input.getKeyDown(Input::KeyCode::LEFT_SHIFT);
     for (auto&& [entity, transform] : _registry->view<Transform, Camera>().each()) {
-        transform.Rotation += rot;
-
-        if (shouldMove) {
-            auto rotation = Matrix4x4::rotation(transform.Rotation.X, transform.Rotation.Y, transform.Rotation.Z);
-            auto heading = Vector4 { 0, 0, 1, 1 } * rotation; // Move in positive Z direction * current rotation
-
-            transform.Translation += Vector3 { heading.X, heading.Y, heading.Z } * _movementSpeed * deltaTime;
-        }
+        transform.Translation += trans;
     }
 }
