@@ -107,9 +107,15 @@ void Rasterizer::rasterizeTriangle(const Vector3 r[3]) {
             }
             found = true;
 
-            // Interpolate the z by total area
+            // Divide sub triangles by the area of the whole triangle
+            // Defining the ratio of each point
+            a0 /= area;
+            a1 /= area;
+            a2 /= area;
+
             // Check whether pixel should be shown using the z-buffer algorithm
-            float z = r[0].Z * a0 / area + r[1].Z * a1 / area + r[2].Z * a2 / area;
+            // Multiplying the ratio times each z coordinate to get the interpolated z coordinate
+            float z = r[0].Z * a0 + r[1].Z * a1 + r[2].Z * a2;
             if (z < _zBuffer[y * _width + x])
                 continue;
             _zBuffer[y * _width + x] = z;
