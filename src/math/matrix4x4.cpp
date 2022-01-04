@@ -65,7 +65,7 @@ Matrix4x4 Matrix4x4::rotation(float x, float y, float z) {
         mZ(1, 1) = cosZ; // cos
     }
 
-    return mZ * mY * mX;
+    return mX * mY * mZ;
 }
 
 Matrix4x4 Matrix4x4::scale(float x, float y, float z) {

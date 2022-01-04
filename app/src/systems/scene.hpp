@@ -14,12 +14,6 @@ public:
     void terminate() override;
 
 private:
-    entt::registry* _registry {nullptr};
-
-    entt::entity _fpsCamera {entt::null};
-    entt::entity _worldCamera {entt::null};
-    bool _isFpsCamera {false};
-
     uint32 _activeFps{};
     uint32 _fps{};
     float _step{};

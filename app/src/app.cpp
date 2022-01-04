@@ -2,6 +2,7 @@
 #include "systems/scene.hpp"
 #include "systems/collision.hpp"
 #include "systems/movement.hpp"
+#include "systems/view.hpp"
 #include "systems/graphics/wireframe.hpp"
 #include "systems/graphics/rasterizer.hpp"
 
@@ -10,6 +11,7 @@ App::App() : Application("Virtual Galaxy") {
      * Constructing the application runtime systems
      */
     Systems.emplace_back(std::make_unique<Scene>());
+    Systems.emplace_back(std::make_unique<View>());
     Systems.emplace_back(std::make_unique<Collision>());
     Systems.emplace_back(std::make_unique<Movement>());
 
