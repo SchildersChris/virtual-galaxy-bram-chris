@@ -7,6 +7,7 @@
 #include "../components/collider.hpp"
 #include "../components/destroy.hpp"
 #include "../components/bullet.hpp"
+#include "../components/scale.hpp"
 
 #include <imgui.h>
 
@@ -43,9 +44,10 @@ void Scene::init(entt::registry& registry) {
     {
         auto planet = registry.create();
         auto& trans = registry.emplace<Transform>(planet,
-            Vector3 { 10.f, 0.f, 10.f},
+            Vector3 { 7.f, 0.f, 10.f},
             Vector3 { 0.f, -60.f, 0.f},
             Vector3 { 1.f, 1.f, 1.f});
+        registry.emplace<Scale>(planet);
         auto& object = registry.emplace<Object>(planet, Color::green());
         WavefrontObject::load("assets/cube.obj", object.Vertices, object.Indices);
     }

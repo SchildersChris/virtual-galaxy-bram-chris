@@ -23,6 +23,8 @@ add_executable(app
     src/systems/scene.hpp
     src/systems/shooting.cpp
     src/systems/shooting.hpp
+    src/systems/scaling.cpp
+    src/systems/scaling.hpp
     src/components/transform.hpp
     src/components/object.hpp
     src/components/collider.hpp
