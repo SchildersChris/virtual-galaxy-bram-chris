@@ -74,12 +74,5 @@ void Scene::update(float deltaTime) {
         ImGui::Text("Yaw: A/D");
         ImGui::Text("Shoot: Space");
     }
-
-    if (ImGui::CollapsingHeader("Graph", false)) {
-        ImGui::Text("Roll: Q/E");
-        ImGui::Text("Pitch: W/S");
-        ImGui::Text("Yaw: A/D");
-        ImGui::Text("Shoot: Space");
-    }
     ImGui::End();
 }
