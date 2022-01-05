@@ -1,12 +1,11 @@
 #include <math/utils.hpp>
-#include "object-pipeline.hpp"
-#include "../pipelines/object/rasterizer.hpp"
+#include "rendering-pipeline.hpp"
 #include "../components/camera.hpp"
 #include "../components/transform.hpp"
 
 #include "graphics/renderer.hpp"
 
-void ObjectPipeline::init(entt::registry& registry) {
+void RenderingPipeline::init(entt::registry& registry) {
     _registry = &registry;
 
     auto& renderer = Renderer::getInstance();
@@ -18,7 +17,7 @@ void ObjectPipeline::init(entt::registry& registry) {
     }
 }
 
-void ObjectPipeline::update(float deltaTime) {
+void RenderingPipeline::update(float deltaTime) {
     if (!_registry) { return; }
 
     for (auto& elem : Elements) {
@@ -36,7 +35,7 @@ void ObjectPipeline::update(float deltaTime) {
     }
 }
 
-void ObjectPipeline::terminate() {
+void RenderingPipeline::terminate() {
     for (auto& elem : Elements) {
         elem->terminate();
     }
