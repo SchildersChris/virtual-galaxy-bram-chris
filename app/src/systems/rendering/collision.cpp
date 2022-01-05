@@ -35,12 +35,32 @@ void Collision::updateObject(entt::entity entity, const Matrix4x4& vp, const Mat
     for (auto&& [e, transform, collider] : _registry->view<Transform, Collider>().each()) {
         if (entity == e) { continue; }
 
-        auto colliderMvp = vp * transform.getMatrix();
-        auto colliderCenter = Vector4 { 0, 0, 0, 1} * colliderMvp;
+        auto otherMvp = vp * transform.getMatrix();
+        auto otherCenter = Vector4 { 0, 0, 0, 1} * otherMvp;
 
-        if (colliderCenter.X > minX && colliderCenter.X < maxX &&
-            colliderCenter.Y > minY && colliderCenter.Y < maxY &&
-            colliderCenter.Z > minZ && colliderCenter.Z < maxZ) {
+        float otherMinX = otherCenter.X;
+        float otherMaxX = otherCenter.X;
+        float otherMinY = otherCenter.Y;
+        float otherMaxY = otherCenter.Y;
+        float otherMinZ = otherCenter.Z;
+        float otherMaxZ = otherCenter.Z;
+
+        for (int i = 0; i < object.Indices.size(); ++i) {
+            auto v = object.Vertices[object.Indices[i] - 1] * otherMvp;
+
+            if (v.X < otherMinX) { otherMinX = v.X; }
+            if (v.X > otherMaxX) { otherMaxX = v.X; }
+
+            if (v.Y < otherMinY) { otherMinY = v.Y; }
+            if (v.Y > otherMaxY) { otherMaxY = v.Y; }
+
+            if (v.Z < otherMinZ) { otherMinZ = v.Z; }
+            if (v.Z > otherMaxZ) { otherMaxZ = v.Z; }
+        }
+
+        if ( (minX <= otherMaxX && maxX >= otherMinX) &&
+             (minY <= otherMaxY && maxY >= otherMinY) &&
+             (minZ <= otherMaxZ && maxZ >= otherMinZ)) {
             collider.OnCollide(entity);
         }
     }
