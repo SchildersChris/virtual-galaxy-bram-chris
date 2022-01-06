@@ -74,11 +74,47 @@ TEST_CASE("Should correctly multiply matrices", "[multiply]") {
 }
 
 TEST_CASE("Should correctly rotate vector4", "[multiply]") {
+    float x = 10, y = 5, z = 2;
+    auto rotate = Matrix4x4::rotation(x, y, z);
 
+    auto v = Vector4 { 1, 1, 1, 1 };
+
+//    SECTION("Create") {
+//        REQUIRE(rotate(3, 0) == x);
+//        REQUIRE(rotate(3, 1) == y);
+//        REQUIRE(rotate(3, 2) == z);
+//    }
+
+    // TODO: Not sure how to validate the rotation matrix.
+    SECTION("Multiply") {
+        auto vs = v * rotate;
+
+        REQUIRE(vs.X == x);
+        REQUIRE(vs.Y == y);
+        REQUIRE(vs.Z == z);
+    }
 }
 
 TEST_CASE("Should correctly translate vector4", "[multiply]") {
+    float x = -10, y = -10, z = -10;
+    auto translate = Matrix4x4::translation(x, y, z);
 
+    auto v = Vector4 { 10, 10, 10, 1 };
+
+    SECTION("Create") {
+        REQUIRE(translate(3, 0) == x);
+        REQUIRE(translate(3, 1) == y);
+        REQUIRE(translate(3, 2) == z);
+    }
+
+    // TODO: Not sure how to validate the rotation matrix.
+    SECTION("Multiply") {
+        auto vs = v * translate;
+
+        REQUIRE(vs.X == 0);
+        REQUIRE(vs.Y == 0);
+        REQUIRE(vs.Z == 0);
+    }
 }
 
 TEST_CASE("Should correctly check if matrices are equal", "[equal]") {
