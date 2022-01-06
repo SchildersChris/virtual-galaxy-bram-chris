@@ -1,6 +1,0 @@
-#ifndef VIRTUAL_GALAXY_PLAYER_HPP
-#define VIRTUAL_GALAXY_PLAYER_HPP
-
-struct Player {};
-
-#endif //VIRTUAL_GALAXY_PLAYER_HPP

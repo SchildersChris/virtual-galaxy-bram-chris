@@ -2,7 +2,7 @@
 #include "../components/transform.hpp"
 #include "../components/object.hpp"
 #include "../utils/wavefront-object.hpp"
-#include "../components/player.hpp"
+#include "../components/actor.hpp"
 #include "../components/camera.hpp"
 #include "../components/collider.hpp"
 #include "../components/destroy.hpp"
@@ -34,7 +34,7 @@ void Scene::init(entt::registry& registry) {
             registry.emplace<Destroy>(spaceship);
         }
     });
-    registry.emplace<Player>(spaceship);
+    registry.emplace<Actor>(spaceship);
     {
         auto& object = registry.emplace<Object>(spaceship, Color(27, 161, 226, 255));
         WavefrontObject::load("assets/spaceship2.obj", object.Vertices, object.Indices);

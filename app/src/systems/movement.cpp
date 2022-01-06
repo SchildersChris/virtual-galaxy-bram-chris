@@ -1,7 +1,7 @@
 #include <imgui.h>
 #include "movement.hpp"
 #include "../components/transform.hpp"
-#include "../components/player.hpp"
+#include "../components/actor.hpp"
 #include "../components/camera.hpp"
 
 #include "core/input.hpp"
@@ -45,7 +45,7 @@ void Movement::playerMovement(float deltaTime) const {
     }
 
     auto shouldMove = input.getKeyDown(Input::KeyCode::LEFT_SHIFT);
-    for (auto&& [entity, transform] : _registry->view<Transform, Player>().each()) {
+    for (auto&& [entity, transform] : _registry->view<Transform, Actor>().each()) {
         transform.Rotation += rot;
 
         if (shouldMove) {
