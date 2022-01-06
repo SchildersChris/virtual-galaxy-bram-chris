@@ -37,7 +37,7 @@ void Scene::init(entt::registry& registry) {
     registry.emplace<Player>(spaceship);
     {
         auto& object = registry.emplace<Object>(spaceship, Color(27, 161, 226, 255));
-        WavefrontObject::load("assets/vector.obj", object.Vertices, object.Indices);
+        WavefrontObject::load("assets/spaceship2.obj", object.Vertices, object.Indices);
     }
 
     auto planet = registry.create();
@@ -48,7 +48,7 @@ void Scene::init(entt::registry& registry) {
     registry.emplace<Scale>(planet);
     {
         auto& object = registry.emplace<Object>(planet, Color::green());
-        WavefrontObject::load("assets/cube.obj", object.Vertices, object.Indices);
+        WavefrontObject::load("assets/planet.obj", object.Vertices, object.Indices);
     }
 }
 

@@ -9,7 +9,7 @@
 #include "systems/rendering/rendering.hpp"
 
 App::App() : Application("Virtual Galaxy") {
-    const float near = 2.f;
+    const float near = 1.f;
     const float far = 100.f;
     const float fov = 60.f;
 
