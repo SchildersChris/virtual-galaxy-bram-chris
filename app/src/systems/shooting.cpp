@@ -1,6 +1,6 @@
 #include "shooting.hpp"
 #include "../components/transform.hpp"
-#include "../components/player.hpp"
+#include "../components/actor.hpp"
 #include "../components/bullet.hpp"
 #include "../utils/wavefront-object.hpp"
 
@@ -32,7 +32,7 @@ void Shooting::update(float deltaTime) {
         return;
     }
 
-    for (auto&& [entity, transform] : _registry->view<Transform, Player>().each()) {
+    for (auto&& [entity, transform] : _registry->view<Transform, Actor>().each()) {
         auto bullet = _registry->create();
 
         auto rotation = Matrix4x4::rotation(transform.Rotation.X, transform.Rotation.Y, transform.Rotation.Z);
@@ -46,7 +46,7 @@ void Shooting::update(float deltaTime) {
         });
         _registry->emplace<Object>(bullet, _bullet);
         _registry->emplace<Collider>(bullet, [&](entt::entity other){
-            if (!_registry->any_of<Player>(other)) {
+            if (!_registry->all_of<Actor>(other)) {
                 _registry->emplace<Destroy>(other);
             }
         });

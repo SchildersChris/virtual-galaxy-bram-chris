@@ -13,6 +13,7 @@ public:
     static const Color& green() { return _green; }
     static const Color& blue() { return _blue; }
     static const Color& black() { return _black; }
+    static const Color& magenta() { return _magenta; }
 
     static uint32 rgbaToInteger(uint8 r, uint8 g, uint8 b, uint8 a);
     static uint32 rgbToInteger(uint8 r, uint8 g, uint8 b);
@@ -35,6 +36,7 @@ private:
     static Color _green;
     static Color _blue;
     static Color _black;
+    static Color _magenta;
 };
 
 #endif //VIRTUAL_GALAXY_COLOR_HPP
