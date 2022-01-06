@@ -1,9 +1,9 @@
 #ifndef VIRTUAL_GALAXY_AXIS_HPP
 #define VIRTUAL_GALAXY_AXIS_HPP
 
-#include "../../systems/object-pipeline.hpp"
+#include "../rendering-pipeline.hpp"
 
-class Axis : public ObjectPipeline::Element {
+class Axis : public RenderingPipeline::Element {
 public:
     Axis(float near, float far) : _near(near), _far(far) {}
 

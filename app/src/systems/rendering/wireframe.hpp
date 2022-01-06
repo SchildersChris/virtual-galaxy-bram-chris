@@ -1,13 +1,13 @@
 #ifndef VIRTUAL_GALAXY_WIREFRAME_HPP
 #define VIRTUAL_GALAXY_WIREFRAME_HPP
 
-#include "../../systems/object-pipeline.hpp"
+#include "../rendering-pipeline.hpp"
 
 #include "math/vector2.hpp"
 #include "math/vector4.hpp"
 #include "math/matrix4x4.hpp"
 
-class Wireframe : public ObjectPipeline::Element {
+class Wireframe : public RenderingPipeline::Element {
 public:
     Wireframe(float near, float far) : _near(near), _far(far) {}
 

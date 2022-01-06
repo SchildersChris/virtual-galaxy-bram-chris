@@ -1,12 +1,12 @@
 #ifndef VIRTUAL_GALAXY_RASTERIZER_HPP
 #define VIRTUAL_GALAXY_RASTERIZER_HPP
 
-#include "../../systems/object-pipeline.hpp"
+#include "../rendering-pipeline.hpp"
 
 #include "core/system.hpp"
 #include "math/vector3.hpp"
 
-class Rasterizer : public ObjectPipeline::Element {
+class Rasterizer : public RenderingPipeline::Element {
 public:
     Rasterizer(float near, float far) : _near(near), _far(far) {}
 

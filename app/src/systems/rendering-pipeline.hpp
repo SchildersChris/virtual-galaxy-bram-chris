@@ -1,12 +1,12 @@
-#ifndef VIRTUAL_GALAXY_OBJECT_PIPELINE_HPP
-#define VIRTUAL_GALAXY_OBJECT_PIPELINE_HPP
+#ifndef VIRTUAL_GALAXY_RENDERING_PIPELINE_HPP
+#define VIRTUAL_GALAXY_RENDERING_PIPELINE_HPP
 
 #include "../components/object.hpp"
 
 #include "math/matrix4x4.hpp"
 #include "core/system.hpp"
 
-class ObjectPipeline : public System {
+class RenderingPipeline : public System {
 public:
     class Element : public System {
     public:
@@ -24,7 +24,7 @@ public:
         [[maybe_unused]] virtual void updateObject(entt::entity entity, const Matrix4x4& vp, const Matrix4x4& m, const Object& object) {};
     };
 
-    ObjectPipeline(float fov, float near, float far) : _fov(fov), _near(near), _far(far) {}
+    RenderingPipeline(float fov, float near, float far) : _fov(fov), _near(near), _far(far) {}
 
     void init(entt::registry& registry) override;
     void update(float deltaTime) override;
@@ -41,4 +41,4 @@ private:
     Matrix4x4 _projection;
 };
 
-#endif //VIRTUAL_GALAXY_OBJECT_PIPELINE_HPP
+#endif //VIRTUAL_GALAXY_RENDERING_PIPELINE_HPP

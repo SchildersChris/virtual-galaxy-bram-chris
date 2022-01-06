@@ -34,20 +34,19 @@ void Scene::init(entt::registry& registry) {
             registry.emplace<Destroy>(spaceship);
         }
     });
-
     registry.emplace<Player>(spaceship);
     {
         auto& object = registry.emplace<Object>(spaceship, Color(27, 161, 226, 255));
         WavefrontObject::load("assets/spaceship.obj", object.Vertices, object.Indices);
     }
 
+    auto planet = registry.create();
+    auto& trans = registry.emplace<Transform>(planet,
+      Vector3 { 7.f, 0.f, 10.f},
+      Vector3 { 0.f, -60.f, 0.f},
+      Vector3 { 1.f, 1.f, 1.f});
+    registry.emplace<Scale>(planet);
     {
-        auto planet = registry.create();
-        auto& trans = registry.emplace<Transform>(planet,
-            Vector3 { 7.f, 0.f, 10.f},
-            Vector3 { 0.f, -60.f, 0.f},
-            Vector3 { 1.f, 1.f, 1.f});
-        registry.emplace<Scale>(planet);
         auto& object = registry.emplace<Object>(planet, Color::green());
         WavefrontObject::load("assets/cube.obj", object.Vertices, object.Indices);
     }
@@ -69,13 +68,6 @@ void Scene::update(float deltaTime) {
     ImGui::Begin("Scene");
     ImGui::Text("FPS: %.d", _activeFps);
     if (ImGui::CollapsingHeader("Controls", false)) {
-        ImGui::Text("Roll: Q/E");
-        ImGui::Text("Pitch: W/S");
-        ImGui::Text("Yaw: A/D");
-        ImGui::Text("Shoot: Space");
-    }
-
-    if (ImGui::CollapsingHeader("Graph", false)) {
         ImGui::Text("Roll: Q/E");
         ImGui::Text("Pitch: W/S");
         ImGui::Text("Yaw: A/D");
