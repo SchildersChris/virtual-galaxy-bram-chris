@@ -9,14 +9,14 @@
 #include "systems/rendering/rendering.hpp"
 
 App::App() : Application("Virtual Galaxy") {
-    const float near = 1.f;
-    const float far = 100.f;
+    const float nearClip = 1.f;
+    const float farClip = 100.f;
     const float fov = 60.f;
 
     /*
      * Object update pipeline
      */
-    auto pipeline = new RenderingPipeline(fov, near, far);
+    auto pipeline = new RenderingPipeline(fov, nearClip, farClip);
     pipeline->Elements.emplace_back(std::make_unique<Collision>());
     pipeline->Elements.emplace_back(std::make_unique<Rendering>());
     pipeline->Elements.emplace_back(std::make_unique<Axis>());

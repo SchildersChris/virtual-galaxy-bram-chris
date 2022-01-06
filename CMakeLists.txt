@@ -14,6 +14,7 @@ project(
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   include(cmake/default.cmake)
   include(cmake/ide.cmake)
+  include(cmake/definitions.cmake)
 endif()
 
 include(FetchContent)
