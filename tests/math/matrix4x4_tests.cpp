@@ -36,6 +36,38 @@ TEST_CASE("Should correctly scale vector4", "[scale]") {
     }
 
     SECTION("Multiply") {
-        v *= scale;
+        auto vs = v * scale;
+
+        REQUIRE(vs.X == x);
+        REQUIRE(vs.Y == y);
+        REQUIRE(vs.Z == z);
+    }
+}
+
+TEST_CASE("Should correctly multiply matrices", "[multiply]") {
+    float x = 10, y = 5, z = 2;
+    auto scale = Matrix4x4::scale(x, y, z);
+
+    auto v = Vector4 { 1, 1, 1, 1 };
+
+    Matrix4x4 m = {
+        1, 2, 3, 4,
+        5, 6, 7, 8,
+        9, 10, 11, 12,
+        13, 14, 15, 16
+    };
+
+    SECTION("Create") {
+        REQUIRE(scale(0, 0) == x);
+        REQUIRE(scale(1, 1) == y);
+        REQUIRE(scale(2, 2) == z);
+    }
+
+    SECTION("Multiply") {
+        auto vs = v * scale;
+
+        REQUIRE(vs.X == x);
+        REQUIRE(vs.Y == y);
+        REQUIRE(vs.Z == z);
     }
 }

@@ -19,30 +19,33 @@ float utils::edgeFunction(const Vector2& start, const Vector2& end, const Vector
     return (p.X - start.X) * (end.Y - start.Y) - (p.Y - start.Y) * (end.X - start.X);
 }
 
-Vector3 utils::findTriangleIntersection(const Vector3* t, const Vector3& start, const Vector3& end) {
-    /*
-    * Directional vector of the line that intersects with the plane
-    */
-    auto directionalVector = end - start;
-    auto normal = (t[1] - t[0]).cross(t[2] - t[0]);
+Vector3 utils::intersection(const Vector3& planePointA, const Vector3& planePointB, const Vector3& planePointC,
+                            const Vector3& linePointA, const Vector3& linePointB) {
+    Vector3 directionVectorPlaneA = planePointB - planePointA;
+    Vector3 directionVectorPlaneB = planePointC - planePointA;
 
-    auto distance = t[0].dot(normal);
-
-    auto startNormal = start * normal;
-    auto directionalNormal = directionalVector * normal;
-
-    auto firstVal = (distance - startNormal.X - startNormal.Y - startNormal.Z);
-    auto secondVal = (directionalNormal.X + directionalNormal.Y + directionalNormal.Z);
-
-    if (firstVal == 0 && secondVal == 0) {
-        return Vector3 { 1, 1, 1 };
+    Vector3 crossProductPlane = directionVectorPlaneA.cross(directionVectorPlaneB);
+    if (crossProductPlane == Vector3 {0, 0, 0}) {
+        throw std::runtime_error("Two vectors are aligned, crossproduct can't be calculated (Used in Intersection())");
     }
 
-    if (firstVal != 0 && secondVal == 0) {
-        return Vector3 { 1, 1, 1 };
+    double planeD = crossProductPlane.X * planePointA.X + crossProductPlane.Y * planePointA.Y +
+                    crossProductPlane.Z * planePointA.Z;
+
+    Vector3 directionVectorLine = linePointA - linePointB;
+
+    if (directionVectorLine.dot(crossProductPlane) == 0) {
+        throw std::runtime_error("Line and plane have zero or infinite intersections");
     }
 
-    auto lambda = firstVal / secondVal;
+    double lambdaTop =
+            planeD - (crossProductPlane.X * linePointA.X) - (crossProductPlane.Y * linePointA.Y) -
+            (crossProductPlane.Z * linePointA.Z);
+    double lambdaBottom =
+            (crossProductPlane.X * directionVectorLine.X) + (crossProductPlane.Y * directionVectorLine.Y) +
+            (crossProductPlane.Z * directionVectorLine.Z);
+    double lambda = lambdaTop / lambdaBottom;
 
-    return start + (directionalVector * lambda);
+    Vector3 intersection = linePointA + (directionVectorLine * lambda);
+    return {intersection.X, intersection.Y, intersection.Z};
 }

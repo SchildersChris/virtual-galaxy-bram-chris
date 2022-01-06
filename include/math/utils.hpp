@@ -38,8 +38,8 @@ namespace utils {
      * @param end Edge end
      * @return Point of intersection
      */
-    Vector3 findTriangleIntersection(const Vector3 t[3], const Vector3& start, const Vector3& end);
-
+    Vector3 intersection(const Vector3& planePointA, const Vector3& planePointB, const Vector3& planePointC,
+                                const Vector3& linePointA, const Vector3& linePointB);
     /**
      * Degrees to radians constant
      */

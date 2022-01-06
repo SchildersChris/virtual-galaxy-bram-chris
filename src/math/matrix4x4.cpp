@@ -9,25 +9,31 @@ Matrix4x4::Matrix4x4() {
     }
 }
 
+Matrix4x4::Matrix4x4(const std::initializer_list<double>& matrix) {
+    int col = 0;
+
+    for (auto elem : matrix) {
+        _cols[col++] = elem;
+    }
+}
+
+
 Matrix4x4 Matrix4x4::identity() {
-    auto m = Matrix4x4();
-
-    m[0] = 1.f;
-    m[5]= 1.f;
-    m[10] = 1.f;
-    m[15] = 1.f;
-
-    return m;
+    return {
+        1, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 1, 0,
+        0, 0, 0, 1
+    };
 }
 
 Matrix4x4 Matrix4x4::translation(float x, float y, float z) {
-    auto m = identity();
-
-    m[3] = x;
-    m[7]= y;
-    m[11] = z;
-
-    return m;
+    return {
+        1.f, 0, 0, x,
+        0, 1.f, 0, y,
+        0, 0, 1.f, z,
+        0, 0, 0, 1.f
+    };
 }
 
 Matrix4x4 Matrix4x4::rotation(float x, float y, float z) {
@@ -69,14 +75,12 @@ Matrix4x4 Matrix4x4::rotation(float x, float y, float z) {
 }
 
 Matrix4x4 Matrix4x4::scale(float x, float y, float z) {
-    auto m = Matrix4x4();
-
-    m[0] = x;
-    m[5]= y;
-    m[10] = z;
-    m[15] = 1.f;
-
-    return m;
+    return {
+        x, 0, 0, 0,
+        0, y, 0, 0,
+        0, 0, z, 0,
+        0, 0, 0, 1.f,
+    };
 }
 
 bool Matrix4x4::operator==(const Matrix4x4& o) const {

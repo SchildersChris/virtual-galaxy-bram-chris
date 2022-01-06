@@ -14,8 +14,10 @@ void Collision::updateObject(entt::entity entity, const Matrix4x4& vp, const Mat
 
     float minX = center.X;
     float maxX = center.X;
+
     float minY = center.Y;
     float maxY = center.Y;
+
     float minZ = center.Z;
     float maxZ = center.Z;
 
