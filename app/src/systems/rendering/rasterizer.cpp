@@ -6,7 +6,7 @@
 #include <cmath>
 
 
-void Rasterizer::init(entt::registry& registry, float near, float far) {
+void Rasterizer::init(entt::registry& registry, float nearClipping, float farClipping) {
     auto& renderer = Renderer::getInstance();
     _width = renderer.getWidth();
     _height = renderer.getHeight();
@@ -14,8 +14,8 @@ void Rasterizer::init(entt::registry& registry, float near, float far) {
     _zBufferSize = _width * _height;
     _zBuffer = new float[_zBufferSize];
 
-    _near = near;
-    _far = far;
+    _near = nearClipping;
+    _far = farClipping;
 }
 
 void Rasterizer::update(float deltaTime) {

@@ -6,9 +6,9 @@ Rendering::Rendering() :
         _wireframe(std::make_unique<Wireframe>()),
         _rasterizer(std::make_unique<Rasterizer>()) {}
 
-void Rendering::init(entt::registry& registry, float near, float far) {
-    _wireframe->init(registry, near, far);
-    _rasterizer->init(registry, near, far);
+void Rendering::init(entt::registry& registry, float nearClipping, float farClipping) {
+    _wireframe->init(registry, nearClipping, farClipping);
+    _rasterizer->init(registry, nearClipping, farClipping);
 }
 
 void Rendering::update(float deltaTime) {

@@ -7,10 +7,10 @@
 #include "graphics/renderer.hpp"
 #include <imgui.h>
 
-void Collision::init(entt::registry& registry, float near, float far) {
+void Collision::init(entt::registry& registry, float nearClipping, float farClipping) {
     _registry = &registry;
-    _near = near;
-    _far = far;
+    _near = nearClipping;
+    _far = farClipping;
 }
 
 void Collision::update(float deltaTime) {

@@ -4,9 +4,9 @@
 #include "graphics/renderer.hpp"
 #include "math/utils.hpp"
 
-void Axis::init(entt::registry& registry, float near, float far) {
-    _near = near;
-    _far = far;
+void Axis::init(entt::registry& registry, float nearClipping, float farClipping) {
+    _near = nearClipping;
+    _far = farClipping;
 }
 
 void Axis::update(float deltaTime) {

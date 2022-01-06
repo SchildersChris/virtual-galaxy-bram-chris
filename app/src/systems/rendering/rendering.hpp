@@ -9,7 +9,7 @@ class Rendering : public RenderingPipeline::Element {
 public:
     Rendering();
 
-    void init(entt::registry& registry, float near, float far) override;
+    void init(entt::registry& registry, float nearClipping, float farClipping) override;
     void update(float deltaTime) override;
     void updateObject(entt::entity entity, const Matrix4x4& vp, const Matrix4x4& m, const Object& object) override;
     void terminate() override;
