@@ -15,6 +15,8 @@ add_executable(app
     src/systems/rendering/collision.hpp
     src/systems/rendering/axis.cpp
     src/systems/rendering/axis.hpp
+    src/systems/rendering/rendering.cpp
+    src/systems/rendering/rendering.hpp
     src/systems/movement.cpp
     src/systems/movement.hpp
     src/systems/rendering-pipeline.cpp

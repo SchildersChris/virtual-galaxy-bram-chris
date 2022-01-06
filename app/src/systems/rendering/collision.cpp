@@ -7,15 +7,16 @@
 #include "graphics/renderer.hpp"
 #include <imgui.h>
 
-void Collision::init(entt::registry& registry) {
+void Collision::init(entt::registry& registry, float near, float far) {
     _registry = &registry;
+    _near = near;
+    _far = far;
 }
 
-
 void Collision::update(float deltaTime) {
-    ImGui::Begin("Object-Collision");
+    ImGui::BeginChild("Collision");
     ImGui::Checkbox("Draw Collision", &_drawCollision);
-    ImGui::End();
+    ImGui::EndChild();
 }
 
 void Collision::updateObject(entt::entity entity, const Matrix4x4& vp, const Matrix4x4& m, const Object& object) {

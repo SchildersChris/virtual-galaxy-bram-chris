@@ -4,12 +4,15 @@
 #include "graphics/renderer.hpp"
 #include "math/utils.hpp"
 
-void Axis::init(entt::registry& registry) {}
+void Axis::init(entt::registry& registry, float near, float far) {
+    _near = near;
+    _far = far;
+}
 
 void Axis::update(float deltaTime) {
-    ImGui::Begin("Object-Axis");
+    ImGui::BeginChild("Axis");
     ImGui::Checkbox("Draw Axis", &_drawAxis);
-    ImGui::End();
+    ImGui::EndChild();
 }
 
 void Axis::updateObject(entt::entity, const Matrix4x4& vp, const Matrix4x4& m, const Object& object) {

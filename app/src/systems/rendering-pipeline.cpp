@@ -1,4 +1,5 @@
 #include <math/utils.hpp>
+#include <imgui.h>
 #include "rendering-pipeline.hpp"
 #include "../components/camera.hpp"
 #include "../components/transform.hpp"
@@ -13,16 +14,17 @@ void RenderingPipeline::init(entt::registry& registry) {
             _fov, _near, _far,static_cast<float>(renderer.getWidth()) / static_cast<float>(renderer.getHeight()));
 
     for (auto& elem : Elements) {
-        elem->init(registry);
+        elem->init(registry, _near, _far);
     }
 }
 
 void RenderingPipeline::update(float deltaTime) {
     if (!_registry) { return; }
-
+    ImGui::Begin("Rendering Pipeline");
     for (auto& elem : Elements) {
         elem->update(deltaTime);
     }
+    ImGui::End();
 
     auto&& [_, camTrans] = *_registry->view<Transform, Camera>().each().begin();
     auto vp = _projection * camTrans.getMatrix();
@@ -33,6 +35,7 @@ void RenderingPipeline::update(float deltaTime) {
             elem->updateObject(entity, vp, m, object);
         }
     }
+
 }
 
 void RenderingPipeline::terminate() {

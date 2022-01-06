@@ -37,7 +37,7 @@ void Scene::init(entt::registry& registry) {
     registry.emplace<Player>(spaceship);
     {
         auto& object = registry.emplace<Object>(spaceship, Color(27, 161, 226, 255));
-        WavefrontObject::load("assets/spaceship.obj", object.Vertices, object.Indices);
+        WavefrontObject::load("assets/vector.obj", object.Vertices, object.Indices);
     }
 
     auto planet = registry.create();
@@ -53,6 +53,8 @@ void Scene::init(entt::registry& registry) {
 }
 
 void Scene::update(float deltaTime) {
+    if (!_registry) { return; }
+
     auto view = _registry->view<Destroy>();
     _registry->destroy(view.begin(), view.end());
 

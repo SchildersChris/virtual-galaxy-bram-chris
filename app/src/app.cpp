@@ -3,19 +3,23 @@
 #include "systems/movement.hpp"
 #include "systems/shooting.hpp"
 #include "systems/rendering-pipeline.hpp"
-#include "systems/rendering/rasterizer.hpp"
 #include "systems/rendering/collision.hpp"
 #include "systems/rendering/axis.hpp"
 #include "systems/scaling.hpp"
+#include "systems/rendering/rendering.hpp"
 
 App::App() : Application("Virtual Galaxy") {
+    const float near = 2.f;
+    const float far = 100.f;
+    const float fov = 60.f;
+
     /*
      * Object update pipeline
      */
-    auto pipeline = new RenderingPipeline(60, 2.f, 100.f);
-    pipeline->Elements.emplace_back(std::make_unique<Collision>(2.f, 100.f));
-    pipeline->Elements.emplace_back(std::make_unique<Rasterizer>(2.f, 100.f));
-    pipeline->Elements.emplace_back(std::make_unique<Axis>(2.f, 100.f));
+    auto pipeline = new RenderingPipeline(fov, near, far);
+    pipeline->Elements.emplace_back(std::make_unique<Collision>());
+    pipeline->Elements.emplace_back(std::make_unique<Rendering>());
+    pipeline->Elements.emplace_back(std::make_unique<Axis>());
 
     /*
      * Application update systems
