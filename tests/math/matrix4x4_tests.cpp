@@ -45,29 +45,79 @@ TEST_CASE("Should correctly scale vector4", "[scale]") {
 }
 
 TEST_CASE("Should correctly multiply matrices", "[multiply]") {
-    float x = 10, y = 5, z = 2;
-    auto scale = Matrix4x4::scale(x, y, z);
-
-    auto v = Vector4 { 1, 1, 1, 1 };
-
-    Matrix4x4 m = {
-        1, 2, 3, 4,
-        5, 6, 7, 8,
-        9, 10, 11, 12,
-        13, 14, 15, 16
+    Matrix4x4 m1 {
+        2, 2, 2, 2,
+        2, 2, 2, 2,
+        2, 2, 2, 2,
+        2, 2, 2, 2,
     };
 
-    SECTION("Create") {
-        REQUIRE(scale(0, 0) == x);
-        REQUIRE(scale(1, 1) == y);
-        REQUIRE(scale(2, 2) == z);
-    }
+    Matrix4x4 m2 {
+        2, 2, 2, 2,
+        2, 2, 2, 2,
+        2, 2, 2, 2,
+        2, 2, 2, 2,
+    };
 
     SECTION("Multiply") {
-        auto vs = v * scale;
+        Matrix4x4 m = m1 * m2;
 
-        REQUIRE(vs.X == x);
-        REQUIRE(vs.Y == y);
-        REQUIRE(vs.Z == z);
+        Matrix4x4 val {
+            16, 16, 16, 16,
+            16, 16, 16, 16,
+            16, 16, 16, 16,
+            16, 16, 16, 16
+        };
+
+        REQUIRE(m == val);
+    }
+}
+
+TEST_CASE("Should correctly rotate vector4", "[multiply]") {
+
+}
+
+TEST_CASE("Should correctly translate vector4", "[multiply]") {
+
+}
+
+TEST_CASE("Should correctly check if matrices are equal", "[equal]") {
+    Matrix4x4 m1 {
+            2, 2, 2, 2,
+            2, 2, 2, 2,
+            2, 2, 2, 2,
+            2, 2, 2, 2,
+    };
+
+    Matrix4x4 m2 {
+            2, 2, 2, 2,
+            2, 2, 2, 2,
+            2, 2, 2, 2,
+            2, 2, 2, 2,
+    };
+
+    SECTION("Equal") {
+        REQUIRE(m1 == m2);
+    }
+}
+
+
+TEST_CASE("Should correctly check if matrices are NOT equal", "[equal]") {
+    Matrix4x4 m1 {
+            2, 2, 2, 2,
+            2, 2, 2, 2,
+            2, 2, 2, 2,
+            2, 2, 2, 2,
+    };
+
+    Matrix4x4 m2 {
+            2, 2, 2, 2,
+            2, 2, 3, 2,
+            2, 2, 2, 2,
+            2, 2, 2, 2,
+    };
+
+    SECTION("Not equal") {
+        REQUIRE(m1 != m2);
     }
 }
