@@ -12,7 +12,7 @@ void Application::run() {
     auto& renderer = Renderer::getInstance();
     auto& input = Input::getInstance();
 
-    renderer.init(_title, false, 1920, 1080);
+    renderer.init(_title, true);
     input.init();
 
     entt::registry registry;

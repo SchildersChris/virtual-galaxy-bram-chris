@@ -21,7 +21,7 @@ public:
     /**
      * Initialize a window and the active renderer
      */
-    void init(const std::string& title, bool fullscreen, int32 width, int32 height);
+    void init(const std::string& title, bool fullscreen);
 
     /**
      * Get renderer window width
