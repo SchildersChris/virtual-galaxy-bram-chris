@@ -5,13 +5,17 @@
 
 #include <cmath>
 
-void Rasterizer::init(entt::registry& registry) {
+
+void Rasterizer::init(entt::registry& registry, float near, float far) {
     auto& renderer = Renderer::getInstance();
     _width = renderer.getWidth();
     _height = renderer.getHeight();
 
     _zBufferSize = _width * _height;
     _zBuffer = new float[_zBufferSize];
+
+    _near = near;
+    _far = far;
 }
 
 void Rasterizer::update(float deltaTime) {
@@ -53,7 +57,6 @@ void Rasterizer::updateObject(entt::entity entity, const Matrix4x4& vp, const Ma
         rasterizeTriangle(r);
     }
     renderer.setColor(Color::black());
-
 }
 
 void Rasterizer::terminate() {

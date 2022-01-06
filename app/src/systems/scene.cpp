@@ -2,7 +2,7 @@
 #include "../components/transform.hpp"
 #include "../components/object.hpp"
 #include "../utils/wavefront-object.hpp"
-#include "../components/player.hpp"
+#include "../components/actor.hpp"
 #include "../components/camera.hpp"
 #include "../components/collider.hpp"
 #include "../components/destroy.hpp"
@@ -34,10 +34,10 @@ void Scene::init(entt::registry& registry) {
             registry.emplace<Destroy>(spaceship);
         }
     });
-    registry.emplace<Player>(spaceship);
+    registry.emplace<Actor>(spaceship);
     {
         auto& object = registry.emplace<Object>(spaceship, Color(27, 161, 226, 255));
-        WavefrontObject::load("assets/spaceship.obj", object.Vertices, object.Indices);
+        WavefrontObject::load("assets/spaceship2.obj", object.Vertices, object.Indices);
     }
 
     auto planet = registry.create();
@@ -48,11 +48,13 @@ void Scene::init(entt::registry& registry) {
     registry.emplace<Scale>(planet);
     {
         auto& object = registry.emplace<Object>(planet, Color::green());
-        WavefrontObject::load("assets/cube.obj", object.Vertices, object.Indices);
+        WavefrontObject::load("assets/planet.obj", object.Vertices, object.Indices);
     }
 }
 
 void Scene::update(float deltaTime) {
+    if (!_registry) { return; }
+
     auto view = _registry->view<Destroy>();
     _registry->destroy(view.begin(), view.end());
 

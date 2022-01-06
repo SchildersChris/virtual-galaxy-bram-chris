@@ -5,6 +5,7 @@ Color Color::_red {255, 0, 0, 255};
 Color Color::_green {0, 255, 0, 255};
 Color Color::_blue {0, 0, 255, 255};
 Color Color::_black {0, 0, 0, 255};
+Color Color::_magenta {255, 0, 255, 255};
 
 uint32 Color::rgbaToInteger(uint8 r, uint8 g, uint8 b, uint8 a) {
     return (r << 24) + (g << 16) + (b << 8) + a;
