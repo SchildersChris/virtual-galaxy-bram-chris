@@ -12,9 +12,7 @@ void Rendering::init(entt::registry& registry, float near, float far) {
 }
 
 void Rendering::update(float deltaTime) {
-    ImGui::BeginChild("Rendering");
     ImGui::Checkbox("Draw Wireframe", &_drawWireframe);
-    ImGui::EndChild();
 
     if (_drawWireframe) {
         _wireframe->update(deltaTime);

@@ -14,9 +14,7 @@ void Collision::init(entt::registry& registry, float near, float far) {
 }
 
 void Collision::update(float deltaTime) {
-    ImGui::BeginChild("Collision");
     ImGui::Checkbox("Draw Collision", &_drawCollision);
-    ImGui::EndChild();
 }
 
 void Collision::updateObject(entt::entity entity, const Matrix4x4& vp, const Matrix4x4& m, const Object& object) {
