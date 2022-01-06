@@ -57,6 +57,36 @@ target_include_directories(virtual-galaxy
 
 target_compile_features(virtual-galaxy PUBLIC cxx_std_11)
 
+
+if (MINGW)
+    set(dep "${CMAKE_CXX_COMPILER}/../libwinpthread-1.dll"
+            "${CMAKE_CXX_COMPILER}/../libgcc_s_seh-1.dll"
+            "${CMAKE_CXX_COMPILER}/../libstdc++-6.dll"
+            "${CMAKE_CXX_COMPILER}/../zlib1.dll"
+            "${CMAKE_CXX_COMPILER}/../libbrotlidec.dll"
+            "${CMAKE_CXX_COMPILER}/../libcrypto-1_1-x64.dll"
+            "${CMAKE_CXX_COMPILER}/../libssl-1_1-x64.dll"
+            "${CMAKE_CXX_COMPILER}/../libzstd.dll"
+            "${CMAKE_CXX_COMPILER}/../libbrotlicommon.dll"
+            "${CMAKE_CXX_COMPILER}/../libiconv-2.dll"
+            "${CMAKE_CXX_COMPILER}/../libintl-8.dll"
+            "${CMAKE_CXX_COMPILER}/../libfreetype-6.dll"
+            "${CMAKE_CXX_COMPILER}/../libharfbuzz-0.dll"
+            "${CMAKE_CXX_COMPILER}/../libbz2-1.dll"
+            "${CMAKE_CXX_COMPILER}/../libpng16-16.dll"
+            "${CMAKE_CXX_COMPILER}/../libglib-2.0-0.dll"
+            "${CMAKE_CXX_COMPILER}/../libgraphite2.dll"
+            "${CMAKE_CXX_COMPILER}/../libpcre-1.dll"
+            )
+
+    foreach (file ${dep})
+        add_custom_command(TARGET virtual-galaxy POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                ${file}
+                ${CMAKE_BINARY_DIR}/virtual-galaxy-deps)
+    endforeach ()
+endif ()
+
 source_group(
   TREE "${PROJECT_SOURCE_DIR}/include"
   PREFIX "Header Files"

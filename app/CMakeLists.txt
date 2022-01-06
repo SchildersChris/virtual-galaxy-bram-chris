@@ -38,3 +38,11 @@ add_executable(app
 target_compile_features(app PRIVATE cxx_std_17)
 target_link_libraries(app PRIVATE virtual-galaxy)
 target_include_directories(app PUBLIC extern)
+
+
+if(MINGW)
+    add_custom_command(TARGET app PRE_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_directory
+            ${CMAKE_BINARY_DIR}/virtual-galaxy-deps/
+            $<TARGET_FILE_DIR:app>)
+endif()

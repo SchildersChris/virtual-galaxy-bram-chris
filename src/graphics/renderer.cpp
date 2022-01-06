@@ -24,7 +24,7 @@ void Renderer::init(const std::string& title, bool fullscreen) {
 
     if (!(_window = SDL_CreateWindow(
             title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-            width, height, static_cast<SDL_WindowFlags>(fullscreen) | SDL_WINDOW_VULKAN | SDL_WINDOW_SHOWN))) {
+            width, height, static_cast<SDL_WindowFlags>(fullscreen) | SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN))) {
         throw std::runtime_error(SDL_GetError());
     }
 
