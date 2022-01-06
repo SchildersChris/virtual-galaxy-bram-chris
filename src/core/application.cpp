@@ -55,3 +55,9 @@ void Application::run() {
 }
 
 Application::Application(std::string title) : _title(std::move(title)) {}
+
+void Application::quit() {
+    SDL_Event event;
+    event.type = SDL_QUIT;
+    SDL_PushEvent(&event);
+}

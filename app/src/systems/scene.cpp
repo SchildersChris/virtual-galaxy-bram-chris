@@ -9,6 +9,9 @@
 #include "../components/bullet.hpp"
 #include "../components/scale.hpp"
 
+#include "core/input.hpp"
+#include "core/application.hpp"
+
 #include <imgui.h>
 
 void Scene::init(entt::registry& registry) {
@@ -54,6 +57,10 @@ void Scene::init(entt::registry& registry) {
 
 void Scene::update(float deltaTime) {
     if (!_registry) { return; }
+
+    if (Input::getInstance().getKeyDown(Input::KeyCode::ESCAPE)) {
+        Application::quit();
+    }
 
     auto view = _registry->view<Destroy>();
     _registry->destroy(view.begin(), view.end());
