@@ -13,9 +13,9 @@ App::App() : Application("Virtual Galaxy") {
      * Object update pipeline
      */
     auto pipeline = new RenderingPipeline(60, 2.f, 100.f);
+    pipeline->Elements.emplace_back(std::make_unique<Collision>(2.f, 100.f));
     pipeline->Elements.emplace_back(std::make_unique<Rasterizer>(2.f, 100.f));
     pipeline->Elements.emplace_back(std::make_unique<Axis>(2.f, 100.f));
-    pipeline->Elements.emplace_back(std::make_unique<Collision>());
 
     /*
      * Application update systems
