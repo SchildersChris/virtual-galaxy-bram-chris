@@ -11,8 +11,8 @@ public:
     Vector3() : X(0.f), Y(0.f), Z(0.f) {}
     Vector3(float x, float y, float z) : X(x), Y(y), Z(z) {}
 
-    bool operator==(const Vector3& o) const;
-    bool operator!=(const Vector3& o) const;
+    constexpr bool operator==(const Vector3& o) const { return X == o.X && Y == o.Y && Z == o.Z; };
+    constexpr bool operator!=(const Vector3& o) const { return X != o.X || Y != o.Y || Z != o.Z; };
 
     Vector3 operator+(const Vector3& o) const;
     void operator+=(const Vector3& o);
