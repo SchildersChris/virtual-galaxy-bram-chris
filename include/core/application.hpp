@@ -9,6 +9,8 @@
 
 class Application : public NoCopyNoMove {
 public:
+    static void quit();
+
     /**
      * Start the application main loop
      * This function will exit once the window exit command is called

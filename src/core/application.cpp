@@ -12,7 +12,7 @@ void Application::run() {
     auto& renderer = Renderer::getInstance();
     auto& input = Input::getInstance();
 
-    renderer.init(_title, false, 1920, 1080);
+    renderer.init(_title, true);
     input.init();
 
     entt::registry registry;
@@ -55,3 +55,9 @@ void Application::run() {
 }
 
 Application::Application(std::string title) : _title(std::move(title)) {}
+
+void Application::quit() {
+    SDL_Event event;
+    event.type = SDL_QUIT;
+    SDL_PushEvent(&event);
+}

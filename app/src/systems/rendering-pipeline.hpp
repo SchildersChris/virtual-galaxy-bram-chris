@@ -8,11 +8,10 @@
 
 class RenderingPipeline : public System {
 public:
-    class Element : public System {
+    class Element {
     public:
-        [[maybe_unused]] void init(entt::registry& registry) override {};
-        [[maybe_unused]] void update(float deltaTime) override {};
-
+        [[maybe_unused]] virtual void init(entt::registry& registry, float nearClipping, float farClipping) {};
+        [[maybe_unused]] virtual void update(float deltaTime) {};
         /**
          * Update object based on the mvp matrix
          *
@@ -22,9 +21,11 @@ public:
          * @param object Object data
          */
         [[maybe_unused]] virtual void updateObject(entt::entity entity, const Matrix4x4& vp, const Matrix4x4& m, const Object& object) {};
+
+        [[maybe_unused]] virtual void terminate() {};
     };
 
-    RenderingPipeline(float fov, float near, float far) : _fov(fov), _near(near), _far(far) {}
+    RenderingPipeline(float fov, float nearClipping, float farClipping) : _fov(fov), _near(nearClipping), _far(farClipping) {}
 
     void init(entt::registry& registry) override;
     void update(float deltaTime) override;

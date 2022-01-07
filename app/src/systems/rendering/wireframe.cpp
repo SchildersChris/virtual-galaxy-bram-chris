@@ -2,6 +2,11 @@
 
 #include "graphics/renderer.hpp"
 
+void Wireframe::init(entt::registry& registry, float nearClipping, float farClipping) {
+    _near = nearClipping;
+    _far = farClipping;
+}
+
 void Wireframe::updateObject(entt::entity entity, const Matrix4x4& vp, const Matrix4x4& m, const Object& object) {
     auto mvp = vp * m;
     auto& renderer = Renderer::getInstance();
@@ -31,3 +36,4 @@ void Wireframe::updateObject(entt::entity entity, const Matrix4x4& vp, const Mat
     }
     renderer.setColor(Color::black());
 }
+

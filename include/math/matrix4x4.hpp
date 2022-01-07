@@ -9,7 +9,7 @@ class Matrix4x4 {
 public:
     Matrix4x4();
 
-    Matrix4x4(const std::initializer_list<double>& matrix);
+    Matrix4x4(const std::initializer_list<float>& matrix);
 
     static Matrix4x4 identity();
 

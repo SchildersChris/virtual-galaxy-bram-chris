@@ -11,14 +11,20 @@ Renderer& Renderer::getInstance() {
     return _instance;
 }
 
-void Renderer::init(const std::string& title, bool fullscreen, int32 width, int32 height) {
+void Renderer::init(const std::string& title, bool fullscreen) {
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
         throw std::runtime_error(SDL_GetError());
     }
 
+    SDL_DisplayMode displayMode;
+    SDL_GetCurrentDisplayMode(0, &displayMode);
+
+    int32 width = displayMode.w;
+    int32 height = displayMode.h;
+
     if (!(_window = SDL_CreateWindow(
             title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-            width, height, static_cast<SDL_WindowFlags>(fullscreen) | SDL_WINDOW_VULKAN | SDL_WINDOW_SHOWN))) {
+            width, height, static_cast<SDL_WindowFlags>(fullscreen) | SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN))) {
         throw std::runtime_error(SDL_GetError());
     }
 

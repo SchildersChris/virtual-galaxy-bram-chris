@@ -8,9 +8,7 @@
 
 class Rasterizer : public RenderingPipeline::Element {
 public:
-    Rasterizer(float near, float far) : _near(near), _far(far) {}
-
-    void init(entt::registry& registry) override;
+    void init(entt::registry& registry, float nearClipping, float farClipping) override;
     void update(float deltaTime) override;
     void updateObject(entt::entity entity, const Matrix4x4& vp, const Matrix4x4& m, const Object& object) override;
     void terminate() override;
@@ -37,8 +35,8 @@ private:
     float* _zBuffer {nullptr};
     std::size_t _zBufferSize {0};
 
-    float _near;
-    float _far;
+    float _near {0};
+    float _far {0};
 };
 
 #endif //VIRTUAL_GALAXY_RASTERIZER_HPP

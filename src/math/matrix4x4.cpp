@@ -9,7 +9,7 @@ Matrix4x4::Matrix4x4() {
     }
 }
 
-Matrix4x4::Matrix4x4(const std::initializer_list<double>& matrix) {
+Matrix4x4::Matrix4x4(const std::initializer_list<float>& matrix) {
     int col = 0;
 
     for (auto elem : matrix) {

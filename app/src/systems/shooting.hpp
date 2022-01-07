@@ -1,8 +1,9 @@
 #ifndef VIRTUAL_GALAXY_SHOOTING_HPP
 #define VIRTUAL_GALAXY_SHOOTING_HPP
 
-#include "core/system.hpp"
 #include "../components/object.hpp"
+
+#include "core/system.hpp"
 
 class Shooting : public System {
 public:
