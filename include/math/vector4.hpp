@@ -9,8 +9,8 @@ public:
     Vector4() : X(0.f), Y(0.f), Z(0.f), W(0.f) {}
     Vector4(float x, float y, float z, float w) : X(x), Y(y), Z(z), W(w) {}
 
-    constexpr bool operator==(const Vector4& o) const;
-    constexpr bool operator!=(const Vector4& o) const;
+    constexpr bool operator==(const Vector4& o) const  { return X == o.X && Y == o.Y && Z == o.Z && W == o.W; }
+    constexpr bool operator!=(const Vector4& o) const  { return X != o.X || Y != o.Y || Z != o.Z || W != o.W; }
 
     [[nodiscard]] Vector4 operator*(const Matrix4x4& o) const;
 

@@ -1,8 +1,5 @@
 #include "math/vector4.hpp"
 
-constexpr bool Vector4::operator==(const Vector4& o) const { return X == o.X && Y == o.Y && Z == o.Z && W == o.W; }
-constexpr bool Vector4::operator!=(const Vector4& o) const { return X != o.X || Y != o.Y || Z != o.Z || W != o.W; }
-
 Vector4 Vector4::operator*(const Matrix4x4& o) const {
     Vector4 v {0,0,0,0};
 

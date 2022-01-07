@@ -11,11 +11,15 @@ FetchContent_MakeAvailable(catch)
 add_executable(tests
     main.cpp
     math/matrix4x4_tests.cpp
+    math/vector2_tests.cpp
     math/vector3_tests.cpp
+    math/vector4_tests.cpp
 )
 
 target_compile_features(tests PRIVATE cxx_std_17)
 target_link_libraries(tests PRIVATE virtual-galaxy Catch2::Catch2)
 
 add_test(NAME matrix4x4_tests COMMAND tests)
+add_test(NAME vector2_tests COMMAND tests)
 add_test(NAME vector3_tests COMMAND tests)
+add_test(NAME vector4_tests COMMAND tests)

@@ -3,7 +3,7 @@
 
 #include <catch2/catch.hpp>
 
-TEST_CASE("Should create identity matrix", "[identity]") {
+TEST_CASE("[MATRIX4x4] Should create identity matrix", "[identity]") {
     auto identity = Matrix4x4::identity();
 
     REQUIRE(identity(0, 0) == 1);
@@ -12,7 +12,7 @@ TEST_CASE("Should create identity matrix", "[identity]") {
     REQUIRE(identity(3, 3) == 1);
 }
 
-TEST_CASE("Should create translation matrix", "[translation]") {
+TEST_CASE("[MATRIX4x4] Should create translation matrix", "[translation]") {
     float x = 10, y = 5, z = 2;
     auto translation = Matrix4x4::translation(x, y, z);
 
@@ -23,7 +23,7 @@ TEST_CASE("Should create translation matrix", "[translation]") {
     }
 }
 
-TEST_CASE("Should correctly scale vector4", "[scale]") {
+TEST_CASE("[MATRIX4x4] Should correctly scale vector4", "[scale]") {
     float x = 10, y = 5, z = 2;
     auto scale = Matrix4x4::scale(x, y, z);
 
@@ -44,7 +44,7 @@ TEST_CASE("Should correctly scale vector4", "[scale]") {
     }
 }
 
-TEST_CASE("Should correctly multiply matrices", "[multiply]") {
+TEST_CASE("[MATRIX4x4] Should correctly multiply matrices", "[multiply]") {
     Matrix4x4 m1 {
         2, 2, 2, 2,
         2, 2, 2, 2,
@@ -73,29 +73,22 @@ TEST_CASE("Should correctly multiply matrices", "[multiply]") {
     }
 }
 
-TEST_CASE("Should correctly rotate vector4", "[multiply]") {
+TEST_CASE("[MATRIX4x4] Should correctly rotate vector4", "[multiply]") {
     float x = 10, y = 5, z = 2;
     auto rotate = Matrix4x4::rotation(x, y, z);
 
     auto v = Vector4 { 1, 1, 1, 1 };
 
-//    SECTION("Create") {
-//        REQUIRE(rotate(3, 0) == x);
-//        REQUIRE(rotate(3, 1) == y);
-//        REQUIRE(rotate(3, 2) == z);
-//    }
-
-    // TODO: Not sure how to validate the rotation matrix.
     SECTION("Multiply") {
         auto vs = v * rotate;
 
-        REQUIRE(vs.X == x);
-        REQUIRE(vs.Y == y);
-        REQUIRE(vs.Z == z);
+        REQUIRE(vs.X == 1.11751032f);
+        REQUIRE(vs.Y == 0.792504489f);
+        REQUIRE(vs.Z == 1.0597676f);
     }
 }
 
-TEST_CASE("Should correctly translate vector4", "[multiply]") {
+TEST_CASE("[MATRIX4x4] Should correctly translate vector4", "[multiply]") {
     float x = -10, y = -10, z = -10;
     auto translate = Matrix4x4::translation(x, y, z);
 
@@ -107,7 +100,6 @@ TEST_CASE("Should correctly translate vector4", "[multiply]") {
         REQUIRE(translate(3, 2) == z);
     }
 
-    // TODO: Not sure how to validate the rotation matrix.
     SECTION("Multiply") {
         auto vs = v * translate;
 
@@ -117,7 +109,7 @@ TEST_CASE("Should correctly translate vector4", "[multiply]") {
     }
 }
 
-TEST_CASE("Should correctly check if matrices are equal", "[equal]") {
+TEST_CASE("[MATRIX4x4] Should correctly check if matrices are equal", "[equal]") {
     Matrix4x4 m1 {
             2, 2, 2, 2,
             2, 2, 2, 2,
@@ -137,8 +129,7 @@ TEST_CASE("Should correctly check if matrices are equal", "[equal]") {
     }
 }
 
-
-TEST_CASE("Should correctly check if matrices are NOT equal", "[equal]") {
+TEST_CASE("[MATRIX4x4] Should correctly check if matrices are NOT equal", "[equal]") {
     Matrix4x4 m1 {
             2, 2, 2, 2,
             2, 2, 2, 2,
