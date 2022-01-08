@@ -77,11 +77,17 @@ void Scene::update(float deltaTime) {
     ImGui::Begin("Scene");
     ImGui::Text("FPS: %.d", _activeFps);
     ImGui::Text("Press 'Esc' to quit");
-    if (ImGui::CollapsingHeader("Controls", false)) {
+    if (ImGui::CollapsingHeader("Spaceship Controls", false)) {
         ImGui::Text("Roll: Q/E");
         ImGui::Text("Pitch: W/S");
         ImGui::Text("Yaw: A/D");
+        ImGui::Text("Accelerate: Shift");
         ImGui::Text("Shoot: Space");
+    }
+    if (ImGui::CollapsingHeader("Camera Controls", false)) {
+        ImGui::Text("Forward/Back: Up/Down arrow");
+        ImGui::Text("Left/Right: Left/Right arrow");
+        ImGui::Text("Up/Down: Page Up/Down");
     }
     ImGui::End();
 }
