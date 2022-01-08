@@ -73,6 +73,18 @@ TEST_CASE("[MATRIX4x4] Should correctly multiply matrices", "[multiply]") {
     }
 }
 
+TEST_CASE("[MATRIX4x4] Should correctly rotate around single axis", "[multiply]") {
+    auto v = Vector3 { 0, 1, 0 };
+    auto rotate = Matrix4x4::rotation(180, 0, 0);
+
+    SECTION("Multiply") {
+        auto vs = v * rotate;
+        REQUIRE(vs.X == Approx(0).margin(0.005));
+        REQUIRE(vs.Y == Approx(-1).margin(0.005));
+        REQUIRE(vs.Z == Approx(0).margin(0.005));
+    }
+}
+
 TEST_CASE("[MATRIX4x4] Should correctly rotate vector4", "[multiply]") {
     float x = 10, y = 5, z = 2;
     auto rotate = Matrix4x4::rotation(x, y, z);
