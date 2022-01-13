@@ -2,8 +2,9 @@
 #define VIRTUAL_GALAXY_MATRIX4X4_HPP
 
 #include "base.hpp"
-
 #include <stdexcept>
+
+class Vector3;
 
 class Matrix4x4 {
 public:
@@ -18,6 +19,9 @@ public:
     static Matrix4x4 rotation(float x, float y, float z);
 
     static Matrix4x4 scale(float x, float y, float z);
+
+    static Matrix4x4 lookAt(const Vector3& right, const Vector3& up, const Vector3& direction);
+
 
     bool operator==(const Matrix4x4& other) const;
     bool operator!=(const Matrix4x4& other) const;

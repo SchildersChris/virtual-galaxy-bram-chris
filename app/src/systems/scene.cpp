@@ -21,7 +21,10 @@ void Scene::init(entt::registry& registry) {
     _activeFps = 0;
 
     auto camera = registry.create();
-    registry.emplace<Camera>(camera);
+    registry.emplace<Camera>(camera, Camera {
+        Vector3 {0, 0, 0},
+        Vector3 {0, 0, -1}
+    });
     registry.emplace<Transform>(camera,
         Vector3 { 0.f, 0.f, 0.f},
         Vector3 { 0.f, 0.f, 0.f},

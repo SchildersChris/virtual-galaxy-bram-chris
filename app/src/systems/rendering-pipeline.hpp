@@ -5,6 +5,7 @@
 
 #include "math/matrix4x4.hpp"
 #include "core/system.hpp"
+#include "../components/camera.hpp"
 
 class RenderingPipeline : public System {
 public:
@@ -34,6 +35,8 @@ public:
     std::vector<std::unique_ptr<Element>> Elements {};
 
 private:
+    static Matrix4x4 calculateCamera(const Camera& camera);
+
     entt::registry* _registry {nullptr};
 
     float _near;

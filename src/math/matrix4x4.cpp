@@ -1,5 +1,6 @@
 #include "math/utils.hpp"
 #include "math/matrix4x4.hpp"
+#include "math/vector3.hpp"
 
 #include <complex>
 
@@ -129,4 +130,22 @@ Matrix4x4 Matrix4x4::operator*(const Matrix4x4& o) const {
     }
 
     return res;
+}
+
+Matrix4x4 Matrix4x4::lookAt(const Vector3& right, const Vector3& up, const Vector3& direction)  {
+    auto matrix = identity();
+
+    matrix(0, 0) = right.X;
+    matrix(1, 0) = up.X;
+    matrix(2, 0) = direction.X;
+
+    matrix(0, 1) = right.Y;
+    matrix(1, 1) = up.Y;
+    matrix(2, 1) = direction.Y;
+
+    matrix(0, 2) = right.Z;
+    matrix(1, 2) = up.Z;
+    matrix(2, 2) = direction.Z;
+
+    return matrix;
 }

@@ -80,7 +80,7 @@ void Movement::cameraMovement(float deltaTime) const {
         trans.Z += actualSpeed;
     }
 
-    for (auto&& [entity, transform] : _registry->view<Transform, Camera>().each()) {
+    for (auto&& [entity, transform, camera] : _registry->view<Transform, Camera>().each()) {
         transform.Translation += trans;
     }
 }
