@@ -99,7 +99,7 @@ void Renderer::terminate() {
     _window = nullptr;
 }
 
-Vector3 Renderer::toRaster(const Vector4& v) {
+Vector3 Renderer::toRaster(const Vector4& v) const {
     return {
         (1 + v.X / v.Z) * 0.5f * static_cast<float>(_width),
         (1 - v.Y / v.Z) * 0.5f * static_cast<float>(_height),

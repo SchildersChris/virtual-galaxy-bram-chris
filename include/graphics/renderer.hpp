@@ -80,7 +80,7 @@ public:
      * @param v Vector to convert to raster coordinate
      * @return Raster coordinate
      */
-    Vector3 toRaster(const Vector4& v);
+    [[nodiscard]] Vector3 toRaster(const Vector4& v) const;
 
     /**
      * Terminate window and active renderer
