@@ -1,5 +1,6 @@
 # Virtual Galaxy
 Avans Hogeschool - Linear Algebra assessment by Bram Bastiaansen and Chris Schilders
+![Scene](scene.png)
 
 ## Requirements
 * CMake 3.14+
